@@ -13,6 +13,8 @@
     "generate-demo-video": "tsx scripts/playwright-demo-video.ts",
     "generate-demo-video-sample-data": "tsx scripts/playwright-demo-video-sample-data.ts",
     "generate-demo-video-italy-ai-parser": "tsx scripts/playwright-demo-video-italy-ai-parser.ts",
+    "generate-demo-video-india": "tsx scripts/playwright-demo-video-india.ts",
+    "generate-demo-video-india-export": "tsx scripts/playwright-demo-video-india-export.ts",
     "generate-reddit-coolguide-driving-side": "tsx scripts/playwright-reddit-coolguide-driving-side.ts",
     "postinstall": "node -e \"require('child_process').execSync('node install.js',{cwd:require('path').dirname(require.resolve('ffmpeg-static/package.json')),stdio:'inherit'})\""
   },
