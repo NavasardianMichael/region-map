@@ -150,11 +150,11 @@ All Paddle API calls and secrets stay on the server; the client only uses the pu
 
 ## 10. Badge features
 
-| Badge         | Export formats          | Quality | Historical data import | Animation (GIF/MP4) |
-| ------------- | ----------------------- | ------- | ---------------------- | ------------------- |
-| Observer      | PNG, JPEG, PDF          | 50% max | No                     | No                  |
-| Explorer      | PNG, SVG, JPEG, PDF     | 100%    | No                     | No                  |
-| Chronographer | PNG, SVG, JPEG, PDF + … | 100%    | Yes                    | Yes                 |
+| Badge         | Projects  | Sessions | Export formats      | Quality | Advanced styling | High-res (2K/4K) | Time-series & timeline | Animation (GIF/MP4) | AI parser (daily quota) | Public embed |
+| ------------- | --------- | -------- | ------------------- | ------- | ---------------- | ---------------- | ---------------------- | ------------------- | ----------------------- | ------------ |
+| Observer      | 5         | 5        | PNG, JPEG, PDF      | 100%    | Yes              | Yes              | No                     | No                  | No                      | No           |
+| Explorer      | Unlimited | 5        | PNG, SVG, JPEG, PDF | 100%    | Yes              | Yes              | Yes                    | Yes                 | Yes — up to 5/day       | No           |
+| Chronographer | Unlimited | 5        | PNG, SVG, JPEG, PDF | 100%    | Yes              | Yes              | Yes                    | Yes                 | Yes — up to 10/day      | Yes          |
 
 Paddle integration is **one-time payment** only. No subscriptions.
 

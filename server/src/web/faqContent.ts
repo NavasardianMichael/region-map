@@ -26,7 +26,7 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   {
     question: 'Which export formats are available?',
     answer:
-      'Export options depend on your badge tier. The free **Observer** badge includes **JPEG** export with core maps and legends. Paid tiers add **PNG** and **SVG**, higher quality settings, advanced styling, time-series support, and an **animated regional map** export (**GIF** and **MP4** video) on the **Chronographer** badge.',
+      'Export options depend on your badge tier. The free **Observer** badge already includes **JPEG**, **PNG**, and **PDF** export with core maps and legends, advanced map styling, and high-resolution (2K/4K) output. The **Explorer** badge adds **SVG** export, historical time-series data with an interactive timeline, an **animated regional map** export (**GIF** and **MP4** video), and an AI data parser. The **Chronographer** badge includes everything in Explorer, plus a public embed (iframe and public page) and a higher daily AI request allowance.',
   },
   {
     question: 'Can I embed a map on my website?',

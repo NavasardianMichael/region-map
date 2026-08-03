@@ -14,7 +14,6 @@ export * from './schemas/projectEmbed.js';
 export * from './schemas/projectsBulkDelete.js';
 
 // Constants
-export * from './constants/ai.js';
 export * from './constants/badges.js';
 export * from './constants/badgeFeatures.js';
 export * from './constants/projects.js';

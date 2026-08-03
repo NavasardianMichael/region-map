@@ -1,6 +1,6 @@
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { BgColorsOutlined } from '@ant-design/icons';
-import { BADGES } from '@regionify/shared';
+import { BADGE_DETAILS, BADGES } from '@regionify/shared';
 import { Collapse, type ColorPickerProps, Flex, type SwitchProps, Typography } from 'antd';
 import {
   selectBorder,
@@ -30,6 +30,7 @@ const MapStylesPanel: FC = () => {
   const { t } = useTypedTranslation();
   const user = useProfileStore(selectUser);
   const badge = user?.badge ?? BADGES.observer;
+  const { limits } = BADGE_DETAILS[badge];
   const picture = useMapStylesStore((state) => state.picture);
   const setPicture = useMapStylesStore((state) => state.setPicture);
   const border = useMapStylesStore(selectBorder);
@@ -54,27 +55,27 @@ const MapStylesPanel: FC = () => {
   );
 
   useEffect(() => {
-    if (badge === BADGES.observer && picture.transparentBackground) {
+    if (!limits.advancedStylesEnabled && picture.transparentBackground) {
       setPicture({ transparentBackground: false });
     }
-  }, [badge, picture.transparentBackground, setPicture]);
+  }, [limits.advancedStylesEnabled, picture.transparentBackground, setPicture]);
 
   const handleTransparentChange = useCallback<NonNullable<SwitchProps['onChange']>>(
     (checked) => {
-      if (badge === BADGES.observer) return;
+      if (!limits.advancedStylesEnabled) return;
       setPicture({ transparentBackground: checked });
     },
-    [setPicture, badge],
+    [setPicture, limits.advancedStylesEnabled],
   );
   const handleBackgroundColorChange = useCallback<
     NonNullable<ColorPickerProps['onChangeComplete']>
   >((color) => setPicture({ backgroundColor: color.toHexString() }), [setPicture]);
   const handleShowWatermarkChange = useCallback<NonNullable<SwitchProps['onChange']>>(
     (checked) => {
-      if (badge === BADGES.observer) return;
+      if (!limits.watermarkFree) return;
       setPicture({ showWatermark: checked });
     },
-    [setPicture, badge],
+    [setPicture, limits.watermarkFree],
   );
 
   const handleBorderShowChange = useCallback<NonNullable<SwitchProps['onChange']>>(

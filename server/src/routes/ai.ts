@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { env, isDev } from '@/config/env.js';
 import { AppError } from '@/middleware/errorHandler.js';
 import { requireAuth } from '@/middleware/requireAuth.js';
-import { requireChronographer } from '@/middleware/requireChronographer.js';
+import { requireAiAccess } from '@/middleware/requireAiAccess.js';
 import { validate } from '@/middleware/validate.js';
 import { logger } from '@/lib/logger.js';
 import {
@@ -84,31 +84,25 @@ async function pumpAiStream(
 }
 
 // POST /api/ai/parse — stream tab-delimited transformation via SSE
-router.post(
-  '/parse',
-  requireAuth,
-  requireChronographer,
-  validate(aiParseSchema),
-  async (req, res) => {
-    if (!env.GEMINI_API_KEY) {
-      res.status(HttpStatus.SERVICE_UNAVAILABLE).json({
-        success: false,
-        error: { code: ErrorCode.INTERNAL_ERROR, message: 'AI service is not configured.' },
-      });
-      return;
-    }
+router.post('/parse', requireAuth, requireAiAccess, validate(aiParseSchema), async (req, res) => {
+  if (!env.GEMINI_API_KEY) {
+    res.status(HttpStatus.SERVICE_UNAVAILABLE).json({
+      success: false,
+      error: { code: ErrorCode.INTERNAL_ERROR, message: 'AI service is not configured.' },
+    });
+    return;
+  }
 
-    const { text, mapRegionIds } = req.body as z.infer<typeof aiParseSchema>;
-    const userId = req.session.userId!;
-    await pumpAiStream(res, req, streamAiParse(text, mapRegionIds, userId), 'parsing');
-  },
-);
+  const { text, mapRegionIds } = req.body as z.infer<typeof aiParseSchema>;
+  const userId = req.session.userId!;
+  await pumpAiStream(res, req, streamAiParse(text, mapRegionIds, userId), 'parsing');
+});
 
 // POST /api/ai/generate — stream AI-generated regional dataset via SSE
 router.post(
   '/generate',
   requireAuth,
-  requireChronographer,
+  requireAiAccess,
   validate(aiGenerateSchema),
   async (req, res) => {
     if (!env.GEMINI_API_KEY) {
@@ -131,7 +125,7 @@ router.post(
 );
 
 // GET /api/ai/remaining — remaining daily parse requests for the authenticated user
-router.get('/remaining', requireAuth, requireChronographer, async (req, res, next) => {
+router.get('/remaining', requireAuth, requireAiAccess, async (req, res, next) => {
   try {
     const remaining = await getAiParseRemaining(req.session.userId!);
     res.json({ success: true, data: { remaining } });

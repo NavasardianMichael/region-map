@@ -95,15 +95,20 @@ export function buildBadgeFeatureRows(badge: Badge): BadgeFeatureRow[] {
     sessionsRow,
     imageExportRow,
     { key: BADGE_FEATURE_ROW_KEYS.advancedStyles, included: l.advancedStylesEnabled },
-    // "No watermark" is a paid-tier benefit; observer's watermark limitation is conveyed
-    // via the tier description, not as a checkmarked row.
-    { key: BADGE_FEATURE_ROW_KEYS.noWatermark, included: l.advancedStylesEnabled },
+    // "No watermark" is a paid-tier benefit, decoupled from advancedStylesEnabled since
+    // Observer has advanced styling but must keep the forced watermark; observer's watermark
+    // limitation is conveyed via the tier description, not as a checkmarked row.
+    { key: BADGE_FEATURE_ROW_KEYS.noWatermark, included: l.watermarkFree },
     { key: BADGE_FEATURE_ROW_KEYS.highResolutionExport, included: l.highResolutionExport },
     { key: BADGE_FEATURE_ROW_KEYS.timeSeries, included: l.historicalDataImport },
     { key: BADGE_FEATURE_ROW_KEYS.animationExport, included: l.animationExport },
     { key: BADGE_FEATURE_ROW_KEYS.embedMapIframe, included: l.publicEmbed },
     { key: BADGE_FEATURE_ROW_KEYS.publicMapPage, included: l.publicEmbed },
-    { key: BADGE_FEATURE_ROW_KEYS.aiParser, included: l.aiParser },
+    {
+      key: BADGE_FEATURE_ROW_KEYS.aiParser,
+      params: { count: l.aiParseRequestsPerDay },
+      included: l.aiParser,
+    },
   ];
 
   return rows.filter((row): row is BadgeFeatureRow => row !== null);

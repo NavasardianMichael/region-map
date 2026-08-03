@@ -84,13 +84,13 @@ export const ShowcaseSection: FC = () => {
       {
         title: t('home.showcaseGifTitle'),
         description: t('home.showcaseGifDesc'),
-        badgeName: t('badges.items.chronographer.name'),
+        badgeName: t('badges.items.explorer.name'),
         assetId: 'gif',
       },
       {
         title: t('home.showcaseMp4Title'),
         description: t('home.showcaseMp4Desc'),
-        badgeName: t('badges.items.chronographer.name'),
+        badgeName: t('badges.items.explorer.name'),
         assetId: 'mp4',
       },
       {

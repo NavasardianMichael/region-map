@@ -1,9 +1,10 @@
 import { GoogleGenAI } from '@google/genai';
-import { ErrorCode, HttpStatus, MAX_AI_PARSE_REQUESTS_PER_DAY } from '@regionify/shared';
+import { BADGE_DETAILS, ErrorCode, HttpStatus } from '@regionify/shared';
 
 import { env, isDev } from '@/config/env.js';
 import { redis } from '@/lib/redis.js';
 import { AppError } from '@/middleware/errorHandler.js';
+import { userRepository } from '@/repositories/userRepository.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -46,10 +47,16 @@ async function incrementAiParseCount(userId: string): Promise<number> {
   return count;
 }
 
+/** Looks up the caller's current daily AI request cap from their badge tier. 0 if the user no longer exists. */
+async function getAiDailyLimit(userId: string): Promise<number> {
+  const user = await userRepository.findById(userId);
+  return user ? BADGE_DETAILS[user.badge].limits.aiParseRequestsPerDay : 0;
+}
+
 export async function getAiParseRemaining(userId: string): Promise<number> {
   if (isDev) return UNLIMITED_REMAINING;
-  const count = await getAiParseCount(userId);
-  return Math.max(0, MAX_AI_PARSE_REQUESTS_PER_DAY - count);
+  const [count, maxPerDay] = await Promise.all([getAiParseCount(userId), getAiDailyLimit(userId)]);
+  return Math.max(0, maxPerDay - count);
 }
 
 // ─── System prompts ───────────────────────────────────────────────────────────
@@ -122,15 +129,16 @@ async function* checkAiQuota(userId: string): AsyncGenerator<AiStreamEvent> {
     yield { type: 'remaining', count: UNLIMITED_REMAINING };
     return;
   }
+  const maxPerDay = await getAiDailyLimit(userId);
   const count = await incrementAiParseCount(userId);
-  if (count > MAX_AI_PARSE_REQUESTS_PER_DAY) {
+  if (count > maxPerDay) {
     throw new AppError(
       HttpStatus.TOO_MANY_REQUESTS,
       ErrorCode.RATE_LIMITED,
-      `Daily AI request limit of ${MAX_AI_PARSE_REQUESTS_PER_DAY} reached. Resets in 24 hours.`,
+      `Daily AI request limit of ${maxPerDay} reached. Resets in 24 hours.`,
     );
   }
-  yield { type: 'remaining', count: MAX_AI_PARSE_REQUESTS_PER_DAY - count };
+  yield { type: 'remaining', count: maxPerDay - count };
 }
 
 async function* runGeminiStream(

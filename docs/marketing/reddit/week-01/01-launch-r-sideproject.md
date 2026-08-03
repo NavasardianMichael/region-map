@@ -51,14 +51,14 @@ For the last 3 months I've been building [**Regionify**](https://regionify.pro) 
 - **Paste or upload your data** (Excel, CSV, or just paste from a Google Sheet). The AI parser auto-matches messy region names to the map polygons — "Île-de-France", "ile de france", "IDF" all resolve to the same shape.
 - **Style it** — legend, palette, breakpoints, borders, labels, background. Ant Design under the hood so controls feel native.
 - **Export** — PNG or JPEG at up to 4K, plus SVG (vector, scales to any size) and PDF. GIF/MP4 for animated timelines.
-- **Embed** — public iframe + SSR-rendered public page with SEO metadata (paid tier).
+- **Embed** — public iframe + SSR-rendered public page with SEO metadata (Chronographer only).
 - **7 languages** — EN, DE, FR, ES, PT, RU, ZH.
 
 **Pricing (one-time, not a subscription):**
 
-- **Observer** — free, 5 projects, PNG/JPEG/PDF export
-- **Explorer** — $49 once, unlimited projects, SVG export, advanced styles, 4K
-- **Chronographer** — $149 once, time-series data import, animated GIF/MP4 export, public iframe embeds, AI parser
+- **Observer** — free, 5 projects, PNG/JPEG/PDF export, advanced styling, up to 4K
+- **Explorer** — $49 once, unlimited projects, SVG export, time-series data + animated GIF/MP4, AI parser (5/day)
+- **Chronographer** — $149 once, everything in Explorer plus public iframe embeds and a higher AI quota (10/day)
 
 **What I'm looking for from r/SideProject:**
 

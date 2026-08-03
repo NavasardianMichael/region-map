@@ -141,7 +141,7 @@ ASSET 5: STYLING SCREENSHOT
 - Alt text: "Regionify's styling panel with palette, legend, and breakpoint controls"
 -->
 
-**4. Export or publish.** PNG or JPEG up to 4K, plus SVG (vector, scales to any size) and PDF for print or design work. Animated GIF and MP4 for time-series data. Or publish the whole project as a public embeddable page with SEO metadata (paid tier).
+**4. Export or publish.** PNG or JPEG up to 4K, plus SVG (vector, scales to any size) and PDF for print or design work. Animated GIF and MP4 for time-series data. Or publish the whole project as a public embeddable page with SEO metadata (Chronographer only).
 
 ### See it in action
 
@@ -167,9 +167,9 @@ ASSET 6: DEMO VIDEO EMBED
 
 ### Freemium pricing — the free tier is genuinely free
 
-- **Observer (free)** — 5 projects, PNG/JPEG/PDF export, all 200+ country maps included. No credit card, no expiring trial.
-- **Explorer ($49 once)** — unlimited projects, SVG + 4K export, advanced styles.
-- **Chronographer ($149 once)** — time-series data import, animated GIF/MP4 export, public iframe embeds, AI parser.
+- **Observer (free)** — 5 projects, PNG/JPEG/PDF export, advanced styling, up to 4K export, all 200+ country maps included. No credit card, no expiring trial.
+- **Explorer ($49 once)** — unlimited projects, SVG export, time-series data import, animated GIF/MP4 export, AI parser (up to 5 requests/day).
+- **Chronographer ($149 once)** — everything in Explorer, plus public iframe embeds and a bigger AI parser allowance (up to 10 requests/day).
 
 If you're a solo journalist or analyst doing an occasional map, the free tier probably covers your needs. If you're an agency or a team doing this weekly, the paid tiers pay for themselves in the first afternoon they save you.
 

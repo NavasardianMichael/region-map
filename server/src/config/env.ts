@@ -57,7 +57,7 @@ const envSchema = z.object({
   MAIL_API_URL: z.string().url(),
   MAIL_API_KEY: z.string(),
 
-  // Google Gemini (AI parser feature — Chronographer plan only)
+  // Google Gemini (AI parser feature — Explorer plan and above)
   GEMINI_API_KEY: z.string().optional(),
 
   // Paddle Billing (one-time checkouts; webhook for transaction.completed)

@@ -106,7 +106,7 @@ const en: CommonNs = {
       {
         question: 'Which export formats are available?',
         answer:
-          'Export options depend on your badge tier. The free **Observer** badge includes **JPEG** export with core maps and legends. Paid tiers add **PNG** and **SVG**, higher quality settings, advanced styling, time-series support, and animated exports (**GIF** and **MP4**) on the **Chronographer** badge.',
+          'Export options depend on your badge tier. The free **Observer** badge already includes **JPEG**, **PNG**, and **PDF** export, advanced map & legend styling, and high-resolution (2K/4K) output. The **Explorer** badge adds **SVG** export, historical time-series data with an interactive timeline, an animated regional map export (**GIF** and **MP4** video), and an AI data parser. The **Chronographer** badge includes everything in Explorer, plus a public embed (iframe and public page) and a higher daily AI request allowance.',
       },
       {
         question: 'Can I embed a map on my website?',
@@ -175,25 +175,25 @@ const en: CommonNs = {
       animationExport: 'Animated export (GIF & MP4)',
       embedMapIframe: 'Embed map (iframe)',
       publicMapPage: 'Public page with map',
-      aiParser: 'AI data parser and generator',
+      aiParser: 'AI data parser and generator (up to {{count}} requests/day)',
     },
     items: {
       observer: {
         name: 'Observer (free)',
         description:
-          'PNG and JPEG export at full quality with watermark, core maps and legends, up to 5 projects.',
+          'PNG and JPEG export at full quality with watermark, advanced map & legend styling, high-resolution export up to 4K, and up to 5 projects.',
         buttonText: 'Free badge',
       },
       explorer: {
         name: 'Explorer',
         description:
-          'PNG, SVG, and JPEG at full quality, no watermark, unlimited projects, and advanced styling.',
+          'PNG, SVG, and JPEG at full quality, no watermark, unlimited projects, advanced styling, time-series timelines, animated GIF/MP4 export, and an AI data parser (up to 5 requests/day).',
         buttonText: 'Buy Explorer (Lifetime)',
       },
       chronographer: {
         name: 'Chronographer',
         description:
-          'Adds time-series import, animated timeline exports, and an optional public embed per project.',
+          'Everything in Explorer, plus a public page and iframe embed for your projects, and a higher AI allowance (up to 10 requests/day).',
         buttonText: 'Buy Chronographer (Lifetime)',
       },
     },

@@ -11,7 +11,7 @@
 | Tags         | `[OC][GIF]` (both mandatory — `[OC]` per Rule 3, `[GIF]` per convention) |
 | UTM campaign | `dataisbeautiful-07`                                                     |
 
-Rationale: Animated timelines are r/dataisbeautiful catnip — the sub's all-time top posts are disproportionately animated maps and rank charts. Eurostat's regional unemployment dataset (NUTS-2 level, code `une_rt_a`) is public, current through 2024, and tells a clear story (2010-13 crisis peaks in southern Europe, gradual recovery, COVID blip, ongoing north-south divide). This showcases the Chronographer tier's animation export — the feature most likely to drive $149 one-time signups.
+Rationale: Animated timelines are r/dataisbeautiful catnip — the sub's all-time top posts are disproportionately animated maps and rank charts. Eurostat's regional unemployment dataset (NUTS-2 level, code `une_rt_a`) is public, current through 2024, and tells a clear story (2010-13 crisis peaks in southern Europe, gradual recovery, COVID blip, ongoing north-south divide). This showcases the animation export feature (now included starting at the Explorer tier) — the feature most likely to drive $49+ one-time signups.
 
 **Timing note:** post 03 was in r/dataisbeautiful in Week 1. That was 15 days ago at this point — well past the "no reposts of the same topic within 1 month" rule (this is a different dataset and format anyway), and enough time between two OC submissions from the same account.
 
@@ -74,7 +74,7 @@ Data: Eurostat — Unemployment rates by sex, age and NUTS-2 region (une_rt_a)
   https://ec.europa.eu/eurostat/databrowser/view/UNE_RT_A
   Total (both sexes), ages 15-74, annual, 2010 through 2024.
 
-Tool: Regionify (regionify.pro) — I built this. The animation is the Chronographer tier's time-series export;
+Tool: Regionify (regionify.pro) — I built this. The animation is the Explorer tier's time-series export;
 each frame is one year, exported as a single MP4/GIF from the app.
 
 Method: pulled the full `une_rt_a` CSV from Eurostat, filtered to NUTS-2 regions (dropping national aggregates),
@@ -109,7 +109,7 @@ Happy to share the raw CSV — DM me. Full disclosure: I'm the founder of Region
 
 **Q: "What tool exports the animation?"**
 
-> Regionify — the Chronographer tier lets you import time-series data (one row per region per year, or a wide-format CSV) and export as GIF or MP4. Fixed color scale across frames, configurable frame rate, watermark toggle. Link in my top comment.
+> Regionify — the Explorer tier ($49 one-time) lets you import time-series data (one row per region per year, or a wide-format CSV) and export as GIF or MP4. Fixed color scale across frames, configurable frame rate, watermark toggle. Link in my top comment.
 
 **Q: "Can I get the underlying CSV?"**
 

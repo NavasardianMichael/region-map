@@ -108,7 +108,7 @@ const de: CommonNs = {
       {
         question: 'Welche Exportformate gibt es?',
         answer:
-          'Das hängt von Ihrer Badge-Stufe ab. Die kostenlose Stufe **Observer** umfasst **JPEG**-Export. Kostenpflichtige Badges ergänzen **PNG** und **SVG**, höhere Qualität, erweiterte Stile, Zeitreihen und auf **Chronographer** animierte **GIF**- und **MP4**-Exports.',
+          'Das hängt von Ihrer Badge-Stufe ab. Die kostenlose Stufe **Observer** umfasst bereits **JPEG**-, **PNG**- und **PDF**-Export, erweiterte Karten- und Legendenstile sowie hochauflösenden Export (2K/4K). Das **Entdecker**-Badge ergänzt **SVG**-Export, Zeitreihen-Daten mit Zeitstrahl, animierten **GIF**- und **MP4**-Export sowie einen KI-Datenparser. Das **Chronograph**-Badge enthält alles aus Entdecker, plus öffentliche Einbettung und ein höheres tägliches KI-Kontingent.',
       },
       {
         question: 'Kann ich eine Karte in meine Website einbetten?',
@@ -178,25 +178,25 @@ const de: CommonNs = {
       animationExport: 'Animierter Export (GIF & MP4)',
       embedMapIframe: 'Karte einbetten (iframe)',
       publicMapPage: 'Öffentliche Seite mit Karte',
-      aiParser: 'KI-Datenparsing und -Generator',
+      aiParser: 'KI-Datenparsing und -Generator (bis zu {{count}} Anfragen/Tag)',
     },
     items: {
       observer: {
         name: 'Beobachter (kostenlos)',
         description:
-          'PNG- und JPEG-Export in voller Qualität mit Wasserzeichen, Grundfunktionen für Karten und Legenden, bis zu 5 Projekte.',
+          'PNG- und JPEG-Export in voller Qualität mit Wasserzeichen, erweiterte Karten- und Legendenstile, hochauflösender Export bis 4K und bis zu 5 Projekte.',
         buttonText: 'Kostenloses Badge',
       },
       explorer: {
         name: 'Entdecker',
         description:
-          'PNG, SVG und JPEG in voller Qualität, kein Wasserzeichen, unbegrenzte Projekte und erweiterte Stile.',
+          'PNG, SVG und JPEG in voller Qualität, kein Wasserzeichen, unbegrenzte Projekte, erweiterte Stile, Zeitreihen-Timelines, animierter GIF-/MP4-Export und ein KI-Datenparser (bis zu 5 Anfragen/Tag).',
         buttonText: 'Entdecker kaufen (einmalig, dauerhaft)',
       },
       chronographer: {
         name: 'Chronograph',
         description:
-          'Zusätzlich: Zeitreihen-Import, animierte Timeline-Exports, optionale öffentliche Einbettung pro Projekt.',
+          'Alles aus Entdecker, plus eine öffentliche Seite und iframe-Einbettung für Ihre Projekte sowie ein höheres KI-Kontingent (bis zu 10 Anfragen/Tag).',
         buttonText: 'Chronograph kaufen (einmalig, dauerhaft)',
       },
     },

@@ -260,7 +260,7 @@ export function useExportMapModal(_open: boolean, onClose: () => void) {
     });
   }, [previewSecondsPerPeriod, setPreviewSecondsPerPeriod]);
 
-  const watermarkActive = badge === BADGES.observer || picture.showWatermark;
+  const watermarkActive = !limits.watermarkFree || picture.showWatermark;
 
   const staticStillOpts = useMemo(
     () => ({

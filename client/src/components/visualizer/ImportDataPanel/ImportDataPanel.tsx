@@ -22,12 +22,7 @@ import {
   LoadingOutlined,
   SwapOutlined,
 } from '@ant-design/icons';
-import {
-  BADGE_DETAILS,
-  BADGES,
-  extractGid,
-  MAX_AI_PARSE_REQUESTS_PER_DAY,
-} from '@regionify/shared';
+import { BADGE_DETAILS, BADGES, extractGid } from '@regionify/shared';
 import type { RadioChangeEvent, UploadProps } from 'antd';
 import { Button, Flex, Radio, Spin, theme, Tooltip, Typography, Upload } from 'antd';
 import { fetchAiRemaining } from '@/api/ai';
@@ -107,11 +102,15 @@ export const ImportDataPanel: FC = () => {
   const { t } = useTypedTranslation();
   const { modal, message: messageApi } = useAppFeedback();
   const { token } = theme.useToken();
+  const user = useProfileStore(selectUser);
+  const badge = user?.badge ?? BADGES.observer;
+  const { limits } = BADGE_DETAILS[badge];
+
   const [isManualModalOpen, setIsManualModalOpen] = useState(false);
   const [isSheetsModalOpen, setIsSheetsModalOpen] = useState(false);
   const [isTabDelimitedModalOpen, setIsTabDelimitedModalOpen] = useState(false);
   const [isAiParserModalOpen, setIsAiParserModalOpen] = useState(false);
-  const [aiRemaining, setAiRemaining] = useState(MAX_AI_PARSE_REQUESTS_PER_DAY);
+  const [aiRemaining, setAiRemaining] = useState(limits.aiParseRequestsPerDay);
   const [svgTitles, setSvgTitles] = useState<string[]>([]);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isDownloadingSample, setIsDownloadingSample] = useState(false);
@@ -127,9 +126,6 @@ export const ImportDataPanel: FC = () => {
   const timelineData = useVisualizerStore(selectTimelineData);
   const timePeriods = useVisualizerStore(selectTimePeriods);
 
-  const user = useProfileStore(selectUser);
-  const badge = user?.badge ?? BADGES.observer;
-  const { limits } = BADGE_DETAILS[badge];
   const currentProject = useProjectsStore(selectCurrentProject);
   const googleUrl = useVisualizerStore((s) => s.google.url);
   const googleGid = useVisualizerStore((s) => s.google.gid);
@@ -137,13 +133,13 @@ export const ImportDataPanel: FC = () => {
 
   const isGoogleSheetsLiveSync = importDataType === IMPORT_DATA_TYPES.sheets && Boolean(googleUrl);
 
-  // Fetch remaining AI parse requests on mount for Chronographer plan users
+  // Fetch remaining AI parse requests on mount for badges with AI parser access
   useEffect(() => {
-    if (badge !== BADGES.chronographer) return;
+    if (!limits.aiParser) return;
     fetchAiRemaining()
       .then(setAiRemaining)
       .catch(() => undefined);
-  }, [badge]);
+  }, [limits.aiParser]);
 
   /** Auto-detected: current data is panel/dynamic (has time dimension). */
   const hasHistoricalFormat = useMemo(() => {
@@ -406,61 +402,60 @@ export const ImportDataPanel: FC = () => {
       sheets: t('visualizer.importData.format.sheets'),
       table: t('visualizer.importData.format.table'),
       tab_delimited: t('visualizer.importData.format.tabDelimited'),
-      ai_parser:
-        badge === BADGES.chronographer ? (
-          t('visualizer.importData.format.aiParser')
-        ) : (
-          <Tooltip
-            styles={{
-              container: {
-                width: 'max-content',
-                maxWidth: 'min(calc(100vw - 24px), 22rem)',
-              },
-            }}
-            title={(() => {
-              const onTooltip = token.colorTextLightSolid;
-              const linkStyle: CSSProperties = {
-                color: onTooltip,
-                textDecoration: 'underline',
-                textDecorationThickness: 'from-font',
-                textUnderlineOffset: 4,
-                fontWeight: 600,
-              };
-              return (
-                <Flex vertical gap="small" align="flex-start" className="w-max">
-                  <Typography.Text
-                    className="text-sm text-balance"
-                    style={{ color: onTooltip }}
-                    data-i18n-key="visualizer.importData.aiParserChronographerTooltip"
-                  >
-                    {t('visualizer.importData.aiParserChronographerTooltip', {
-                      badgeName: t('badges.items.chronographer.name'),
-                    })}
-                  </Typography.Text>
-                  <NavLink
-                    to={ROUTES.BILLING}
-                    className="text-sm text-white"
-                    style={linkStyle}
-                    data-i18n-key="visualizer.embed.upgradeBadgesLink"
-                  >
-                    {t('visualizer.embed.upgradeBadgesLink')}
-                  </NavLink>
-                </Flex>
-              );
-            })()}
-          >
-            <span data-i18n-key="visualizer.importData.format.aiParser">
-              {t('visualizer.importData.format.aiParser')}
-            </span>
-          </Tooltip>
-        ),
+      ai_parser: limits.aiParser ? (
+        t('visualizer.importData.format.aiParser')
+      ) : (
+        <Tooltip
+          styles={{
+            container: {
+              width: 'max-content',
+              maxWidth: 'min(calc(100vw - 24px), 22rem)',
+            },
+          }}
+          title={(() => {
+            const onTooltip = token.colorTextLightSolid;
+            const linkStyle: CSSProperties = {
+              color: onTooltip,
+              textDecoration: 'underline',
+              textDecorationThickness: 'from-font',
+              textUnderlineOffset: 4,
+              fontWeight: 600,
+            };
+            return (
+              <Flex vertical gap="small" align="flex-start" className="w-max">
+                <Typography.Text
+                  className="text-sm text-balance"
+                  style={{ color: onTooltip }}
+                  data-i18n-key="visualizer.importData.aiParserChronographerTooltip"
+                >
+                  {t('visualizer.importData.aiParserChronographerTooltip', {
+                    badgeName: t('badges.items.explorer.name'),
+                  })}
+                </Typography.Text>
+                <NavLink
+                  to={ROUTES.BILLING}
+                  className="text-sm text-white"
+                  style={linkStyle}
+                  data-i18n-key="visualizer.embed.upgradeBadgesLink"
+                >
+                  {t('visualizer.embed.upgradeBadgesLink')}
+                </NavLink>
+              </Flex>
+            );
+          })()}
+        >
+          <span data-i18n-key="visualizer.importData.format.aiParser">
+            {t('visualizer.importData.format.aiParser')}
+          </span>
+        </Tooltip>
+      ),
     };
     return IMPORT_FORMAT_ORDER.map((value) => ({
       label: labelByType[value],
       value,
-      disabled: value === IMPORT_DATA_TYPES.aiParser && badge !== BADGES.chronographer,
+      disabled: value === IMPORT_DATA_TYPES.aiParser && !limits.aiParser,
     }));
-  }, [t, badge, token.colorTextLightSolid]);
+  }, [t, limits.aiParser, token.colorTextLightSolid]);
 
   const handleImportDataTypeChange = useCallback(
     (e: RadioChangeEvent) => {
@@ -588,7 +583,7 @@ export const ImportDataPanel: FC = () => {
             }
 
             // Generate sample: respect user's current mode; only default to historical
-            // on a fresh state (no data yet) for Chronographer plan users.
+            // on a fresh state (no data yet) for Explorer+ users.
             const useStaticMode = !limits.historicalDataImport || wasInStaticModeRef.current;
 
             if (useStaticMode) {
@@ -677,7 +672,7 @@ export const ImportDataPanel: FC = () => {
           showMessageWithClose(
             messageApi,
             'info',
-            t('messages.timeSeriesDetected', { badgeName: t('badges.items.chronographer.name') }),
+            t('messages.timeSeriesDetected', { badgeName: t('badges.items.explorer.name') }),
           );
         }
         if (limits.historicalDataImport) {
@@ -1182,6 +1177,7 @@ export const ImportDataPanel: FC = () => {
             historicalDataImport={limits.historicalDataImport}
             remaining={aiRemaining}
             onRemainingChange={setAiRemaining}
+            maxRequestsPerDay={limits.aiParseRequestsPerDay}
           />
         </Suspense>
       )}

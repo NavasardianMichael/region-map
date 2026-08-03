@@ -85,14 +85,14 @@ What's inside:
 
 → Export to PNG or JPEG up to 4K, plus SVG (vector, scales to any size) and PDF. GIF and MP4 for animated time-series data
 
-→ Publish as an embeddable public page with SEO metadata (paid tier)
+→ Publish as an embeddable public page with SEO metadata (Chronographer only)
 
 → Localised in 7 languages: EN, DE, FR, ES, PT, RU, ZH
 
 Pricing is one-time, not a subscription — and the free plan is genuinely free, no credit card:
-• Observer (free) — 5 projects, PNG/JPEG/PDF export, all 200+ maps included
-• Explorer ($49 once) — unlimited projects, SVG + 4K, advanced styles
-• Chronographer ($149 once) — time-series data, animated exports, public embeds, AI Agent (parse & generate)
+• Observer (free) — 5 projects, PNG/JPEG/PDF export, all 200+ maps included, advanced styling + up to 4K
+• Explorer ($49 once) — unlimited projects, SVG export, time-series data + animated GIF/MP4, AI Agent (parse & generate, up to 5/day)
+• Chronographer ($149 once) — everything in Explorer, plus public embeds and a bigger AI Agent allowance (up to 10/day)
 
 Built for analysts, journalists, policy researchers, agency PMs, and anyone who ships regional data visualization more than twice a year.
 

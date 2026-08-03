@@ -1,5 +1,5 @@
 import { type FC, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { BADGES } from '@regionify/shared';
+import { BADGE_DETAILS, BADGES } from '@regionify/shared';
 import { Badge as AntBadge, Flex } from 'antd';
 import { useShallow } from 'zustand/react/shallow';
 import { selectItemsList } from '@/store/legendData/selectors';
@@ -82,6 +82,7 @@ const MapViewer: FC<MapViewerProps> = ({
   const { t, i18n } = useTypedTranslation();
   const user = useProfileStore(selectUser);
   const badge = user?.badge ?? BADGES.observer;
+  const { limits } = BADGE_DETAILS[badge];
   const selectedCountryId = useVisualizerStore(selectSelectedCountryId);
   const timePeriods = useVisualizerStore(selectTimePeriods);
   const activeTimePeriod = useVisualizerStore(selectActiveTimePeriod);
@@ -270,11 +271,11 @@ const MapViewer: FC<MapViewerProps> = ({
     return t('visualizer.mapAriaMapOf', { region });
   }, [dateLocale, selectedCountryId, t]);
 
-  const isObserverWatermarkForced = enforceObserverWatermark && badge === BADGES.observer;
+  const isForcedWatermark = enforceObserverWatermark && !limits.watermarkFree;
   const showWatermarkOverlay = useMemo(
     /** Public embed: `MadeWithRegionifyBadge` occupies the same bottom-right slot — suppress duplicate branding. */
-    () => (isObserverWatermarkForced || picture.showWatermark) && !flatEmbedChrome,
-    [isObserverWatermarkForced, picture.showWatermark, flatEmbedChrome],
+    () => (isForcedWatermark || picture.showWatermark) && !flatEmbedChrome,
+    [isForcedWatermark, picture.showWatermark, flatEmbedChrome],
   );
 
   /**
@@ -284,9 +285,9 @@ const MapViewer: FC<MapViewerProps> = ({
   const zoomStackExtraBottomPx = useMemo(() => {
     if (showBottomLegend) return 0;
     if (flatEmbedChrome) return EMBED_BADGE_ZOOM_STACK_LIFT_PX;
-    if (isObserverWatermarkForced) return OBSERVER_BADGE_ZOOM_STACK_LIFT_PX;
+    if (isForcedWatermark) return OBSERVER_BADGE_ZOOM_STACK_LIFT_PX;
     return 0;
-  }, [showBottomLegend, flatEmbedChrome, isObserverWatermarkForced]);
+  }, [showBottomLegend, flatEmbedChrome, isForcedWatermark]);
 
   const mapBackgroundStyle = useMemo(
     () => ({

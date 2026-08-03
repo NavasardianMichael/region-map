@@ -107,7 +107,7 @@ const fr: CommonNs = {
       {
         question: 'Quels formats d’export sont disponibles ?',
         answer:
-          "Cela dépend du badge. L'offre gratuite **Observer** inclut l'export **JPEG**. Les badges payants ajoutent **PNG** et **SVG**, une qualité plus élevée, des styles avancés, les séries temporelles et sur **Chronographer** des exports **GIF** et **MP4** animés.",
+          "Cela dépend du badge. L'offre gratuite **Observer** inclut déjà l'export **JPEG**, **PNG** et **PDF**, des styles avancés de carte et légende, et l'export haute résolution (2K/4K). Le badge **Explorateur** ajoute l'export **SVG**, les données temporelles avec frise chronologique, l'export animé (**GIF** et **MP4**) et un analyseur de données IA. Le badge **Chronographe** inclut tout ce qu'offre Explorateur, plus l'intégration publique et un quota IA quotidien plus élevé.",
       },
       {
         question: 'Puis-je intégrer une carte sur mon site ?',
@@ -176,25 +176,25 @@ const fr: CommonNs = {
       animationExport: 'Export animé (GIF et MP4)',
       embedMapIframe: 'Carte intégrée (iframe)',
       publicMapPage: 'Page publique avec carte',
-      aiParser: 'Analyseur et générateur de données IA',
+      aiParser: "Analyseur et générateur de données IA (jusqu'à {{count}} requêtes/jour)",
     },
     items: {
       observer: {
         name: 'Observateur (gratuit)',
         description:
-          "Export PNG et JPEG en pleine qualité avec filigrane, cartes et légendes de base, jusqu'à 5 projets.",
+          "Export PNG et JPEG en pleine qualité avec filigrane, styles avancés de carte et légende, export haute résolution jusqu'à 4K, et jusqu'à 5 projets.",
         buttonText: 'Badge gratuit',
       },
       explorer: {
         name: 'Explorateur',
         description:
-          'PNG, SVG et JPEG en pleine qualité, sans filigrane, projets illimités et styles avancés.',
+          "PNG, SVG et JPEG en pleine qualité, sans filigrane, projets illimités, styles avancés, frises chronologiques temporelles, export animé GIF/MP4, et un analyseur de données IA (jusqu'à 5 requêtes par jour).",
         buttonText: 'Acheter Explorateur (paiement unique)',
       },
       chronographer: {
         name: 'Chronographe',
         description:
-          'Ajoute import temporel, exports de ligne de temps animée et intégration publique optionnelle par projet.',
+          "Tout ce qu'offre Explorateur, plus une page publique et une intégration iframe pour vos projets, et un quota IA plus élevé (jusqu'à 10 requêtes par jour).",
         buttonText: 'Acheter Chronographe (paiement unique)',
       },
     },

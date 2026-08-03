@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { type Badge, BADGES } from '@regionify/shared';
+import { type Badge, BADGE_DETAILS } from '@regionify/shared';
 import {
   ColorPicker,
   type ColorPickerProps,
@@ -30,13 +30,14 @@ export const MapStylesBackgroundSection: FC<BackgroundSectionProps> = ({
   onShowWatermarkChange,
 }) => {
   const { t } = useTypedTranslation();
-  const isObserver = badge === BADGES.observer;
-  const transparentChecked = isObserver ? false : picture.transparentBackground;
-  const watermarkChecked = isObserver ? true : picture.showWatermark;
+  const { limits } = BADGE_DETAILS[badge];
+  const transparentChecked = limits.advancedStylesEnabled ? picture.transparentBackground : false;
+  const watermarkChecked = limits.watermarkFree ? picture.showWatermark : true;
+  const showUpgradeNote = !limits.advancedStylesEnabled || !limits.watermarkFree;
 
   return (
     <Flex vertical gap="small">
-      {isObserver && (
+      {showUpgradeNote && (
         <Typography.Text type="secondary" className="mb-2 text-[13px]">
           {t('visualizer.mapStyles.freeBadgeNoteBeforeUpgrade')}
           <AppNavLink
@@ -62,7 +63,7 @@ export const MapStylesBackgroundSection: FC<BackgroundSectionProps> = ({
           size="small"
           onChange={onTransparentChange}
           aria-labelledby="transparent-bg-label"
-          disabled={isObserver}
+          disabled={!limits.advancedStylesEnabled}
         />
       </Flex>
       <Flex align="center" justify="space-between">
@@ -92,7 +93,7 @@ export const MapStylesBackgroundSection: FC<BackgroundSectionProps> = ({
           size="small"
           onChange={onShowWatermarkChange}
           aria-labelledby="show-watermark-label"
-          disabled={isObserver}
+          disabled={!limits.watermarkFree}
         />
       </Flex>
     </Flex>

@@ -37,7 +37,7 @@ router.use('/projects', projectRoutes);
 // Google Sheets routes
 router.use('/sheets', sheetsRoutes);
 
-// AI routes (Chronographer plan only)
+// AI routes (Explorer plan and above)
 router.use('/ai', aiRoutes);
 
 export const apiRoutes: ExpressRouter = router;

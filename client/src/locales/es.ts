@@ -106,7 +106,7 @@ const es: CommonNs = {
       {
         question: '¿Qué formatos de exportación hay?',
         answer:
-          'Depende del badge. El badge gratuito **Observer** incluye exportación **JPEG**. Los de pago añaden **PNG** y **SVG**, mayor calidad, estilos avanzados, series temporales y en **Chronographer** exportes **GIF** y **MP4** animados.',
+          'Depende del badge. El badge gratuito **Observer** ya incluye exportación **JPEG**, **PNG** y **PDF**, estilos avanzados de mapa y leyenda, y exportación en alta resolución (2K/4K). El badge **Explorador** añade exportación **SVG**, datos temporales con línea de tiempo, exportación animada (**GIF** y **MP4**) y un analizador de datos con IA. El badge **Cronógrafo** incluye todo lo de Explorador, más incrustación pública y un límite diario de IA más alto.',
       },
       {
         question: '¿Puedo incrustar un mapa en mi sitio?',
@@ -175,25 +175,25 @@ const es: CommonNs = {
       animationExport: 'Exportación animada (GIF y MP4)',
       embedMapIframe: 'Mapa incrustado (iframe)',
       publicMapPage: 'Página pública con mapa',
-      aiParser: 'Analizador y generador de datos con IA',
+      aiParser: 'Analizador y generador de datos con IA (hasta {{count}} solicitudes/día)',
     },
     items: {
       observer: {
         name: 'Observador (gratis)',
         description:
-          'Exportación PNG y JPEG a calidad completa con marca de agua, mapas y leyendas básicos, hasta 5 proyectos.',
+          'Exportación PNG y JPEG a calidad completa con marca de agua, estilos avanzados de mapa y leyenda, exportación en alta resolución hasta 4K, y hasta 5 proyectos.',
         buttonText: 'Badge gratuito',
       },
       explorer: {
         name: 'Explorador',
         description:
-          'PNG, SVG y JPEG a calidad completa, sin marca de agua, proyectos ilimitados y estilos avanzados.',
+          'PNG, SVG y JPEG a calidad completa, sin marca de agua, proyectos ilimitados, estilos avanzados, líneas de tiempo con datos temporales, exportación animada en GIF/MP4 y un analizador de datos con IA (hasta 5 solicitudes al día).',
         buttonText: 'Comprar Explorador (pago único)',
       },
       chronographer: {
         name: 'Cronógrafo',
         description:
-          'Añade importación de series temporales, exportación de líneas de tiempo animadas e incrustación pública opcional por proyecto.',
+          'Todo lo de Explorador, más una página pública e incrustación iframe para tus proyectos, y un límite de IA más alto (hasta 10 solicitudes al día).',
         buttonText: 'Comprar Cronógrafo (pago único)',
       },
     },

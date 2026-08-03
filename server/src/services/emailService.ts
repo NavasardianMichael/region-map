@@ -18,7 +18,8 @@ const BADGE_DISPLAY: Record<PayableBadge, { name: string; tagline: string }> = {
   },
   [BADGES.chronographer]: {
     name: 'Chronographer',
-    tagline: 'You now have the full Regionify toolkit — including time and AI-powered workflows.',
+    tagline:
+      "You've unlocked the complete Regionify toolkit — public embed & sharing, plus our highest AI request allowance.",
   },
 };
 
@@ -41,7 +42,7 @@ const BADGE_FEATURE_ROW_EN: Record<BadgeFeatureRowKey, (params?: BadgeFeatureRow
     animationExport: () => 'Animated export (GIF & MP4)',
     embedMapIframe: () => 'Embed map (iframe)',
     publicMapPage: () => 'Public page with map',
-    aiParser: () => 'AI data parser and generator',
+    aiParser: (p) => `AI data parser and generator (up to ${p?.count ?? 0} requests/day)`,
   };
 
 /**

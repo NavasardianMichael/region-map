@@ -1,6 +1,5 @@
 import { type FC, useCallback, useMemo, useRef, useState } from 'react';
 import { ExperimentOutlined, TableOutlined, ThunderboltOutlined } from '@ant-design/icons';
-import { MAX_AI_PARSE_REQUESTS_PER_DAY } from '@regionify/shared';
 import { Button, Tabs } from 'antd';
 import { streamAiGenerate, streamAiParse } from '@/api/ai';
 import {
@@ -39,6 +38,7 @@ type Props = {
   historicalDataImport: boolean;
   remaining: number;
   onRemainingChange: (count: number) => void;
+  maxRequestsPerDay: number;
 };
 
 const hasAnyTimeColumn = (rows: ParsedRow[]): boolean =>
@@ -56,6 +56,7 @@ export const AiParserModal: FC<Props> = ({
   historicalDataImport,
   remaining,
   onRemainingChange,
+  maxRequestsPerDay,
 }) => {
   const { t } = useTypedTranslation();
   const { message: messageApi } = useAppFeedback();
@@ -281,7 +282,7 @@ export const AiParserModal: FC<Props> = ({
         showMessageWithClose(
           messageApi,
           'info',
-          t('messages.timeSeriesDetected', { badgeName: t('badges.items.chronographer.name') }),
+          t('messages.timeSeriesDetected', { badgeName: t('badges.items.explorer.name') }),
         );
       }
       if (outcome.sideEffect === 'warn_no_time_chronographer') {
@@ -330,7 +331,7 @@ export const AiParserModal: FC<Props> = ({
   // ─── Limit note (shared, single source of truth) ───
   const limitNote = t('visualizer.aiParserModal.limitedRequestsNote', {
     count: remaining,
-    max: MAX_AI_PARSE_REQUESTS_PER_DAY,
+    max: maxRequestsPerDay,
   });
   const accuracyNote = t('visualizer.aiParserModal.aiAccuracyNote');
 

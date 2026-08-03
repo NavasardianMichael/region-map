@@ -44,21 +44,21 @@ const allItems: ShowcaseItemDef[] = [
   {
     title: 'Animated GIF',
     description: `Bring your ${name_en} data to life. Import historical time-series data and export a looping animated GIF showing how regional values changed over time.`,
-    badge: 'Chronographer',
+    badge: 'Explorer',
     assetPath: `${BASE}/assets/${slug}/${slug}-animation.gif`,
     assetType: 'gif',
   },
   {
     title: 'MP4 video export',
     description: `Export your ${name_en} time-series map as an MP4 video. Perfect for presentations, reports, and social media posts where motion communicates change more clearly than static images.`,
-    badge: 'Chronographer',
+    badge: 'Explorer',
     assetPath: `${BASE}/assets/${slug}/${slug}-video.mp4`,
     assetType: 'video',
   },
   {
     title: 'Public share page',
     description: `Share your ${name_en} choropleth map with a public link. Anyone with the URL can view the full interactive map — no account or login required.`,
-    badge: 'Explorer',
+    badge: 'Chronographer',
     assetPath: `${BASE}/assets/${slug}/${slug}-embed-page.png`,
     assetType: 'image',
   },
@@ -67,7 +67,7 @@ const allItems: ShowcaseItemDef[] = [
         {
           title: 'Embeddable iframe',
           description: `Embed your ${name_en} choropleth map anywhere with a single line of HTML. The iframe stays live — viewers always see the latest version of your map, no re-publishing needed.`,
-          badge: 'Explorer',
+          badge: 'Chronographer',
           assetPath: embedUrl,
           assetType: 'iframe' as const,
           frameTitle: `Interactive ${name_en} choropleth map — live Regionify embed`,

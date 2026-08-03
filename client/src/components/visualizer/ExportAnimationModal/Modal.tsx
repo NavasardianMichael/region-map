@@ -78,7 +78,7 @@ export const ExportAnimationModal: FC<Props> = ({ open, onClose }) => {
   const regionLabels = useMapStylesStore(selectRegionLabels);
   const labelPositionsByRegionId = useMapStylesStore(selectLabelPositionsByRegionId);
 
-  const watermarkActive = badge === BADGES.observer || picture.showWatermark;
+  const watermarkActive = !limits.watermarkFree || picture.showWatermark;
 
   const defaultQuality = useMemo(
     () =>

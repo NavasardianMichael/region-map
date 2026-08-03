@@ -97,7 +97,7 @@ const zh: CommonNs = {
       {
         question: '支持哪些导出格式？',
         answer:
-          '取决于徽章层级。免费 **Observer** 含 **JPEG** 导出；付费徽章增加 **PNG**、**SVG**、更高画质与高级样式、时间序列；**Chronographer** 还提供 **GIF** 与 **MP4** 动画导出。',
+          '取决于徽章层级。免费 **Observer** 已包含 **JPEG**、**PNG** 与 **PDF** 导出、高级地图与图例样式，以及高分辨率（2K/4K）导出。**探索者**徽章增加 **SVG** 导出、带时间轴的时间序列数据、动画导出（**GIF** 与 **MP4**）以及 AI 数据解析器。**纪时者**徽章包含探索者的全部功能，另加公开嵌入以及更高的每日 AI 请求额度。',
       },
       {
         question: '能把地图嵌入自己的网站吗？',
@@ -165,22 +165,25 @@ const zh: CommonNs = {
       animationExport: '动画导出（GIF 与 MP4）',
       embedMapIframe: '嵌入地图（iframe）',
       publicMapPage: '带地图的公开页面',
-      aiParser: 'AI 数据解析与生成器',
+      aiParser: 'AI 数据解析与生成器（每日最多 {{count}} 次请求）',
     },
     items: {
       observer: {
         name: '观察者（免费）',
-        description: '带水印的 PNG 与 JPEG 全质量导出、核心地图与图例功能，最多 5 个项目。',
+        description:
+          '带水印的 PNG 与 JPEG 全质量导出、高级地图与图例样式、最高 4K 的高分辨率导出，最多 5 个项目。',
         buttonText: '免费徽章',
       },
       explorer: {
         name: '探索者',
-        description: 'PNG、SVG、JPEG 全质量导出，无水印，不限项目，含高级样式。',
+        description:
+          'PNG、SVG、JPEG 全质量导出，无水印，不限项目，含高级样式、时间序列与地图时间轴、GIF/MP4 动画导出，以及 AI 数据解析器（每日最多 5 次请求）。',
         buttonText: '购买探索者（一次性）',
       },
       chronographer: {
         name: '纪时者',
-        description: '另含时间序列导入、时间轴动画导出及按项目可选的公开嵌入。',
+        description:
+          '包含探索者的全部功能，另加每个项目的公开页面与 iframe 嵌入，以及更高的 AI 请求额度（每日最多 10 次）。',
         buttonText: '购买纪时者（一次性）',
       },
     },
