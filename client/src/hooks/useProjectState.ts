@@ -17,14 +17,38 @@ import { useProjectsStore } from '@/store/projects/store';
 import type { ImportDataType } from '@/types/mapData';
 import { IMPORT_DATA_TYPES } from '@/constants/data';
 
+type TimelinePersistSlice = {
+  timelineData: Record<string, DataSet>;
+  timePeriods: string[];
+  activeTimePeriod: string | null;
+};
+
+function hasPersistedTimeline({ timePeriods, timelineData }: TimelinePersistSlice): boolean {
+  return timePeriods.length > 0 && Object.keys(timelineData).length > 0;
+}
+
+/** Optional timeline fields for non–Google-Sheets datasets (animated / historical maps). */
+function timelinePersistFields(
+  timeline: TimelinePersistSlice,
+  include: boolean,
+): Pick<ProjectDataset, 'timelineData' | 'timePeriods' | 'activeTimePeriod'> {
+  if (!include || !hasPersistedTimeline(timeline)) return {};
+  return {
+    timelineData: timeline.timelineData,
+    timePeriods: timeline.timePeriods,
+    activeTimePeriod: timeline.activeTimePeriod,
+  };
+}
+
 /** Persisted dataset: linked Google Sheets only stores the URL; row data is fetched client-side. */
 function buildPersistedDataset(
   importDataType: ImportDataType,
   google: GoogleSheetSource,
   data: DataSet,
+  timeline: TimelinePersistSlice,
 ): ProjectDataset | null {
   const isSheetsLinked = importDataType === IMPORT_DATA_TYPES.sheets && Boolean(google.url);
-  const hasTabularData = data.allIds.length > 0;
+  const hasTabularData = data.allIds.length > 0 || hasPersistedTimeline(timeline);
   if (!hasTabularData && !isSheetsLinked) return null;
 
   return {
@@ -32,6 +56,7 @@ function buildPersistedDataset(
     byId: isSheetsLinked ? {} : data.byId,
     importDataType,
     ...(isSheetsLinked ? { google: { url: google.url as string, gid: google.gid } } : {}),
+    ...timelinePersistFields(timeline, !isSheetsLinked),
   };
 }
 
@@ -40,9 +65,10 @@ function buildSnapshotDataset(
   importDataType: ImportDataType,
   google: GoogleSheetSource,
   data: DataSet,
+  timeline: TimelinePersistSlice,
 ): ProjectDataset | null {
   const isSheetsLinked = importDataType === IMPORT_DATA_TYPES.sheets && Boolean(google.url);
-  const hasTabularData = data.allIds.length > 0;
+  const hasTabularData = data.allIds.length > 0 || hasPersistedTimeline(timeline);
   if (!hasTabularData && !isSheetsLinked) return null;
 
   return {
@@ -50,6 +76,8 @@ function buildSnapshotDataset(
     byId: data.byId,
     importDataType,
     ...(isSheetsLinked ? { google: { url: google.url as string, gid: google.gid } } : {}),
+    // Snapshots include live timeline even for Sheets so dirty-check sees period edits before sync.
+    ...timelinePersistFields(timeline, true),
   };
 }
 
@@ -58,7 +86,15 @@ function buildSnapshotDataset(
  * (all stores combined, actions excluded).
  */
 function buildStateSnapshot(): string {
-  const { selectedCountryId, importDataType, data, google } = useVisualizerStore.getState();
+  const {
+    selectedCountryId,
+    importDataType,
+    data,
+    google,
+    timelineData,
+    timePeriods,
+    activeTimePeriod,
+  } = useVisualizerStore.getState();
   const { border, shadow, zoomControls, viewport, picture, regionLabels, timePeriodLabelOffset } =
     useMapStylesStore.getState();
   const {
@@ -73,7 +109,11 @@ function buildStateSnapshot(): string {
   } = useLegendStylesStore.getState();
   const { items } = useLegendDataStore.getState();
 
-  const dataset = buildSnapshotDataset(importDataType, google, data);
+  const dataset = buildSnapshotDataset(importDataType, google, data, {
+    timelineData,
+    timePeriods,
+    activeTimePeriod,
+  });
 
   const mapStyles: ProjectMapStyles = {
     border,
@@ -116,7 +156,15 @@ function buildStateSnapshot(): string {
 export function getProjectPayload(): ProjectUpdatePayload;
 export function getProjectPayload(name: string): ProjectCreatePayload;
 export function getProjectPayload(name?: string): ProjectCreatePayload | ProjectUpdatePayload {
-  const { selectedCountryId, importDataType, data, google } = useVisualizerStore.getState();
+  const {
+    selectedCountryId,
+    importDataType,
+    data,
+    google,
+    timelineData,
+    timePeriods,
+    activeTimePeriod,
+  } = useVisualizerStore.getState();
   const { border, shadow, zoomControls, viewport, picture, regionLabels, timePeriodLabelOffset } =
     useMapStylesStore.getState();
   const {
@@ -134,7 +182,11 @@ export function getProjectPayload(name?: string): ProjectCreatePayload | Project
 
   const base = {
     countryId: selectedCountryId,
-    dataset: buildPersistedDataset(importDataType, google, data),
+    dataset: buildPersistedDataset(importDataType, google, data, {
+      timelineData,
+      timePeriods,
+      activeTimePeriod,
+    }),
     mapStyles: {
       border,
       shadow,
@@ -184,6 +236,9 @@ export function useHasUnsavedChanges(): boolean {
   const importDataType = useVisualizerStore((s) => s.importDataType);
   const data = useVisualizerStore((s) => s.data);
   const google = useVisualizerStore((s) => s.google);
+  const timelineData = useVisualizerStore((s) => s.timelineData);
+  const timePeriods = useVisualizerStore((s) => s.timePeriods);
+  const activeTimePeriod = useVisualizerStore((s) => s.activeTimePeriod);
   const border = useMapStylesStore((s) => s.border);
   const shadow = useMapStylesStore((s) => s.shadow);
   const zoomControls = useMapStylesStore((s) => s.zoomControls);
@@ -204,7 +259,11 @@ export function useHasUnsavedChanges(): boolean {
   return useMemo(() => {
     if (!savedSnapshot) return false;
 
-    const dataset = buildSnapshotDataset(importDataType, google, data);
+    const dataset = buildSnapshotDataset(importDataType, google, data, {
+      timelineData,
+      timePeriods,
+      activeTimePeriod,
+    });
 
     const currentSnapshot = JSON.stringify({
       countryId: selectedCountryId,
@@ -238,6 +297,9 @@ export function useHasUnsavedChanges(): boolean {
     importDataType,
     data,
     google,
+    timelineData,
+    timePeriods,
+    activeTimePeriod,
     border,
     shadow,
     zoomControls,

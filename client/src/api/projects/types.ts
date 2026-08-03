@@ -1,4 +1,4 @@
-import type { RegionData } from '@/store/mapData/types';
+import type { DataSet, RegionData } from '@/store/mapData/types';
 import type { ImportDataType } from '@/types/mapData';
 
 export type ProjectDataset = {
@@ -11,6 +11,13 @@ export type ProjectDataset = {
     url: string;
     gid: string | null;
   } | null;
+  /**
+   * Historical / animated map periods. Omitted on legacy saves and when Google Sheets
+   * is linked (rows are re-fetched client-side).
+   */
+  timelineData?: Record<string, DataSet>;
+  timePeriods?: string[];
+  activeTimePeriod?: string | null;
 };
 
 export type ProjectMapStyles = {

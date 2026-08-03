@@ -3,7 +3,7 @@ import type { Project } from '@/api/projects/types';
 import { useLegendDataStore } from '@/store/legendData/store';
 import { useLegendStylesStore } from '@/store/legendStyles/store';
 import { useVisualizerStore } from '@/store/mapData/store';
-import type { RegionData } from '@/store/mapData/types';
+import type { DataSet, RegionData } from '@/store/mapData/types';
 import { useMapStylesStore } from '@/store/mapStyles/store';
 import { useProjectsStore } from '@/store/projects/store';
 import { captureStateSnapshot } from '@/hooks/useProjectState';
@@ -24,6 +24,19 @@ function migrateDatasetById(byId: Record<string, RegionData>): Record<string, Re
       }
       return [id, r];
     }),
+  );
+}
+
+function migrateDataSet(ds: DataSet): DataSet {
+  return {
+    allIds: ds.allIds,
+    byId: migrateDatasetById(ds.byId),
+  };
+}
+
+function migrateTimelineData(timelineData: Record<string, DataSet>): Record<string, DataSet> {
+  return Object.fromEntries(
+    Object.entries(timelineData).map(([period, ds]) => [period, migrateDataSet(ds)]),
   );
 }
 
@@ -51,20 +64,48 @@ export function useLoadProject(): (project: Project, options?: LoadProjectOption
     const google = readGoogleFromDataset(project.dataset ?? null);
     const isSheetsSync = importDataType === IMPORT_DATA_TYPES.sheets && Boolean(google.url);
 
+    const emptyData: DataSet = { allIds: [], byId: {} };
+    const flatData = isSheetsSync
+      ? emptyData
+      : project.dataset
+        ? migrateDataSet({ allIds: project.dataset.allIds, byId: project.dataset.byId })
+        : emptyData;
+
+    const savedPeriods = project.dataset?.timePeriods;
+    const savedTimeline = project.dataset?.timelineData;
+    const hasTimeline =
+      !isSheetsSync &&
+      Array.isArray(savedPeriods) &&
+      savedPeriods.length > 0 &&
+      savedTimeline != null &&
+      Object.keys(savedTimeline).length > 0;
+
+    let timelineData: Record<string, DataSet> = {};
+    let timePeriods: string[] = [];
+    let activeTimePeriod: string | null = null;
+    let data = flatData;
+
+    if (hasTimeline) {
+      timelineData = migrateTimelineData(savedTimeline);
+      timePeriods = savedPeriods;
+      const savedActive = project.dataset?.activeTimePeriod ?? null;
+      activeTimePeriod =
+        savedActive && timelineData[savedActive] ? savedActive : (timePeriods[0] ?? null);
+      if (activeTimePeriod && timelineData[activeTimePeriod]) {
+        data = timelineData[activeTimePeriod];
+      }
+    }
+
     // Load country + dataset (Google Sheets: rows come only from /sheets/fetch, not stored JSON)
     setVisualizerState({
       selectedCountryId: (project.countryId as CountryId) ?? null,
       importDataType,
-      data: isSheetsSync
-        ? { allIds: [], byId: {} }
-        : project.dataset
-          ? {
-              allIds: project.dataset.allIds,
-              byId: migrateDatasetById(project.dataset.byId),
-            }
-          : { allIds: [], byId: {} },
+      data,
       google,
       isGoogleSheetSyncLoading: false,
+      timelineData,
+      timePeriods,
+      activeTimePeriod,
     });
 
     // Load map styles (merge with current defaults for safety)
