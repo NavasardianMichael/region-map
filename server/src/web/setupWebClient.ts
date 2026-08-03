@@ -274,6 +274,31 @@ export function setupWebClient(app: Application): void {
     const routeMeta = PAGE_META_MAP[req.path];
     const noindex = isNoIndexPath(req.path);
     const isFaq = req.path === '/faq';
+    const isKnownRoute = req.path === '/' || routeMeta !== undefined || noindex;
+
+    // Unknown path (typo, stale backlink, bot probe, pre-migration URL, ...): serve a real 404
+    // instead of 200'ing homepage meta with a self-referencing canonical — that combination told
+    // crawlers every bad URL was a distinct indexable page duplicating the homepage, which is why
+    // GSC flagged "Duplicate, Google chose different canonical than user" on stray paths.
+    if (!isKnownRoute) {
+      const html = renderHtmlDocument({
+        siteUrl,
+        meta: {
+          documentTitle: 'Page not found | Regionify',
+          description: 'The page you are looking for does not exist or has been moved.',
+          keywords: null,
+          canonicalPath: req.path || '/',
+        },
+        rootInnerHtml: '',
+        entryJs: assets.js,
+        entryCss: assets.css,
+        googleSiteVerification,
+        extraJsonLd: [],
+        robots: 'noindex, nofollow',
+      });
+      res.status(404).setHeader('Content-Type', 'text/html; charset=utf-8').send(html);
+      return;
+    }
 
     const html = renderHtmlDocument({
       siteUrl,
