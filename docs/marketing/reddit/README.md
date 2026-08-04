@@ -19,27 +19,32 @@ docs/marketing/reddit/
 │   ├── 04-mapporn-france-wine.md
 │   ├── 05-webdev-ai-parser.md
 │   └── 06-europeanculture-coffee-vs-tea.md
-└── week-03/
-    ├── 07-dataisbeautiful-animation.md
-    ├── 08-maps-interactive-embed.md
-    └── 09-sideproject-3weeks-lessons.md
+├── week-03/
+│   ├── 07-dataisbeautiful-animation.md
+│   ├── 08-maps-interactive-embed.md
+│   └── 09-sideproject-3weeks-lessons.md
+└── week-04/
+    ├── 10-dataisbeautiful-india-gdp.md
+    └── 11-mapporn-india-gdp.md
 ```
 
 ---
 
 ## The 3-week calendar at a glance
 
-| #   | Week | Day | Subreddit                     | Angle                                                           | Format             |
-| --- | ---- | --- | ----------------------------- | --------------------------------------------------------------- | ------------------ |
-| 01  | 1    | Tue | r/SideProject                 | Launch — generic overview of Regionify, all tiers, all features | Text + hero image  |
-| 02  | 1    | Wed | r/coolguides                  | "Which side of the road every country drives on" (evergreen)    | Image (world map)  |
-| 03  | 1    | Thu | r/dataisbeautiful `[OC]`      | Population density by province — Spain (INE)                    | Image (Spain SVG)  |
-| 04  | 2    | Tue | r/MapPorn `[OC][1920x1080]`   | Wine production by région — France                              | High-res still     |
-| 05  | 2    | Wed | r/webdev                      | Show r/webdev — AI CSV parser + fuzzy region matching           | Text + GIF         |
-| 06  | 2    | Thu | r/EuropeanCulture             | Coffee vs tea consumption by European country (Eurostat)        | Image (Europe SVG) |
-| 07  | 3    | Tue | r/dataisbeautiful `[OC][GIF]` | Animated: EU regional unemployment 2010 → 2024                  | GIF/MP4            |
-| 08  | 3    | Wed | r/Maps                        | Interactive public embed showcase                               | Link + preview     |
-| 09  | 3    | Thu | r/SideProject                 | Follow-up: 3 weeks in — signups, lessons, mistakes              | Text               |
+| #   | Week | Day | Subreddit                     | Angle                                                                          | Format             |
+| --- | ---- | --- | ----------------------------- | ------------------------------------------------------------------------------ | ------------------ |
+| 01  | 1    | Tue | r/SideProject                 | Launch — generic overview of Regionify, all tiers, all features                | Text + hero image  |
+| 02  | 1    | Wed | r/coolguides                  | "Which side of the road every country drives on" (evergreen)                   | Image (world map)  |
+| 03  | 1    | Thu | r/dataisbeautiful `[OC]`      | Population density by province — Spain (INE)                                   | Image (Spain SVG)  |
+| 04  | 2    | Tue | r/MapPorn `[OC][1920x1080]`   | Wine production by région — France                                             | High-res still     |
+| 05  | 2    | Wed | r/webdev                      | Show r/webdev — AI CSV parser + fuzzy region matching                          | Text + GIF         |
+| 06  | 2    | Thu | r/EuropeanCulture             | Coffee vs tea consumption by European country (Eurostat)                       | Image (Europe SVG) |
+| 07  | 3    | Tue | r/dataisbeautiful `[OC][GIF]` | Animated: EU regional unemployment 2010 → 2024                                 | GIF/MP4            |
+| 08  | 3    | Wed | r/Maps                        | Interactive public embed showcase                                              | Link + preview     |
+| 09  | 3    | Thu | r/SideProject                 | Follow-up: 3 weeks in — signups, lessons, mistakes                             | Text               |
+| 10  | 4    | Tue | r/dataisbeautiful `[OC][GIF]` | Animated choropleth map: India GDP per capita, 2001 → 2023 (OECD, TL2 regions) | GIF/MP4            |
+| 11  | 4    | Wed | r/MapPorn `[OC][GIF]`         | Same India GDP per capita animation, aesthetics-first angle                    | GIF/MP4            |
 
 **Rhythm.** 3 posts per week, one per day Tue → Wed → Thu. Fridays and weekends are quiet for B2B; Monday mornings are for lurking + commenting on other people's posts to keep account activity looking natural.
 
@@ -149,6 +154,8 @@ Examples:
 - Post 01 (r/SideProject): `https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=sideproject-01`
 - Post 03 (r/dataisbeautiful): `https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=dataisbeautiful-03`
 - Post 07 (r/dataisbeautiful): `https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=dataisbeautiful-07`
+- Post 10 (r/dataisbeautiful): `https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=dataisbeautiful-10`
+- Post 11 (r/MapPorn): `https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=mapporn-11`
 
 For the public-embed post (08), the URL is the actual embed URL from a Chronographer project — no UTM needed on the embed itself (SSR-served), but do UTM the "Make your own" CTA in the comment.
 

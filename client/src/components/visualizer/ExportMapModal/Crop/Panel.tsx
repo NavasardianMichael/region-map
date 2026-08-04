@@ -6,9 +6,10 @@ const StepAsync = lazy(() => import('./Step').then((m) => ({ default: m.Step }))
 
 type PanelProps = {
   crop: ExportCropState;
+  isExporting: boolean;
 };
 
-export const Panel: FC<PanelProps> = ({ crop }) => (
+export const Panel: FC<PanelProps> = ({ crop, isExporting }) => (
   <Suspense
     fallback={
       <Flex justify="center" align="center" className="h-80">
@@ -16,6 +17,6 @@ export const Panel: FC<PanelProps> = ({ crop }) => (
       </Flex>
     }
   >
-    <StepAsync crop={crop} />
+    <StepAsync crop={crop} isExporting={isExporting} />
   </Suspense>
 );

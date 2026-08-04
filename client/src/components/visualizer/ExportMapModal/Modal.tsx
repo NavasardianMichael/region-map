@@ -53,7 +53,12 @@ export const ExportMapModal: FC<Props> = ({ open, onClose }) => {
         body: bodyClassName,
       }}
     >
-      <Body isCropStep={isCropStep} crop={state.crop} formProps={state} />
+      <Body
+        isCropStep={isCropStep}
+        crop={state.crop}
+        formProps={state}
+        isExporting={state.isExporting}
+      />
     </AppExpandableModal>
   );
 };

@@ -15,9 +15,10 @@ import 'react-advanced-cropper/dist/style.css';
 
 type Props = {
   crop: ExportCropState;
+  isExporting: boolean;
 };
 
-export const Step: FC<Props> = ({ crop }) => {
+export const Step: FC<Props> = ({ crop, isExporting }) => {
   const { t } = useTypedTranslation();
   const {
     cropperRef,
@@ -37,7 +38,7 @@ export const Step: FC<Props> = ({ crop }) => {
     handleHeightChange,
     setSelectedTier,
   } = crop;
-  const isDisabled = isGeneratingPreview;
+  const isDisabled = isGeneratingPreview || isExporting;
 
   const aspectRatioOptions = useMemo(
     () =>
