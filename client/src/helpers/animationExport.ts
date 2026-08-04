@@ -200,6 +200,8 @@ const svgToCanvas = (svgString: string, scale: number): Promise<HTMLCanvasElemen
  * keeps document/intrinsic sizing. Rasterize at getBoundingClientRect × layoutScale so GIF/MP4/crop preview match
  * the map visualization block (legend DOM mapping stays consistent).
  */
+const toEvenPx = (n: number): number => Math.max(2, Math.round(n) & ~1);
+
 const getDisplayedMapSvgPixelSize = (layoutScale: number): { w: number; h: number } | null => {
   if (typeof document === 'undefined') return null;
   const svgEl = document.querySelector<SVGSVGElement>(MAP_SVG_SELECTOR);
@@ -207,8 +209,8 @@ const getDisplayedMapSvgPixelSize = (layoutScale: number): { w: number; h: numbe
   const r = svgEl.getBoundingClientRect();
   if (r.width < 2 || r.height < 2) return null;
   return {
-    w: Math.max(1, Math.round(r.width * layoutScale)),
-    h: Math.max(1, Math.round(r.height * layoutScale)),
+    w: toEvenPx(r.width * layoutScale),
+    h: toEvenPx(r.height * layoutScale),
   };
 };
 
@@ -448,8 +450,9 @@ const compositeAnimationFrameToExportRoot = async (
 
   const rootRect = root.getBoundingClientRect();
   const svgRect = svgEl.getBoundingClientRect();
-  const W = Math.max(1, Math.round(rootRect.width * layoutScale));
-  const H = Math.max(1, Math.round(rootRect.height * layoutScale));
+  // AVC / Mediabunny require even width & height.
+  const W = toEvenPx(rootRect.width * layoutScale);
+  const H = toEvenPx(rootRect.height * layoutScale);
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
@@ -877,14 +880,27 @@ export const exportAnimationAsVideo = async (options: AnimationExportOptions): P
     return finalized;
   };
 
-  const firstCanvas = await renderFinalizedFrame(0);
+  const normalizeEvenCanvas = (source: HTMLCanvasElement): HTMLCanvasElement => {
+    const w = toEvenPx(source.width);
+    const h = toEvenPx(source.height);
+    if (source.width === w && source.height === h) return source;
+    const normalized = document.createElement('canvas');
+    normalized.width = w;
+    normalized.height = h;
+    const nctx = normalized.getContext('2d');
+    if (!nctx) throw new Error('Failed to get canvas context for even-dimension normalize');
+    nctx.drawImage(source, 0, 0, w, h);
+    return normalized;
+  };
+
+  const firstCanvas = normalizeEvenCanvas(await renderFinalizedFrame(0));
   const { width, height } = firstCanvas;
 
   // Pre-render frames first to keep runtime export deterministic.
   const renderedFrames: HTMLCanvasElement[] = [firstCanvas];
   onProgress?.(1 / totalFrames);
   for (let i = 1; i < totalFrames; i++) {
-    const canvas = await renderFinalizedFrame(i);
+    const canvas = normalizeEvenCanvas(await renderFinalizedFrame(i));
     renderedFrames.push(canvas);
     onProgress?.((i + 1) / totalFrames);
   }

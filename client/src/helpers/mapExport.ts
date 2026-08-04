@@ -86,7 +86,9 @@ export const triggerDownload = (blob: Blob, fileName: string): void => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  // Defer revoke so the browser can finish reading the blob. Immediate revoke races with
+  // Playwright's download watcher (and some download managers), producing a 0-byte file.
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 };
 
 const escapeXml = (s: string): string =>

@@ -536,7 +536,8 @@ export function useExportMapModal(_open: boolean, onClose: () => void) {
       }
       message.success(t('messages.mapExportedAs', { format: exportType.toUpperCase() }), 5);
       onClose();
-    } catch {
+    } catch (error) {
+      console.error('Map export failed', error);
       message.error(t('messages.exportFailed'));
     } finally {
       setIsExporting(false);
