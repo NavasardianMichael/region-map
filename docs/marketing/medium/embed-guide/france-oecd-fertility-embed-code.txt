@@ -1,0 +1,7 @@
+<iframe
+  src="https://regionify.pro/embed/5hXkFnq17g7AtLVdYh73LdVeCe_hcPKW"
+  width="100%"
+  height="560"
+  style="border:0"
+  title="Regionify map"
+></iframe>

@@ -21,7 +21,7 @@ Rationale: Same animated-timeline format as post 07 (EU unemployment) — that o
 
 Rule 7: plain, descriptive, no sensationalism. "Choropleth map" is accurate terminology for
 this exact visualization (not a keyword stuffed in) — it's also one of our established SEO
-phrases (see `docs/marketing/linkedin/post.md`, `medium/article.md`), so leading with it here
+phrases (see `docs/marketing/linkedin/post.md`, `medium/embed-guide/embed-guide.md`), so leading with it here
 is both correct and on-brand.
 
 **Primary:**
