@@ -30,6 +30,16 @@
     background-color: rgb(230, 230, 230) !important;
   }
 
+  /* Ant Design doesn't set min-height:0 on splitter panels. Without it, collapsing a
+     sibling panel (e.g. the styles sidebar) can leave the map panel's flex-column
+     descendants without a definite height, so the map SVG's `height: 100%` falls
+     through to its content bounding box instead — producing absurdly tall/narrow
+     PNG/SVG/GIF exports (thousands of px) whenever export runs right after a panel
+     collapse. */
+  .ant-splitter-panel {
+    min-height: 0;
+  }
+
   /* Fix placeholder color contrast for accessibility (WCAG 4.5:1 ratio) */
   .ant-select-placeholder {
     color: #767676 !important;
