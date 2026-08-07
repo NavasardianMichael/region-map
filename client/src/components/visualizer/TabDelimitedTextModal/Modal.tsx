@@ -20,6 +20,7 @@ import { Footer } from './Footer';
 type Props = {
   open: boolean;
   onClose: () => void;
+  onSave?: () => void;
   mapRegionIds: string[];
   historicalDataImport: boolean;
 };
@@ -27,6 +28,7 @@ type Props = {
 export const TabDelimitedTextModal: FC<Props> = ({
   open,
   onClose,
+  onSave,
   mapRegionIds,
   historicalDataImport,
 }) => {
@@ -108,11 +110,21 @@ export const TabDelimitedTextModal: FC<Props> = ({
       }
 
       setVisualizerState({ importDataType: IMPORT_DATA_TYPES.tabDelimited });
+      onSave?.();
       onClose();
     } finally {
       setSaving(false);
     }
-  }, [text, mapRegionIds, historicalDataImport, messageApi, setVisualizerState, onClose, t]);
+  }, [
+    text,
+    mapRegionIds,
+    historicalDataImport,
+    messageApi,
+    setVisualizerState,
+    onSave,
+    onClose,
+    t,
+  ]);
 
   return (
     <AppExpandableModal

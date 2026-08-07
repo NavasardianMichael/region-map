@@ -537,8 +537,9 @@ export const ImportDataPanel: FC = () => {
     }
   }, [modal, hasDataOrTimeline, applySwitchToDynamic, t]);
 
-  /** After the AI Agent modal saves data, offer to redistribute legend ranges to match it. */
-  const handleAiParserSaved = useCallback(() => {
+  /** After any import path commits new data, offer to redistribute legend ranges to match it —
+   * imported values rarely share the same min/max as whatever ranges were already configured. */
+  const offerToNormalizeRanges = useCallback(() => {
     if (!canNormalizeLegendRanges()) return;
     modal.confirm({
       title: t('visualizer.aiParserModal.normalizeRangesPromptTitle'),
@@ -667,6 +668,7 @@ export const ImportDataPanel: FC = () => {
           t('messages.importedRowsPeriods', { count: parsed.length, periods: periodOrder.length }),
         );
         onSuccess?.(timeline);
+        offerToNormalizeRanges();
       } else {
         if (hasTimePeriods && !limits.historicalDataImport) {
           showMessageWithClose(
@@ -687,6 +689,7 @@ export const ImportDataPanel: FC = () => {
           t('messages.importedRegions', { count: parsed.length }),
         );
         onSuccess?.(regionData);
+        offerToNormalizeRanges();
       }
     },
     [
@@ -696,6 +699,7 @@ export const ImportDataPanel: FC = () => {
       setVisualizerState,
       setTimelineData,
       clearTimelineData,
+      offerToNormalizeRanges,
       t,
     ],
   );
@@ -1137,6 +1141,7 @@ export const ImportDataPanel: FC = () => {
           <ManualDataEntryModal
             open={isManualModalOpen}
             onClose={() => setIsManualModalOpen(false)}
+            onSave={offerToNormalizeRanges}
             mapRegionIds={svgTitles}
             historicalDataImport={limits.historicalDataImport}
             googleSheetsSyncReadOnly={isGoogleSheetsLiveSync}
@@ -1160,6 +1165,7 @@ export const ImportDataPanel: FC = () => {
           <TabDelimitedTextModal
             open={isTabDelimitedModalOpen}
             onClose={() => setIsTabDelimitedModalOpen(false)}
+            onSave={offerToNormalizeRanges}
             mapRegionIds={svgTitles}
             historicalDataImport={limits.historicalDataImport}
           />
@@ -1171,7 +1177,7 @@ export const ImportDataPanel: FC = () => {
           <AiParserModal
             open={isAiParserModalOpen}
             onClose={() => setIsAiParserModalOpen(false)}
-            onSave={handleAiParserSaved}
+            onSave={offerToNormalizeRanges}
             mapRegionIds={svgTitles}
             countryName={getRegionDisplayName(selectedCountryId) ?? undefined}
             historicalDataImport={limits.historicalDataImport}

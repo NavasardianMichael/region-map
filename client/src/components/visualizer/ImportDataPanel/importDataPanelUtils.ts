@@ -5,8 +5,15 @@ export const SUCCESS_MESSAGE_DURATION = 5;
 export const FEEDBACK_MESSAGE_DURATION = 5;
 
 /**
- * When every stored region id exists on the loaded map SVG, keep the current dataset
- * (e.g. project just loaded). Otherwise sample data would overwrite saved imports.
+ * When at least one stored region id exists on the loaded map SVG, keep the current
+ * dataset (e.g. project just loaded). Otherwise sample data would overwrite saved imports.
+ *
+ * Deliberately `.some()`, not `.every()` — real imports routinely have regions that
+ * didn't match anything on the map (unmatched names, territories with no data, etc.),
+ * which is normal partial coverage, not a sign that this data belongs to a different
+ * map. Requiring every id to match meant a single unmatched region made this function
+ * return false on every load, so the sample-data generator below would silently
+ * overwrite the rest of a real, saved import with random placeholder values.
  */
 export function storeDataMatchesMapTitles(
   titles: string[],
@@ -17,13 +24,13 @@ export function storeDataMatchesMapTitles(
   if (titles.length === 0) return false;
   const titleSet = new Set(titles);
   if (timePeriods.length > 0) {
-    return timePeriods.every((p) => {
+    return timePeriods.some((p) => {
       const ds = timelineData[p];
-      return ds && ds.allIds.length > 0 && ds.allIds.every((id) => titleSet.has(id));
+      return ds != null && ds.allIds.some((id) => titleSet.has(id));
     });
   }
   if (data.allIds.length === 0) return false;
-  return data.allIds.every((id) => titleSet.has(id));
+  return data.allIds.some((id) => titleSet.has(id));
 }
 
 /** All feedback types auto-hide after 5s; the close control allows early dismissal. */
