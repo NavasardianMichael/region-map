@@ -47,7 +47,11 @@ function AppLayout() {
   const { mainClassName, innerDivClassName } = useMemo(() => {
     if (isEmbedRoute) {
       return {
-        mainClassName: 'min-h-0 min-w-0 w-full grow overflow-hidden bg-gray-100',
+        // White, not the app's usual bg-gray-100 canvas — embed pages are meant to sit
+        // flush inside a host page's own iframe, so the map area should read as blank/white
+        // (matching .embed-shell-main in embed-shell.css) rather than carrying the app chrome's
+        // gray background into someone else's site.
+        mainClassName: 'min-h-0 min-w-0 w-full grow overflow-hidden bg-white',
         innerDivClassName: 'flex h-full min-h-0 w-full min-w-0 flex-col',
       };
     }

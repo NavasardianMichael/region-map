@@ -33,7 +33,7 @@ body.embed-page #root {
   min-height: 0;
   width: 100%;
   overflow: hidden;
-  background-color: #f3f4f6;
+  background-color: #fff;
 }
 
 .embed-shell-header {
