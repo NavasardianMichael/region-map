@@ -27,6 +27,7 @@ import {
   selectViewport,
 } from '@/store/mapStyles/selectors';
 import { useMapStylesStore } from '@/store/mapStyles/store';
+import type { MapViewport } from '@/store/mapStyles/types';
 import { selectUser } from '@/store/profile/selectors';
 import { useProfileStore } from '@/store/profile/store';
 import { LEGEND_POSITIONS } from '@/constants/legendStyles';
@@ -38,7 +39,7 @@ import {
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
 import { badgeRibbonColor, badgeRibbonNameKey } from '@/helpers/badgeRibbonColor';
 import { getLocalizedRegionLabel } from '@/helpers/regionDisplay';
-import { scaleFloatingLegendPosition } from '@/helpers/scaleFloatingLegendPosition';
+import { scaleMapFramePosition } from '@/helpers/scaleMapFramePosition';
 import { MadeWithRegionifyBadge } from '@/components/visualizer/MapViewer/MadeWithRegionifyBadge';
 import { MapBottomLegend } from '@/components/visualizer/MapViewer/MapBottomLegend';
 import { MapFloatingLegend } from '@/components/visualizer/MapViewer/MapFloatingLegend';
@@ -112,6 +113,11 @@ const MapViewer: FC<MapViewerProps> = ({
     key: string;
     position: { x: number; y: number };
   } | null>(null);
+  /** Embed-only: live pan/zoom in iframe pixels; does not overwrite the saved Studio viewport. */
+  const [embedViewportOverride, setEmbedViewportOverride] = useState<{
+    key: string;
+    viewport: MapViewport;
+  } | null>(null);
 
   const { svgContent, isLoading, labelPositionsRef, mapPathStyleOptions } = useMapSvg();
 
@@ -122,6 +128,48 @@ const MapViewer: FC<MapViewerProps> = ({
       setMapStylesState({ timePeriodLabelOffset: { x: 0, y: 0 } });
     }
   }, [labelPositionsRef, setLabelPositionsByRegionId, setMapStylesState, timePeriods.length]);
+
+  /**
+   * The saved viewport's pan is authored in raw pixels against the Studio's map frame
+   * size, which rarely matches an embed iframe's size/aspect — rescale it the same way
+   * {@link embedDisplayFloatingPosition} rescales the floating legend below. Zoom itself
+   * needs no rescaling: it's relative to the CSS-driven base fit, which is already
+   * container-size-agnostic.
+   */
+  const embedViewportOverrideKey = useMemo(
+    () =>
+      `${floatingMapFrameSize?.width ?? 0}:${floatingMapFrameSize?.height ?? 0}:${
+        embedMapFrameSize.width
+      }:${embedMapFrameSize.height}`,
+    [floatingMapFrameSize, embedMapFrameSize.width, embedMapFrameSize.height],
+  );
+
+  const embedDisplayViewport = useMemo((): MapViewport => {
+    if (!flatEmbedChrome) return viewport;
+    if (embedViewportOverride?.key === embedViewportOverrideKey) {
+      return embedViewportOverride.viewport;
+    }
+    const scaledPan = scaleMapFramePosition(viewport.pan, floatingMapFrameSize, embedMapFrameSize);
+    return scaledPan ? { zoom: viewport.zoom, pan: scaledPan } : viewport;
+  }, [
+    flatEmbedChrome,
+    viewport,
+    embedViewportOverride,
+    embedViewportOverrideKey,
+    floatingMapFrameSize,
+    embedMapFrameSize,
+  ]);
+
+  const handleViewportChange = useCallback(
+    (next: MapViewport) => {
+      if (flatEmbedChrome) {
+        setEmbedViewportOverride({ key: embedViewportOverrideKey, viewport: next });
+        return;
+      }
+      setViewport(next);
+    },
+    [flatEmbedChrome, embedViewportOverrideKey, setViewport],
+  );
 
   const {
     isDragging,
@@ -139,8 +187,8 @@ const MapViewer: FC<MapViewerProps> = ({
     containerRef,
     mapTransformRef,
     onResetLabelPositions,
-    initialViewport: viewport,
-    onViewportChange: setViewport,
+    initialViewport: embedDisplayViewport,
+    onViewportChange: handleViewportChange,
     svgContent,
   });
 
@@ -195,7 +243,7 @@ const MapViewer: FC<MapViewerProps> = ({
       floatingSize.height === 'auto' ? embedLegendRenderedSize.height : floatingSize.height;
     const legendSizeForScale =
       legendHeightForScale > 0 ? { width: floatingSize.width, height: legendHeightForScale } : null;
-    const scaled = scaleFloatingLegendPosition(
+    const scaled = scaleMapFramePosition(
       floatingPosition,
       floatingMapFrameSize,
       embedMapFrameSize,

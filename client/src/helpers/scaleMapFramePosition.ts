@@ -1,19 +1,23 @@
 import type { LegendFrameSize } from '@/store/legendStyles/types';
 
-type LegendRenderedSize = { width: number; height: number };
+type AnchoredElementSize = { width: number; height: number };
 
 /**
- * Maps author-time floating legend coordinates (relative to the saved map frame size)
- * to the current map frame size. Returns null when scaling is not possible.
+ * Maps an author-time pixel position (relative to the saved map frame size) to the
+ * current map frame size — used both for the floating legend's saved coordinates and
+ * for the map's own pan offset, since both are authored in the Studio and later
+ * rendered into a differently sized/shaped embed frame. Returns null when scaling is
+ * not possible.
  *
- * When legend size is known, scaling is applied in the available movement space
- * (`frame - legend`) to preserve edge alignment (e.g. bottom-right stays bottom-right).
+ * When the anchored element's size is known, scaling is applied in the available
+ * movement space (`frame - element`) to preserve edge alignment (e.g. bottom-right
+ * stays bottom-right). Omit it for positions with no size of their own (e.g. pan).
  */
-export function scaleFloatingLegendPosition(
+export function scaleMapFramePosition(
   position: { x: number; y: number },
   refFrame: LegendFrameSize | null,
   currentFrame: LegendFrameSize,
-  legendSize?: LegendRenderedSize | null,
+  legendSize?: AnchoredElementSize | null,
 ): { x: number; y: number } | null {
   if (refFrame == null) {
     return null;
