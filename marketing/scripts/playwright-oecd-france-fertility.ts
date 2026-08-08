@@ -48,6 +48,8 @@
 
 import { chromium, type BrowserContext, type Locator, type Page } from 'playwright';
 import { config as loadEnv } from 'dotenv';
+import ffmpegStaticPath from 'ffmpeg-static';
+import { spawn, spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -717,6 +719,55 @@ async function ensureSaneMapExportFrame(page: Page): Promise<void> {
 // random sample values instead. Use `importSingleYearStaticData` (pastes real values
 // with no year column) to get a real static snapshot instead.
 
+/** Prefers a system `ffmpeg` on PATH, falls back to the bundled `ffmpeg-static` binary
+ * (same resolution order as the other marketing scripts' demo-video post-processing). */
+function resolveFfmpegBinary(): string | null {
+  try {
+    const r = spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+    if (r.status === 0) return 'ffmpeg';
+  } catch {
+    // System ffmpeg not on PATH — try bundled binary below.
+  }
+  if (typeof ffmpegStaticPath === 'string' && existsSync(ffmpegStaticPath)) {
+    return ffmpegStaticPath;
+  }
+  return null;
+}
+
+function runFfmpeg(ffmpegBin: string, args: string[]): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(ffmpegBin, args, { stdio: 'ignore' });
+    child.once('error', reject);
+    child.once('close', (code) =>
+      code === 0 ? resolve() : reject(new Error(`ffmpeg exited with code ${code}`)),
+    );
+  });
+}
+
+/**
+ * The real export is ~13 MB at full resolution/frame-rate — too heavy to embed inline in
+ * the article. Re-encode a small palette-optimized copy (narrower width, lower fps) for
+ * that purpose; skip quietly if ffmpeg isn't available anywhere.
+ */
+async function makeCompressedGifPreview(sourcePath: string, destPath: string): Promise<void> {
+  const ffmpegBin = resolveFfmpegBinary();
+  if (!ffmpegBin) {
+    log(
+      '⚠ ffmpeg not found — skipping compressed GIF preview (run node node_modules/ffmpeg-static/install.js)',
+    );
+    return;
+  }
+  await runFfmpeg(ffmpegBin, [
+    '-y',
+    '-i',
+    sourcePath,
+    '-vf',
+    'fps=8,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+    destPath,
+  ]);
+  log('✓ compressed GIF preview generated');
+}
+
 const ANIMATED_EXPORT_QUALITY = 50;
 
 async function exportGif(page: Page): Promise<void> {
@@ -770,6 +821,25 @@ async function exportSvg(page: Page): Promise<void> {
   await (await svgDl).saveAs(join(OUTPUT_DIR, 'france-oecd-fertility.svg'));
   log('✓ SVG exported');
   await closeModal(page);
+}
+
+/**
+ * Rasterizes the actual downloaded SVG file for the article's "static export" visual,
+ * rather than screenshotting the live editor DOM — the editor overlays on-screen-only
+ * chrome (the plan-tier ribbon, panel-collapse arrow) that isn't part of the real export.
+ */
+async function screenshotSvgPreview(
+  context: BrowserContext,
+  svgPath: string,
+  destPath: string,
+): Promise<void> {
+  const svgPage = await context.newPage();
+  await svgPage.setViewportSize({ width: 1600, height: 1000 });
+  await svgPage.goto(`file://${svgPath.replace(/\\/g, '/')}`);
+  await svgPage.waitForTimeout(300);
+  await svgPage.screenshot({ path: destPath });
+  await svgPage.close();
+  log('✓ SVG preview rendered from the real export');
 }
 
 async function saveProject(page: Page): Promise<void> {
@@ -826,9 +896,13 @@ async function setupEmbed(page: Page): Promise<{ url: string; iframeCode: string
 
   log(`✓ embed URL: ${url}`);
 
-  // Embed modal screenshot for the article's Step 3 visual — grabbed before closing,
-  // with the generated iframe code already visible.
-  await modal.screenshot({ path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-embed-modal.png') });
+  // Full-screen (not just the modal element) screenshot for the article's Step 3 visual
+  // — grabbed before closing, with the generated iframe code already visible, so it
+  // shows the modal in context over the actual app rather than a cropped dialog.
+  await page.screenshot({
+    path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-embed-modal.png'),
+    fullPage: true,
+  });
   log('✓ embed modal screenshot saved');
 
   await closeModal(page);
@@ -905,6 +979,10 @@ async function main(): Promise<void> {
     await ensureSaneMapExportFrame(page);
 
     await exportGif(page);
+    await makeCompressedGifPreview(
+      join(OUTPUT_DIR, 'france-oecd-fertility-animation.gif'),
+      join(UI_SCREENSHOTS_DIR, 'oecd-fertility-gif-preview.gif'),
+    );
 
     // Real single-year snapshot for the static export — NOT "Switch to static data",
     // which discards the dataset and fills it with random sample values (see the note
@@ -913,6 +991,11 @@ async function main(): Promise<void> {
     await normalizeRanges(page);
     await ensureSaneMapExportFrame(page);
     await exportSvg(page);
+    await screenshotSvgPreview(
+      context,
+      join(OUTPUT_DIR, 'france-oecd-fertility.svg'),
+      join(UI_SCREENSHOTS_DIR, 'oecd-fertility-svg-preview.png'),
+    );
 
     // Re-import the same OECD data rather than clicking "Switch to dynamic data" —
     // that toggle synthesizes a brand-new random sample timeline when no historical

@@ -88,7 +88,7 @@ Regionify generates the snippet for you:
 
 ```html
 <iframe
-  src="https://regionify.pro/embed/l_9sA5uibnIVuAQ0TECltNMX3ons6qJT"
+  src="https://regionify.pro/embed/J8gJQZw5CYNes20XH1z4k68A_T2aWHqn"
   width="100%"
   height="560"
   style="border:0"
@@ -102,7 +102,7 @@ Copy that snippet into wherever your site accepts raw HTML — a Custom HTML blo
 
 Medium strips raw `<iframe>` tags from published posts, so here's what that snippet actually renders as on a page that allows it — full pan/zoom/hover, timeline included:
 
-[Open the live embed →](https://regionify.pro/embed/l_9sA5uibnIVuAQ0TECltNMX3ons6qJT?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
+[Open the live embed →](https://regionify.pro/embed/J8gJQZw5CYNes20XH1z4k68A_T2aWHqn?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
 
 ![Screenshot of the live public embed page for the France fertility map](oecd-fertility-embed-page.png)
 
@@ -115,10 +115,18 @@ Medium strips raw `<iframe>` tags from published posts, so here's what that snip
 - **It links back.** The "Made with Regionify" watermark on the embed is a live backlink, so every map you publish is simultaneously a widget on your page and a two-way SEO asset.
 - **It works almost anywhere.** Any site that allows `<iframe>` — no map library, no JavaScript bundle, no API keys to manage on your end.
 
+### No live embed? Same map, as SVG or GIF
+
+The Explorer tier exports the identical styled map as a crisp SVG vector or an animated GIF that plays the full 2018–2023 trend — for README files, PDFs, email, or anywhere `<iframe>` isn't welcome:
+
+![Static SVG export of the 2023 fertility rate map](oecd-fertility-svg-preview.png)
+
+![Animated GIF cycling through fertility rate by région, 2018-2023](oecd-fertility-gif-preview.gif)
+
 ### Which tier you need
 
 - **Observer (free)** — static PNG/JPEG/PDF export only. No embed.
-- **Explorer ($49 once)** — adds time-series data import plus SVG and animated GIF/MP4 export, if you ever need a static asset instead of a live embed.
+- **Explorer ($49 once)** — adds time-series data import plus the SVG and animated GIF/MP4 export shown above.
 - **Chronographer ($149 once)** — adds the public iframe embed used above, plus a bigger AI-parser allowance.
 
 ### Try it
@@ -129,19 +137,21 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 ## Media assets — consolidated brief
 
-| #   | Type       | Placement | File (relative to this article)   | Notes                                 |
-| --- | ---------- | --------- | --------------------------------- | ------------------------------------- |
-| 1   | Screenshot | Step 1    | `oecd-fertility-import-panel.png` | Data-import panel, OECD data pasted   |
-| 2   | Screenshot | Step 2    | `oecd-fertility-styled-map.png`   | Styled 2023 map, panels visible       |
-| 3   | Screenshot | Step 3    | `oecd-fertility-embed-modal.png`  | Embed modal, SEO fields + iframe code |
-| 4   | Screenshot | Step 4    | `oecd-fertility-embed-page.png`   | The live public embed page            |
+| #   | Type        | Placement     | File (relative to this article)   | Notes                                           |
+| --- | ----------- | ------------- | --------------------------------- | ----------------------------------------------- |
+| 1   | Screenshot  | Step 1        | `oecd-fertility-import-panel.png` | Data-import panel, OECD data pasted             |
+| 2   | Screenshot  | Step 2        | `oecd-fertility-styled-map.png`   | Styled 2023 map, panels visible                 |
+| 3   | Screenshot  | Step 3        | `oecd-fertility-embed-modal.png`  | Full-screen shot, embed modal open over the app |
+| 4   | Screenshot  | Step 4        | `oecd-fertility-embed-page.png`   | The live public embed page                      |
+| 5   | Image (PNG) | SVG/GIF aside | `oecd-fertility-svg-preview.png`  | Rasterized preview of the real `.svg` export    |
+| 6   | GIF         | SVG/GIF aside | `oecd-fertility-gif-preview.gif`  | Compressed for inline embedding                 |
 
 **Source data:** `docs/marketing/assets/data/oecd-fertility-france.csv` — OECD Regional Database, fertility rate (`FERT_RATIO`, `AGE=Total`), TL2 regions, France, 2018–2023. Fetched live from the OECD SDMX API (`OECD.CFE.EDS:DSD_REG_DEMO@DF_FERTILITY`).
 
-**Raw downloadable deliverables** (not used in this iframe-focused version of the article, but kept for cross-posts or a follow-up "other export formats" piece):
+**Raw downloadable deliverables** (not embedded in the article itself, but kept for cross-posts or a follow-up "download the files" link):
 
 - `docs/marketing/medium/embed-guide/france-oecd-fertility.svg` — full-resolution SVG (~60 KB)
-- `docs/marketing/medium/embed-guide/france-oecd-fertility-animation.gif` — full-quality GIF (~13 MB)
+- `docs/marketing/medium/embed-guide/france-oecd-fertility-animation.gif` — full-quality GIF (~13 MB; the compressed preview above is what belongs in the article)
 - `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-url.txt` — the live embed URL
 - `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-code.txt` — the iframe snippet
 
@@ -151,7 +161,7 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 pnpm --filter @regionify/marketing exec tsx scripts/playwright-oecd-france-fertility.ts
 ```
 
-Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSWORD` (Chronographer-tier account). Re-running creates a **new** project + a **new** public embed URL each time — delete the old "France — OECD Fertility Rate (2018–2023)" project first if you don't want duplicates (Projects page → search → Delete).
+Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSWORD` (Chronographer-tier account), and `ffmpeg` (system PATH or the bundled `ffmpeg-static` dev dependency) for the compressed GIF preview. The script deletes any pre-existing "France — OECD Fertility Rate (2018–2023)" project itself before creating a fresh one, so re-runs don't pile up duplicates.
 
 ---
 
@@ -164,7 +174,8 @@ Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSW
 
 ## Compliance checklist (before Publish)
 
-- [ ] All 4 images inserted at their marked positions, each with alt text
+- [ ] All 6 images inserted at their marked positions, each with alt text
+- [ ] GIF renders inline (not as a static first-frame thumbnail) after Medium upload — verify in preview
 - [ ] Live embed URL tested in an incognito window before publishing
 - [ ] UTM link (`embed-guide`) tested — shows up in analytics
 - [ ] Pricing tier claims verified against current Observer/Explorer/Chronographer config
