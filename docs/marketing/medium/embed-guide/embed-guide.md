@@ -70,7 +70,7 @@ One thing to get right on paste: region ids need to match the map's own labels e
 
 ![Pasting the OECD fertility time series into Regionify's manual data-entry panel](oecd-fertility-import-panel.png)
 
-Because the dataset spans six years (2018–2023), Regionify automatically drops into **time-series mode** — the timeline scrubber above the map appears the moment it detects more than one time period per region. That's not just a Studio convenience: the same historical data carries through to the embed, so what you publish later isn't a frozen single-year map but an animated, interactive one that scrubs through every period right on the page you drop it into.
+Because the dataset spans six years (2018–2023), Regionify automatically drops into **time-series mode** — the timeline scrubber above the map appears the moment it detects more than one time period per region. That's not just a Studio convenience: the same historical data carries through to the embed, so what you publish later isn't a frozen single-year map but an animated, interactive one that scrubs through every period right on the page you drop it into. Compare a [static, single-year embed →](https://regionify.pro/embed/Q3RHUi5wYhzcc2JkKcvUj1IlV9hJs2d4?utm_source=medium&utm_medium=article&utm_campaign=embed-guide) with the [animated, multi-year embed →](https://regionify.pro/embed/Kvuro8aNM7KIDGmDRcGKW5hWURWqylgB?utm_source=medium&utm_medium=article&utm_campaign=embed-guide) used throughout the rest of this walkthrough.
 
 ### Step 2 — Style it
 
@@ -88,7 +88,7 @@ Regionify generates the snippet for you:
 
 ```html
 <iframe
-  src="https://regionify.pro/embed/zTLNufClIFF6EqLJGPiGcV08VldjYTOH"
+  src="https://regionify.pro/embed/Kvuro8aNM7KIDGmDRcGKW5hWURWqylgB"
   width="100%"
   height="560"
   style="border:0"
@@ -102,7 +102,7 @@ Copy that snippet into wherever your site accepts raw HTML — a Custom HTML blo
 
 Medium strips raw `<iframe>` tags from published posts, so here's what that snippet actually renders as on a page that allows it — full pan/zoom/hover, timeline included:
 
-[Open the live embed →](https://regionify.pro/embed/zTLNufClIFF6EqLJGPiGcV08VldjYTOH?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
+[Open the live embed →](https://regionify.pro/embed/Kvuro8aNM7KIDGmDRcGKW5hWURWqylgB?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
 
 ![Screenshot of the live public embed page for the France fertility map](oecd-fertility-embed-page.png)
 
@@ -132,12 +132,13 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 **Source data:** `docs/marketing/assets/data/oecd-fertility-france.csv` — OECD Regional Database, fertility rate (`FERT_RATIO`, `AGE=Total`), TL2 regions, France, 2018–2023. Fetched live from the OECD SDMX API (`OECD.CFE.EDS:DSD_REG_DEMO@DF_FERTILITY`).
 
-**Raw downloadable deliverables** (not used in this iframe-focused version of the article, but kept for cross-posts or a follow-up "other export formats" piece):
+**Two live projects/embeds back this article** — an animated one (full 2018–2023 time series, used in Steps 3–4's code sample and screenshots) and a static one (2023 only, linked from Step 1 for comparison). Raw downloadable deliverables (not used in this iframe-focused version of the article, but kept for cross-posts or a follow-up "other export formats" piece):
 
-- `docs/marketing/medium/embed-guide/france-oecd-fertility.svg` — full-resolution SVG (~60 KB)
-- `docs/marketing/medium/embed-guide/france-oecd-fertility-animation.gif` — full-quality GIF (~13 MB)
-- `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-url.txt` — the live embed URL
-- `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-code.txt` — the iframe snippet
+- `docs/marketing/medium/embed-guide/france-oecd-fertility.svg` — full-resolution SVG (~60 KB), from the static project
+- `docs/marketing/medium/embed-guide/france-oecd-fertility-animation.gif` — full-quality GIF (~13 MB), from the animated project
+- `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-url.txt` — the animated project's live embed URL
+- `docs/marketing/medium/embed-guide/france-oecd-fertility-embed-code.txt` — the animated project's iframe snippet
+- `docs/marketing/medium/embed-guide/france-oecd-fertility-static-embed-url.txt` — the static project's live embed URL
 
 **Regenerating these assets:**
 
@@ -145,7 +146,7 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 pnpm --filter @regionify/marketing exec tsx scripts/playwright-oecd-france-fertility.ts
 ```
 
-Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSWORD` (Chronographer-tier account). The script deletes any pre-existing "France — OECD Fertility Rate (2018–2023)" project itself before creating a fresh one, so re-runs don't pile up duplicates.
+Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSWORD` (Chronographer-tier account). The script itself deletes any pre-existing "France — OECD Fertility Rate (2018–2023)" and "France — OECD Fertility Rate (2023 Snapshot)" projects before creating fresh ones, so re-runs don't pile up duplicates.
 
 ---
 
@@ -159,7 +160,7 @@ Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSW
 ## Compliance checklist (before Publish)
 
 - [ ] All 4 images inserted at their marked positions, each with alt text
-- [ ] Live embed URL tested in an incognito window before publishing
+- [ ] Both live embed URLs (static and animated) tested in an incognito window before publishing
 - [ ] UTM link (`embed-guide`) tested — shows up in analytics
 - [ ] No AI-tone giveaway phrases ("delve", "in the realm of", "furthermore", "it is important to note")
 - [ ] Article read out loud once

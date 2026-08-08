@@ -1,10 +1,11 @@
 /**
  * One-off asset generator for the "embeddable choropleth map" Medium article
- * (docs/marketing/medium/embed-guide.md). Builds a real Regionify project from
+ * (docs/marketing/medium/embed-guide.md). Builds two real Regionify projects from
  * OECD regional fertility data for France's 13 modern régions (2018-2023,
- * fetched from the OECD SDMX API — see docs/marketing/assets/data/oecd-fertility-france.csv),
- * then produces the two "drop-in embed" deliverables the article demonstrates
- * (SVG, animated GIF) plus a live public iframe embed, screenshotting each step.
+ * fetched from the OECD SDMX API — see docs/marketing/assets/data/oecd-fertility-france.csv)
+ * — one with the full time series, one with only the 2023 snapshot — so the article can
+ * link to a live animated embed and a live static embed side by side, screenshotting
+ * each step along the way.
  *
  * Deliberately picks "France (2016 Regions)" (not the default "France" map,
  * which uses the old 22-région split) because the OECD dataset's TL2 region
@@ -21,21 +22,24 @@
  * silently renders as "No Data" with no warning.
  *
  * Steps:
- *   1. /projects/new → pick "France (2016 Regions)"
- *   2. Switch to "Tab delimited text (manual)" import, clear the sample data, paste the
- *      OECD fertility time series, screenshot the pasted data
- *   3. Expand the legend to 5 named ranges (Very Low → Very High), normalize them to
- *      the data's real min/max, title the legend, jump the timeline to 2023, screenshot
- *      the styled product view
- *   4. Export animated GIF (all years) with a transparent background
- *   5. Paste a real, year-less 2023-only snapshot (NOT "Switch to static data" — that
- *      button unconditionally discards the dataset and fills it with random sample
- *      values instead of snapshotting the current frame; see `applySwitchToStatic` in
- *      the app's ImportDataPanel.tsx), re-normalize, export SVG
- *   6. Re-import the full OECD time series (NOT "Switch to dynamic data" — same
- *      destructive-toggle problem in the other direction), save the project, enable
- *      public embed with SEO metadata, screenshot the live embed page, record the
- *      embed URL + code
+ *   Animated project ("France — OECD Fertility Rate (2018–2023)"):
+ *     1. /projects/new → pick "France (2016 Regions)"
+ *     2. Switch to "Tab delimited text (manual)" import, clear the sample data, paste the
+ *        OECD fertility time series, screenshot the pasted data
+ *     3. Expand the legend to 5 named ranges (Very Low → Very High), normalize them to
+ *        the data's real min/max, title the legend, jump the timeline to 2023, screenshot
+ *        the styled product view
+ *     4. Export animated GIF (all years) with a transparent background
+ *     5. Save the project, enable public embed with SEO metadata, screenshot the embed
+ *        setup and the live embed page, record the embed URL + iframe code
+ *   Static project ("France — OECD Fertility Rate (2023 Snapshot)"):
+ *     6. /projects/new → pick "France (2016 Regions)" again
+ *     7. Paste a real, year-less 2023-only snapshot (NOT "Switch to static data" — that
+ *        button unconditionally discards the dataset and fills it with random sample
+ *        values instead of snapshotting the current frame; see `applySwitchToStatic` in
+ *        the app's ImportDataPanel.tsx), style it the same way, export SVG
+ *     8. Save the project, enable public embed with its own SEO metadata, record the
+ *        embed URL
  *
  * Run:
  *   pnpm --filter @regionify/marketing exec tsx scripts/playwright-oecd-france-fertility.ts
@@ -87,10 +91,22 @@ const DATA_CSV_PATH = join(
 );
 
 const COUNTRY_LABEL = 'France (2016 Regions)';
-const PROJECT_NAME = 'France — OECD Fertility Rate (2018–2023)';
 const LEGEND_TITLE = 'Total Fertility Rate';
 const REFERENCE_YEAR = '2023';
 const VIEWPORT = { width: 1600, height: 1000 } as const;
+
+// Two separate saved projects/embeds so the article can link to a static, single-year
+// embed alongside the animated, multi-year one — rather than one project that gets
+// downgraded to static and back, which would leave only one live at a time.
+const ANIMATED_PROJECT_NAME = 'France — OECD Fertility Rate (2018–2023)';
+const ANIMATED_SEO_TITLE = 'France Fertility Rate by Région (2018–2023) — OECD Data | Regionify';
+const ANIMATED_SEO_DESCRIPTION =
+  'Interactive choropleth map of total fertility rate across France’s 13 régions, 2018-2023, sourced from the OECD Regional Database. Pan, zoom, and scrub the timeline.';
+
+const STATIC_PROJECT_NAME = 'France — OECD Fertility Rate (2023 Snapshot)';
+const STATIC_SEO_TITLE = 'France Fertility Rate by Région (2023) — OECD Data | Regionify';
+const STATIC_SEO_DESCRIPTION =
+  'Choropleth map of total fertility rate across France’s 13 régions in 2023, sourced from the OECD Regional Database.';
 
 /** Default legend has 3 bins (Low/Medium/High) — add 2 more so real variation across
  * France's 13 régions doesn't get flattened into three broad buckets, then rename all 5
@@ -211,23 +227,23 @@ async function ensureEnglishProfile(context: BrowserContext): Promise<void> {
 }
 
 /**
- * Deletes a previously-generated "France — OECD Fertility Rate" project, if one exists,
- * so re-running this script to refresh stale screenshots doesn't pile up duplicate
+ * Deletes a previously-generated project with the given name, if one exists, so
+ * re-running this script to refresh stale screenshots doesn't pile up duplicate
  * projects (and duplicate public embed URLs) on the account.
  */
-async function deleteExistingProjectIfPresent(page: Page): Promise<void> {
+async function deleteExistingProjectIfPresent(page: Page, projectName: string): Promise<void> {
   await page.goto(`${BASE_URL}/projects`);
   await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {});
 
   const searchInput = page.getByPlaceholder('Search projects...');
   await searchInput.waitFor({ timeout: 15_000 });
-  await searchInput.fill(PROJECT_NAME);
+  await searchInput.fill(projectName);
   await page.waitForTimeout(500);
 
-  const card = page.locator('.ant-card').filter({ hasText: PROJECT_NAME }).first();
+  const card = page.locator('.ant-card').filter({ hasText: projectName }).first();
   const exists = await card.isVisible({ timeout: 3_000 }).catch(() => false);
   if (!exists) {
-    log('✓ no pre-existing project to delete');
+    log(`✓ no pre-existing "${projectName}" project to delete`);
     return;
   }
 
@@ -236,7 +252,7 @@ async function deleteExistingProjectIfPresent(page: Page): Promise<void> {
   await modal.waitFor({ timeout: 10_000 });
   await modal.getByRole('button', { name: 'Delete' }).click();
   await modal.waitFor({ state: 'hidden', timeout: 15_000 });
-  log(`✓ deleted pre-existing "${PROJECT_NAME}" project`);
+  log(`✓ deleted pre-existing "${projectName}" project`);
 }
 
 // ---------------------------------------------------------------------------
@@ -772,27 +788,27 @@ async function exportSvg(page: Page): Promise<void> {
   await closeModal(page);
 }
 
-/**
- * Rasterizes the actual downloaded SVG file for the article's "static export" visual,
- * rather than screenshotting the live editor DOM — the editor overlays on-screen-only
- * chrome (the plan-tier ribbon, panel-collapse arrow) that isn't part of the real export.
- */
-async function saveProject(page: Page): Promise<void> {
+async function saveProject(page: Page, projectName: string): Promise<void> {
   await page.getByRole('button', { name: 'Save' }).click();
   const modal = page.locator('.ant-modal').filter({ hasText: 'Save Project' });
   await modal.waitFor({ timeout: 10_000 });
 
   const nameInput = modal.locator('[data-i18n-key="visualizer.saveModalPlaceholder"]');
   await nameInput.click({ clickCount: 3 });
-  await nameInput.fill(PROJECT_NAME);
+  await nameInput.fill(projectName);
 
   await page.getByRole('button', { name: 'Create' }).click();
   await page.waitForURL((url) => /\/projects\/[^/]+$/.test(url.pathname), { timeout: 15_000 });
   await page.waitForLoadState('networkidle', { timeout: 15_000 });
-  log(`✓ project saved as "${PROJECT_NAME}"`);
+  log(`✓ project saved as "${projectName}"`);
 }
 
-async function setupEmbed(page: Page): Promise<{ url: string; iframeCode: string }> {
+async function setupEmbed(
+  page: Page,
+  seoTitle: string,
+  seoDescription: string,
+  captureModalScreenshot: boolean,
+): Promise<{ url: string; iframeCode: string }> {
   await page.getByRole('button', { name: 'Embed' }).click();
   const modal = page.locator('.ant-modal:visible').filter({ hasText: 'Public map embed' });
   await modal.waitFor({ timeout: 10_000 });
@@ -801,13 +817,11 @@ async function setupEmbed(page: Page): Promise<{ url: string; iframeCode: string
 
   const titleInput = modal.locator('input#seoTitle');
   await titleInput.clear();
-  await titleInput.fill('France Fertility Rate by Région (2018–2023) — OECD Data | Regionify');
+  await titleInput.fill(seoTitle);
 
   const descInput = modal.locator('textarea#seoDescription');
   await descInput.clear();
-  await descInput.fill(
-    'Interactive choropleth map of total fertility rate across France’s 13 régions, 2018-2023, sourced from the OECD Regional Database. Pan, zoom, and scrub the timeline.',
-  );
+  await descInput.fill(seoDescription);
 
   await switchOn(modal.locator('button#allowedOriginsAllowAll[role="switch"]'));
 
@@ -831,14 +845,16 @@ async function setupEmbed(page: Page): Promise<{ url: string; iframeCode: string
 
   log(`✓ embed URL: ${url}`);
 
-  // Full-screen (not just the modal element) screenshot for the article's Step 3 visual
-  // — grabbed before closing, with the generated iframe code already visible, so it
-  // shows the modal in context over the actual app rather than a cropped dialog.
-  await page.screenshot({
-    path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-embed-modal.png'),
-    fullPage: true,
-  });
-  log('✓ embed modal screenshot saved');
+  if (captureModalScreenshot) {
+    // Full-screen (not just the modal element) screenshot for the article's Step 3
+    // visual — grabbed before closing, with the generated iframe code already visible,
+    // so it shows the modal in context over the actual app rather than a cropped dialog.
+    await page.screenshot({
+      path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-embed-modal.png'),
+      fullPage: true,
+    });
+    log('✓ embed modal screenshot saved');
+  }
 
   await closeModal(page);
   return { url, iframeCode: iframeCode.trim() };
@@ -892,7 +908,8 @@ async function main(): Promise<void> {
   page.on('pageerror', (err) => log(`pageerror: ${err.message}`));
 
   try {
-    await deleteExistingProjectIfPresent(page);
+    // ---- Animated project: full 2018–2023 time series (the walkthrough project) ----
+    await deleteExistingProjectIfPresent(page, ANIMATED_PROJECT_NAME);
     await createProject(page);
     await importOecdData(page, tabDelimitedData);
     await addAndNameRanges(page);
@@ -908,39 +925,54 @@ async function main(): Promise<void> {
     });
     log('✓ styled map screenshot saved');
 
-    // Clean exports: transparent background, panels collapsed.
+    // Clean export: transparent background, panels collapsed.
     await setTransparentBackground(page);
     await closeRightPanel(page);
     await ensureSaneMapExportFrame(page);
-
     await exportGif(page);
 
-    // Real single-year snapshot for the static export — NOT "Switch to static data",
-    // which discards the dataset and fills it with random sample values (see the note
-    // on importSingleYearStaticData).
+    await saveProject(page, ANIMATED_PROJECT_NAME);
+    const { url: animatedUrl, iframeCode } = await setupEmbed(
+      page,
+      ANIMATED_SEO_TITLE,
+      ANIMATED_SEO_DESCRIPTION,
+      true,
+    );
+    await screenshotEmbedPage(context, animatedUrl);
+
+    writeFileSync(join(OUTPUT_DIR, 'france-oecd-fertility-embed-url.txt'), animatedUrl);
+    writeFileSync(join(OUTPUT_DIR, 'france-oecd-fertility-embed-code.txt'), iframeCode);
+
+    // ---- Static project: single 2023 snapshot, no timeline ----
+    // A real year-less paste (NOT "Switch to static data", which discards the dataset
+    // and fills it with random sample values — see the note on importSingleYearStaticData)
+    // into its own separate project, so the static embed stays live independently of the
+    // animated one above rather than the two trading places in a single project.
+    await deleteExistingProjectIfPresent(page, STATIC_PROJECT_NAME);
+    await createProject(page);
     await importSingleYearStaticData(page, buildSingleYearTabDelimited(REFERENCE_YEAR));
+    await addAndNameRanges(page);
     await normalizeRanges(page);
+    await setLegendTitle(page, LEGEND_TITLE);
+
+    await setTransparentBackground(page);
+    await closeRightPanel(page);
     await ensureSaneMapExportFrame(page);
     await exportSvg(page);
 
-    // Re-import the same OECD data rather than clicking "Switch to dynamic data" —
-    // that toggle synthesizes a brand-new random sample timeline when no historical
-    // data is currently loaded (which is exactly the state right after a static-mode
-    // export), silently replacing the real 2018-2023 fertility series with placeholder
-    // numbers before it ever reaches Save/Embed. Re-importing restores the genuine data.
-    await importOecdData(page, tabDelimitedData, false);
-    await normalizeRanges(page);
-    await jumpTimelineToLastFrame(page);
+    await saveProject(page, STATIC_PROJECT_NAME);
+    const { url: staticUrl } = await setupEmbed(
+      page,
+      STATIC_SEO_TITLE,
+      STATIC_SEO_DESCRIPTION,
+      false,
+    );
 
-    await saveProject(page);
-    const { url, iframeCode } = await setupEmbed(page);
-    await screenshotEmbedPage(context, url);
-
-    writeFileSync(join(OUTPUT_DIR, 'france-oecd-fertility-embed-url.txt'), url);
-    writeFileSync(join(OUTPUT_DIR, 'france-oecd-fertility-embed-code.txt'), iframeCode);
+    writeFileSync(join(OUTPUT_DIR, 'france-oecd-fertility-static-embed-url.txt'), staticUrl);
 
     console.log(`\n✅  All done — assets saved to ${OUTPUT_DIR}`);
-    console.log(`    Embed URL: ${url}`);
+    console.log(`    Animated embed URL: ${animatedUrl}`);
+    console.log(`    Static embed URL:   ${staticUrl}`);
   } catch (err) {
     const shotPath = join(OUTPUT_DIR, '_debug-failure.png');
     await page.screenshot({ path: shotPath, fullPage: true }).catch(() => {});
