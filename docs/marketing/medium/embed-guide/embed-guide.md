@@ -88,7 +88,7 @@ Regionify generates the snippet for you:
 
 ```html
 <iframe
-  src="https://regionify.pro/embed/5hXkFnq17g7AtLVdYh73LdVeCe_hcPKW"
+  src="https://regionify.pro/embed/l_9sA5uibnIVuAQ0TECltNMX3ons6qJT"
   width="100%"
   height="560"
   style="border:0"
@@ -102,7 +102,7 @@ Copy that snippet into wherever your site accepts raw HTML — a Custom HTML blo
 
 Medium strips raw `<iframe>` tags from published posts, so here's what that snippet actually renders as on a page that allows it — full pan/zoom/hover, timeline included:
 
-[Open the live embed →](https://regionify.pro/embed/5hXkFnq17g7AtLVdYh73LdVeCe_hcPKW?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
+[Open the live embed →](https://regionify.pro/embed/l_9sA5uibnIVuAQ0TECltNMX3ons6qJT?utm_source=medium&utm_medium=article&utm_campaign=embed-guide)
 
 ![Screenshot of the live public embed page for the France fertility map](oecd-fertility-embed-page.png)
 

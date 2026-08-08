@@ -210,6 +210,35 @@ async function ensureEnglishProfile(context: BrowserContext): Promise<void> {
   }
 }
 
+/**
+ * Deletes a previously-generated "France — OECD Fertility Rate" project, if one exists,
+ * so re-running this script to refresh stale screenshots doesn't pile up duplicate
+ * projects (and duplicate public embed URLs) on the account.
+ */
+async function deleteExistingProjectIfPresent(page: Page): Promise<void> {
+  await page.goto(`${BASE_URL}/projects`);
+  await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {});
+
+  const searchInput = page.getByPlaceholder('Search projects...');
+  await searchInput.waitFor({ timeout: 15_000 });
+  await searchInput.fill(PROJECT_NAME);
+  await page.waitForTimeout(500);
+
+  const card = page.locator('.ant-card').filter({ hasText: PROJECT_NAME }).first();
+  const exists = await card.isVisible({ timeout: 3_000 }).catch(() => false);
+  if (!exists) {
+    log('✓ no pre-existing project to delete');
+    return;
+  }
+
+  await card.getByRole('button', { name: 'Delete' }).click();
+  const modal = page.locator('.ant-modal:visible').filter({ hasText: 'Delete Project' });
+  await modal.waitFor({ timeout: 10_000 });
+  await modal.getByRole('button', { name: 'Delete' }).click();
+  await modal.waitFor({ state: 'hidden', timeout: 15_000 });
+  log(`✓ deleted pre-existing "${PROJECT_NAME}" project`);
+}
+
 // ---------------------------------------------------------------------------
 // Shared UI helpers (adapted from playwright-asset-generator.ts)
 // ---------------------------------------------------------------------------
@@ -224,6 +253,26 @@ async function switchOn(switchEl: Locator): Promise<void> {
   if ((await switchEl.getAttribute('aria-checked')) !== 'true') {
     await switchEl.click();
   }
+}
+
+/**
+ * Every import offers to normalize the legend ranges to the new data's min/max via an
+ * AntD `Modal.confirm` (separate from the regular `.ant-modal` flows above). This script
+ * always normalizes explicitly later via {@link normalizeRanges}, so dismiss the prompt
+ * here — otherwise its `.ant-modal-wrap` overlay lingers and swallows the next click.
+ */
+async function dismissNormalizeRangesPromptIfPresent(page: Page): Promise<void> {
+  const confirmModal = page
+    .locator('.ant-modal-confirm:visible')
+    .filter({ hasText: 'Normalize legend ranges' });
+  const appeared = await confirmModal
+    .waitFor({ state: 'visible', timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!appeared) return;
+  await confirmModal.getByRole('button', { name: 'Cancel' }).click();
+  await confirmModal.waitFor({ state: 'hidden', timeout: 5_000 }).catch(() => {});
+  log('✓ dismissed "normalize ranges?" prompt (normalized explicitly later instead)');
 }
 
 async function closeModal(page: Page): Promise<void> {
@@ -358,9 +407,20 @@ async function pasteTabDelimitedData(page: Page, tabDelimitedData: string): Prom
   const saveBtn = modal.getByRole('button', { name: 'Save' });
   await click(saveBtn);
   await modal.waitFor({ state: 'hidden', timeout: 15_000 }).catch(() => {});
+  await dismissNormalizeRangesPromptIfPresent(page);
 }
 
-async function importOecdData(page: Page, tabDelimitedData: string): Promise<void> {
+/**
+ * `captureScreenshot` defaults to true for the article's Step 1 visual, but must be
+ * turned off for the later re-import (restoring the full time-series before save/embed)
+ * — that call happens right after the SVG export and would otherwise overwrite the
+ * clean Step 1 screenshot with one showing a stray "Map exported as SVG" toast.
+ */
+async function importOecdData(
+  page: Page,
+  tabDelimitedData: string,
+  captureScreenshot = true,
+): Promise<void> {
   const tabDelimitedRadio = page.locator('input[type="radio"][value="tab_delimited"]');
   await tabDelimitedRadio.waitFor({ timeout: 10_000 });
   const tabDelimitedLabel = page
@@ -384,17 +444,20 @@ async function importOecdData(page: Page, tabDelimitedData: string): Promise<voi
   await page.keyboard.press('Control+V');
   await page.waitForTimeout(400);
 
-  // Screenshot the pasted-but-unsaved data for the article's import-step visual.
-  mkdirSync(UI_SCREENSHOTS_DIR, { recursive: true });
-  await page.screenshot({
-    path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-import-panel.png'),
-    fullPage: false,
-  });
-  log('✓ import panel screenshot saved');
+  if (captureScreenshot) {
+    // Screenshot the pasted-but-unsaved data for the article's import-step visual.
+    mkdirSync(UI_SCREENSHOTS_DIR, { recursive: true });
+    await page.screenshot({
+      path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-import-panel.png'),
+      fullPage: false,
+    });
+    log('✓ import panel screenshot saved');
+  }
 
   const saveBtn = modal.getByRole('button', { name: 'Save' });
   await click(saveBtn);
   await modal.waitFor({ state: 'hidden', timeout: 15_000 }).catch(() => {});
+  await dismissNormalizeRangesPromptIfPresent(page);
 
   // Excludes `.ant-color-picker-slider` — on a second import (after legend ranges have
   // already been colored once), leftover color-picker popovers can still match a bare
@@ -762,6 +825,12 @@ async function setupEmbed(page: Page): Promise<{ url: string; iframeCode: string
       .catch(() => '')) ?? '';
 
   log(`✓ embed URL: ${url}`);
+
+  // Embed modal screenshot for the article's Step 3 visual — grabbed before closing,
+  // with the generated iframe code already visible.
+  await modal.screenshot({ path: join(UI_SCREENSHOTS_DIR, 'oecd-fertility-embed-modal.png') });
+  log('✓ embed modal screenshot saved');
+
   await closeModal(page);
   return { url, iframeCode: iframeCode.trim() };
 }
@@ -771,7 +840,7 @@ async function screenshotEmbedPage(context: BrowserContext, embedUrl: string): P
   await embedPage.goto(embedUrl, { waitUntil: 'networkidle', timeout: 30_000 });
   await embedPage.waitForTimeout(4_000);
   await embedPage.screenshot({
-    path: join(OUTPUT_DIR, 'france-oecd-fertility-embed-page.png'),
+    path: join(OUTPUT_DIR, 'oecd-fertility-embed-page.png'),
     fullPage: true,
   });
   await embedPage.close();
@@ -814,6 +883,7 @@ async function main(): Promise<void> {
   page.on('pageerror', (err) => log(`pageerror: ${err.message}`));
 
   try {
+    await deleteExistingProjectIfPresent(page);
     await createProject(page);
     await importOecdData(page, tabDelimitedData);
     await addAndNameRanges(page);
@@ -849,7 +919,7 @@ async function main(): Promise<void> {
     // data is currently loaded (which is exactly the state right after a static-mode
     // export), silently replacing the real 2018-2023 fertility series with placeholder
     // numbers before it ever reaches Save/Embed. Re-importing restores the genuine data.
-    await importOecdData(page, tabDelimitedData);
+    await importOecdData(page, tabDelimitedData, false);
     await normalizeRanges(page);
     await jumpTimelineToLastFrame(page);
 
