@@ -103,7 +103,8 @@ export function createApp(): express.Application {
   // Body parsing (store raw body for Paddle webhook signature verification).
   app.use(
     express.json({
-      limit: '100kb',
+      // Historical / multi-period map datasets easily exceed 100kb once region×year rows are included.
+      limit: '2mb',
       verify: (req: Request, _res, buf: Buffer) => {
         (req as Request & { rawBody?: Buffer }).rawBody = buf;
       },

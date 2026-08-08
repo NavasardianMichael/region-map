@@ -220,6 +220,7 @@ const VisualizerPage: FC = () => {
       type="primary"
       onClick={handleOpenEmbedModal}
       disabled={embedButtonDisabled}
+      loading={isSaving}
       data-i18n-key="visualizer.embed.openButton"
     >
       {embedButtonText}

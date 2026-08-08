@@ -75,23 +75,6 @@ export function useVisualizerPage() {
     setIsExportModalOpen(false);
   }, []);
 
-  const handleOpenEmbedModal = useCallback(() => {
-    if (!canUseEmbed) return;
-    if (!isLoggedIn) {
-      const fullCurrent = captureFullTemporaryProjectState();
-      saveTemporaryProjectState(buildPartialTemporaryState(fullCurrent));
-      saveReturnUrl(window.location.pathname);
-      navigate(ROUTES.LOGIN);
-      return;
-    }
-    if (!currentProjectId) return;
-    setIsEmbedModalOpen(true);
-  }, [canUseEmbed, isLoggedIn, currentProjectId, navigate]);
-
-  const handleCloseEmbedModal = useCallback(() => {
-    setIsEmbedModalOpen(false);
-  }, []);
-
   /**
    * Silently saves an existing project (no modals, no redirects).
    * Returns `true` on success, `false` on failure or when the project hasn't been created yet.
@@ -111,6 +94,36 @@ export function useVisualizerPage() {
       return false;
     }
   }, [currentProjectId, updateProjectInList, setSavedStateSnapshot, message, t]);
+
+  const handleOpenEmbedModal = useCallback(async () => {
+    if (!canUseEmbed) return;
+    if (!isLoggedIn) {
+      const fullCurrent = captureFullTemporaryProjectState();
+      saveTemporaryProjectState(buildPartialTemporaryState(fullCurrent));
+      saveReturnUrl(window.location.pathname);
+      navigate(ROUTES.LOGIN);
+      return;
+    }
+    if (!currentProjectId) return;
+
+    // The public embed page reads the last-saved project row, so unsaved edits
+    // (e.g. freshly imported timeline data) must be persisted before it can open.
+    if (hasUnsavedChanges) {
+      setIsSaving(true);
+      try {
+        const saved = await saveCurrentProject();
+        if (!saved) return;
+      } finally {
+        setIsSaving(false);
+      }
+    }
+
+    setIsEmbedModalOpen(true);
+  }, [canUseEmbed, isLoggedIn, currentProjectId, hasUnsavedChanges, saveCurrentProject, navigate]);
+
+  const handleCloseEmbedModal = useCallback(() => {
+    setIsEmbedModalOpen(false);
+  }, []);
 
   const handleSave = useCallback(async () => {
     if (isFreePlan && !isLoggedIn) {

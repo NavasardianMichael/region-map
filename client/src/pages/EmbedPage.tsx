@@ -5,6 +5,7 @@ import { Flex, Spin, Typography } from 'antd';
 import { fetchPublicEmbedData, PublicEmbedNotFoundError } from '@/api/embed';
 import type { PublicEmbedApiResponse } from '@/api/embed/types';
 import type { Project } from '@/api/projects/types';
+import { useAnimationStore } from '@/store/animation/store';
 import { selectHasTimelineData } from '@/store/mapData/selectors';
 import { useVisualizerStore } from '@/store/mapData/store';
 import { useLoadProject } from '@/hooks/useLoadProject';
@@ -77,6 +78,7 @@ const EmbedPage: FC = () => {
     setLoading(true);
     setEmbedNotFound(false);
     setHasError(false);
+    useAnimationStore.getState().reset();
 
     const run = async () => {
       try {
@@ -111,8 +113,20 @@ const EmbedPage: FC = () => {
 
     return () => {
       cancelled = true;
+      useAnimationStore.getState().reset();
     };
   }, [token, loadProject]);
+
+  // Public embeds should play historical timelines immediately (same motion as preview after Play).
+  useEffect(() => {
+    if (loading || hasError || embedNotFound || !hasTimelineData) return;
+
+    useAnimationStore.getState().play();
+
+    return () => {
+      useAnimationStore.getState().pause();
+    };
+  }, [loading, hasError, embedNotFound, hasTimelineData]);
 
   if (loading) {
     return (
