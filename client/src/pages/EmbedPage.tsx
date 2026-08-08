@@ -60,13 +60,20 @@ const EmbedPage: FC = () => {
     description: string | null;
     showHeader: boolean;
   } | null>(null);
+  /**
+   * Captured once, before React renders anything: true only if SSR already output a
+   * header. Must stay frozen for the component's lifetime — re-querying the DOM on every
+   * render would find the header from this component's OWN prior render (once playback
+   * state or anything else triggers a re-render) and conclude SSR provided it, removing it.
+   */
+  const [ssrHeaderPresent] = useState(() => document.querySelector('.embed-shell-header') !== null);
 
   /** When SSR did not output a header (e.g. SPA shell), render one client-side if the project allows it. */
   const showClientHeader =
     embedMeta !== null &&
     embedMeta.showHeader &&
     (embedMeta.title ?? embedMeta.description) &&
-    !document.querySelector('.embed-shell-header');
+    !ssrHeaderPresent;
 
   useEffect(() => {
     if (!token) {
