@@ -105,7 +105,7 @@ type MatchResult = {
 export const findBestMatch = (
   label: string,
   svgTitles: string[],
-  threshold = 0.6,
+  threshold = 0.75,
 ): MatchResult | null => {
   let bestMatch: MatchResult | null = null;
   let bestScore = 0;
@@ -165,19 +165,50 @@ type MappedRegionData = {
 };
 
 /**
- * Map parsed data rows to region data. Id must exactly match expected region IDs (e.g. from sample).
+ * Map parsed data rows to SVG region ids.
+ *
+ * Two passes: rows are first matched to svg titles by normalized-exact equality
+ * (case/diacritic/whitespace-insensitive); only rows still unmatched after that are
+ * given a similarity-based fallback match. Each svg title can be claimed by at most one
+ * row per call, so two rows can never be remapped onto the same region. A matched row's
+ * `id` is rewritten to the exact svg title string (never a normalized copy), since
+ * rendering looks up data by the raw, unmodified `title` attribute. `label` is left as-is.
  *
  * @param rows - Parsed data rows with id, label and value
- * @param _svgTitles - Unused; kept for API compatibility
+ * @param svgTitles - Candidate region ids/titles from the current map's SVG paths
  * @returns Mapped region data
  */
-export const mapDataToSvgRegions = (
-  rows: ParsedRow[],
-  _svgTitles: string[],
-): MappedRegionData[] => {
-  return rows.map((row) => ({
-    id: row.id,
-    label: row.label,
-    value: row.value,
-  }));
+export const mapDataToSvgRegions = (rows: ParsedRow[], svgTitles: string[]): MappedRegionData[] => {
+  const available = [...svgTitles];
+  const result: MappedRegionData[] = new Array(rows.length);
+  const pendingIndexes: number[] = [];
+
+  const claim = (title: string): void => {
+    const index = available.indexOf(title);
+    if (index !== -1) available.splice(index, 1);
+  };
+
+  rows.forEach((row, index) => {
+    const normalizedId = normalizeText(row.id);
+    const exactTitle = available.find((title) => normalizeText(title) === normalizedId);
+    if (exactTitle) {
+      claim(exactTitle);
+      result[index] = { id: exactTitle, label: row.label, value: row.value };
+    } else {
+      pendingIndexes.push(index);
+    }
+  });
+
+  for (const index of pendingIndexes) {
+    const row = rows[index];
+    const match = findBestMatch(row.id, available);
+    if (match) {
+      claim(match.svgId);
+      result[index] = { id: match.svgId, label: row.label, value: row.value };
+    } else {
+      result[index] = { id: row.id, label: row.label, value: row.value };
+    }
+  }
+
+  return result;
 };

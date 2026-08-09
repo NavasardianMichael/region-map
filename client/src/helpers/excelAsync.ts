@@ -57,7 +57,7 @@ export async function parseExcelBuffer(
     const timeKey = keys.find((key) => TIME_COLUMN_PATTERN.test(String(key)));
 
     const id = idKey ? String(row[idKey] ?? '').trim() : undefined;
-    const label = String(row[labelKey ?? keys[idKey ? 1 : 0]] ?? '');
+    const label = String(row[labelKey ?? keys[idKey ? 1 : 0]] ?? '').trim();
     const value = parseFloat(String(row[valueKey ?? keys[idKey ? 2 : 1]] ?? ''));
     const timePeriod = timeKey ? String(row[timeKey] ?? '') : undefined;
 

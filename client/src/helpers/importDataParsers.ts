@@ -125,7 +125,7 @@ export const parseJSON = (content: string): ParsedRow[] => {
           const rawTime = item.year ?? item.time ?? item.period ?? item.date ?? item.month;
           return {
             id: String(item.id).trim(),
-            label: String(item.label ?? item.region ?? item.name ?? ''),
+            label: String(item.label ?? item.region ?? item.name ?? '').trim(),
             value: Number(item.value ?? item.count ?? 0),
             timePeriod: rawTime !== undefined && rawTime !== null ? String(rawTime) : undefined,
           };

@@ -65,6 +65,9 @@ export const TabDelimitedTextModal: FC<Props> = ({
     }
 
     setSaving(true);
+    // Yield a paint before the synchronous parse + match work below, so the
+    // spinner actually shows instead of being batched away with setSaving(false).
+    await new Promise((resolve) => setTimeout(resolve, 0));
     try {
       const result = parseCSV(trimmed);
       if (typeof result === 'object' && 'error' in result) {
