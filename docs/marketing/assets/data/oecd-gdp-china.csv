@@ -1,0 +1,807 @@
+year,id,label,value
+1999,Anhui,Anhui,2161.4
+1999,Beijing,Beijing,10594.6
+1999,Chongqing,Chongqing,2678.4
+1999,Fujian,Fujian,5099.9
+1999,Gansu,Gansu,1870.8
+1999,Guangdong,Guangdong,6381.9
+1999,Guangxi Zhuang,Guangxi Zhuang,2078.0
+1999,Guizhou,Guizhou,1262.9
+1999,Hainan,Hainan,3119.5
+1999,Hebei,Hebei,3386.4
+1999,Heilongjiang,Heilongjiang,3743.6
+1999,Henan,Henan,2390.1
+1999,Hubei,Hubei,2694.0
+1999,Hunan,Hunan,2436.3
+1999,Jiangsu,Jiangsu,5281.8
+1999,Jiangxi,Jiangxi,2179.6
+1999,Jilin,Jilin,3118.0
+1999,Liaoning,Liaoning,4945.3
+1999,Nei Mongol,Nei Mongol,2898.5
+1999,Ningxia Hui,Ningxia Hui,2423.4
+1999,Quinghai,Quinghai,2345.2
+1999,Shaanxi,Shaanxi,2182.5
+1999,Shandong,Shandong,4178.4
+1999,Shanghai,Shanghai,14099.3
+1999,Shanxi,Shanxi,2589.9
+1999,Sichuan,Sichuan,2117.3
+1999,Tianjin,Tianjin,7728.8
+1999,Xinjiang Uygur,Xinjiang Uygur,3281.0
+1999,Xizang (Tibet),Xizang (Tibet),2072.4
+1999,Yunnan,Yunnan,2259.2
+1999,Zhejiang,Zhejiang,6020.4
+2000,Anhui,Anhui,2243.8
+2000,Beijing,Beijing,12129.0
+2000,Chongqing,Chongqing,2808.6
+2000,Fujian,Fujian,5474.5
+2000,Gansu,Gansu,1996.5
+2000,Guangdong,Guangdong,7124.7
+2000,Guangxi Zhuang,Guangxi Zhuang,2128.2
+2000,Guizhou,Guizhou,1338.7
+2000,Hainan,Hainan,3333.9
+2000,Hebei,Hebei,3677.5
+2000,Heilongjiang,Heilongjiang,4007.6
+2000,Henan,Henan,2595.8
+2000,Hubei,Hubei,2879.2
+2000,Hunan,Hunan,2621.9
+2000,Jiangsu,Jiangsu,5718.5
+2000,Jiangxi,Jiangxi,2283.0
+2000,Jilin,Jilin,3540.5
+2000,Liaoning,Liaoning,5398.0
+2000,Nei Mongol,Nei Mongol,3142.2
+2000,Ningxia Hui,Ningxia Hui,2620.0
+2000,Quinghai,Quinghai,2493.2
+2000,Shaanxi,Shaanxi,2404.4
+2000,Shandong,Shandong,4526.1
+2000,Shanghai,Shanghai,15609.0
+2000,Shanxi,Shanxi,2777.9
+2000,Sichuan,Sichuan,2215.5
+2000,Tianjin,Tianjin,8557.7
+2000,Xinjiang Uygur,Xinjiang Uygur,3706.5
+2000,Xizang (Tibet),Xizang (Tibet),2219.0
+2000,Yunnan,Yunnan,2313.5
+2000,Zhejiang,Zhejiang,6617.5
+2001,Anhui,Anhui,2514.5
+2001,Beijing,Beijing,12828.0
+2001,Chongqing,Chongqing,3274.3
+2001,Fujian,Fujian,5636.1
+2001,Gansu,Gansu,2111.5
+2001,Guangdong,Guangdong,6567.8
+2001,Guangxi Zhuang,Guangxi Zhuang,2263.9
+2001,Guizhou,Guizhou,1423.8
+2001,Hainan,Hainan,3463.9
+2001,Hebei,Hebei,3900.6
+2001,Heilongjiang,Heilongjiang,4202.1
+2001,Henan,Henan,2751.8
+2001,Hubei,Hubei,3243.3
+2001,Hunan,Hunan,2755.6
+2001,Jiangsu,Jiangsu,6090.6
+2001,Jiangxi,Jiangxi,2474.5
+2001,Jilin,Jilin,3730.7
+2001,Liaoning,Liaoning,5676.5
+2001,Nei Mongol,Nei Mongol,3409.5
+2001,Ningxia Hui,Ningxia Hui,2874.2
+2001,Quinghai,Quinghai,2739.4
+2001,Shaanxi,Shaanxi,2603.7
+2001,Shandong,Shandong,4822.2
+2001,Shanghai,Shanghai,15280.2
+2001,Shanxi,Shanxi,2949.5
+2001,Sichuan,Sichuan,2432.5
+2001,Tianjin,Tianjin,9046.9
+2001,Xinjiang Uygur,Xinjiang Uygur,3806.7
+2001,Xizang (Tibet),Xizang (Tibet),2545.3
+2001,Yunnan,Yunnan,2379.2
+2001,Zhejiang,Zhejiang,6955.6
+2002,Anhui,Anhui,2918.1
+2002,Beijing,Beijing,14897.0
+2002,Chongqing,Chongqing,3794.8
+2002,Fujian,Fujian,6020.2
+2002,Gansu,Gansu,2280.0
+2002,Guangdong,Guangdong,7205.6
+2002,Guangxi Zhuang,Guangxi Zhuang,2451.5
+2002,Guizhou,Guizhou,1517.9
+2002,Hainan,Hainan,3749.0
+2002,Hebei,Hebei,3838.2
+2002,Heilongjiang,Heilongjiang,3983.4
+2002,Henan,Henan,2940.8
+2002,Hubei,Hubei,3479.0
+2002,Hunan,Hunan,2933.4
+2002,Jiangsu,Jiangsu,6708.5
+2002,Jiangxi,Jiangxi,2718.7
+2002,Jilin,Jilin,3545.7
+2002,Liaoning,Liaoning,6082.9
+2002,Nei Mongol,Nei Mongol,3813.4
+2002,Ningxia Hui,Ningxia Hui,3088.8
+2002,Quinghai,Quinghai,3016.7
+2002,Shaanxi,Shaanxi,2882.3
+2002,Shandong,Shandong,5196.9
+2002,Shanghai,Shanghai,15845.8
+2002,Shanxi,Shanxi,3305.8
+2002,Sichuan,Sichuan,2729.0
+2002,Tianjin,Tianjin,8962.9
+2002,Xinjiang Uygur,Xinjiang Uygur,3965.1
+2002,Xizang (Tibet),Xizang (Tibet),2831.4
+2002,Yunnan,Yunnan,2549.8
+2002,Zhejiang,Zhejiang,7885.8
+2003,Anhui,Anhui,3187.4
+2003,Beijing,Beijing,16496.5
+2003,Chongqing,Chongqing,4255.2
+2003,Fujian,Fujian,6510.2
+2003,Gansu,Gansu,2516.2
+2003,Guangdong,Guangdong,8130.0
+2003,Guangxi Zhuang,Guangxi Zhuang,2627.1
+2003,Guizhou,Guizhou,1683.8
+2003,Hainan,Hainan,4014.7
+2003,Hebei,Hebei,4266.8
+2003,Heilongjiang,Heilongjiang,4314.7
+2003,Henan,Henan,3274.9
+2003,Hubei,Hubei,3816.1
+2003,Hunan,Hunan,3189.3
+2003,Jiangsu,Jiangsu,7608.0
+2003,Jiangxi,Jiangxi,3015.1
+2003,Jilin,Jilin,3610.6
+2003,Liaoning,Liaoning,6397.5
+2003,Nei Mongol,Nei Mongol,4564.7
+2003,Ningxia Hui,Ningxia Hui,3479.8
+2003,Quinghai,Quinghai,3287.7
+2003,Shaanxi,Shaanxi,3213.6
+2003,Shandong,Shandong,5448.7
+2003,Shanghai,Shanghai,17569.0
+2003,Shanxi,Shanxi,3927.5
+2003,Sichuan,Sichuan,2981.8
+2003,Tianjin,Tianjin,10183.8
+2003,Xinjiang Uygur,Xinjiang Uygur,4454.5
+2003,Xizang (Tibet),Xizang (Tibet),3118.3
+2003,Yunnan,Yunnan,2744.2
+2003,Zhejiang,Zhejiang,9157.2
+2004,Anhui,Anhui,3509.6
+2004,Beijing,Beijing,17846.5
+2004,Chongqing,Chongqing,4668.1
+2004,Fujian,Fujian,6897.7
+2004,Gansu,Gansu,2773.2
+2004,Guangdong,Guangdong,8727.0
+2004,Guangxi Zhuang,Guangxi Zhuang,2880.9
+2004,Guizhou,Guizhou,1800.4
+2004,Hainan,Hainan,4181.8
+2004,Hebei,Hebei,4749.4
+2004,Heilongjiang,Heilongjiang,4616.2
+2004,Henan,Henan,3688.8
+2004,Hubei,Hubei,4148.4
+2004,Hunan,Hunan,3526.4
+2004,Jiangsu,Jiangsu,8396.7
+2004,Jiangxi,Jiangxi,3380.2
+2004,Jilin,Jilin,3862.2
+2004,Liaoning,Liaoning,6538.0
+2004,Nei Mongol,Nei Mongol,5239.9
+2004,Ningxia Hui,Ningxia Hui,3767.9
+2004,Quinghai,Quinghai,3508.0
+2004,Shaanxi,Shaanxi,3637.0
+2004,Shandong,Shandong,6177.8
+2004,Shanghai,Shanghai,18814.6
+2004,Shanxi,Shanxi,4467.2
+2004,Sichuan,Sichuan,3320.7
+2004,Tianjin,Tianjin,10908.0
+2004,Xinjiang Uygur,Xinjiang Uygur,4711.7
+2004,Xizang (Tibet),Xizang (Tibet),3364.4
+2004,Yunnan,Yunnan,3027.3
+2004,Zhejiang,Zhejiang,9935.2
+2005,Anhui,Anhui,3864.8
+2005,Beijing,Beijing,19557.9
+2005,Chongqing,Chongqing,5122.8
+2005,Fujian,Fujian,7509.6
+2005,Gansu,Gansu,3050.1
+2005,Guangdong,Guangdong,9986.5
+2005,Guangxi Zhuang,Guangxi Zhuang,3338.3
+2005,Guizhou,Guizhou,2161.8
+2005,Hainan,Hainan,4442.8
+2005,Hebei,Hebei,5324.7
+2005,Heilongjiang,Heilongjiang,5163.1
+2005,Henan,Henan,4463.8
+2005,Hubei,Hubei,4708.2
+2005,Hunan,Hunan,4186.7
+2005,Jiangsu,Jiangsu,9925.2
+2005,Jiangxi,Jiangxi,3801.2
+2005,Jilin,Jilin,4247.4
+2005,Liaoning,Liaoning,7140.7
+2005,Nei Mongol,Nei Mongol,6086.3
+2005,Ningxia Hui,Ningxia Hui,4044.5
+2005,Quinghai,Quinghai,3825.4
+2005,Shaanxi,Shaanxi,4291.4
+2005,Shandong,Shandong,7156.0
+2005,Shanghai,Shanghai,20414.6
+2005,Shanxi,Shanxi,5038.8
+2005,Sichuan,Sichuan,3642.9
+2005,Tianjin,Tianjin,12609.1
+2005,Xinjiang Uygur,Xinjiang Uygur,5193.7
+2005,Xizang (Tibet),Xizang (Tibet),3621.3
+2005,Yunnan,Yunnan,3277.9
+2005,Zhejiang,Zhejiang,10867.5
+2006,Anhui,Anhui,4266.5
+2006,Beijing,Beijing,21254.6
+2006,Chongqing,Chongqing,5552.4
+2006,Fujian,Fujian,8354.7
+2006,Gansu,Gansu,3456.8
+2006,Guangdong,Guangdong,11040.4
+2006,Guangxi Zhuang,Guangxi Zhuang,3748.0
+2006,Guizhou,Guizhou,2452.7
+2006,Hainan,Hainan,4913.0
+2006,Hebei,Hebei,5825.5
+2006,Heilongjiang,Heilongjiang,5562.4
+2006,Henan,Henan,5033.8
+2006,Hubei,Hubei,5296.1
+2006,Hunan,Hunan,4687.2
+2006,Jiangsu,Jiangsu,11100.3
+2006,Jiangxi,Jiangxi,4324.3
+2006,Jilin,Jilin,4743.4
+2006,Liaoning,Liaoning,7847.6
+2006,Nei Mongol,Nei Mongol,6886.4
+2006,Ningxia Hui,Ningxia Hui,4520.8
+2006,Quinghai,Quinghai,4270.2
+2006,Shaanxi,Shaanxi,4954.8
+2006,Shandong,Shandong,8136.3
+2006,Shanghai,Shanghai,21761.8
+2006,Shanxi,Shanxi,5566.8
+2006,Sichuan,Sichuan,4157.5
+2006,Tianjin,Tianjin,13194.2
+2006,Xinjiang Uygur,Xinjiang Uygur,5747.9
+2006,Xizang (Tibet),Xizang (Tibet),4025.7
+2006,Yunnan,Yunnan,3661.7
+2006,Zhejiang,Zhejiang,12078.3
+2007,Anhui,Anhui,4834.1
+2007,Beijing,Beijing,23440.5
+2007,Chongqing,Chongqing,6289.4
+2007,Fujian,Fujian,9603.4
+2007,Gansu,Gansu,3890.1
+2007,Guangdong,Guangdong,12245.1
+2007,Guangxi Zhuang,Guangxi Zhuang,4266.6
+2007,Guizhou,Guizhou,2906.2
+2007,Hainan,Hainan,5428.1
+2007,Hebei,Hebei,6495.4
+2007,Heilongjiang,Heilongjiang,5930.0
+2007,Henan,Henan,5778.6
+2007,Hubei,Hubei,6168.5
+2007,Hunan,Hunan,5421.2
+2007,Jiangsu,Jiangsu,12502.9
+2007,Jiangxi,Jiangxi,4901.1
+2007,Jilin,Jilin,5545.1
+2007,Liaoning,Liaoning,8878.6
+2007,Nei Mongol,Nei Mongol,7897.6
+2007,Ningxia Hui,Ningxia Hui,5329.2
+2007,Quinghai,Quinghai,4837.8
+2007,Shaanxi,Shaanxi,5667.3
+2007,Shandong,Shandong,8987.7
+2007,Shanghai,Shanghai,23378.9
+2007,Shanxi,Shanxi,6465.5
+2007,Sichuan,Sichuan,4817.9
+2007,Tianjin,Tianjin,13888.9
+2007,Xinjiang Uygur,Xinjiang Uygur,6180.2
+2007,Xizang (Tibet),Xizang (Tibet),4431.5
+2007,Yunnan,Yunnan,4190.0
+2007,Zhejiang,Zhejiang,13433.7
+2008,Anhui,Anhui,5361.2
+2008,Beijing,Beijing,23317.7
+2008,Chongqing,Chongqing,7147.4
+2008,Fujian,Fujian,10356.3
+2008,Gansu,Gansu,4140.9
+2008,Guangdong,Guangdong,12813.9
+2008,Guangxi Zhuang,Guangxi Zhuang,4624.3
+2008,Guizhou,Guizhou,3351.7
+2008,Hainan,Hainan,5969.1
+2008,Hebei,Hebei,6994.6
+2008,Heilongjiang,Heilongjiang,6401.9
+2008,Henan,Henan,6314.1
+2008,Hubei,Hubei,6957.7
+2008,Hunan,Hunan,6099.8
+2008,Jiangsu,Jiangsu,13749.5
+2008,Jiangxi,Jiangxi,5421.5
+2008,Jilin,Jilin,6089.4
+2008,Liaoning,Liaoning,9676.8
+2008,Nei Mongol,Nei Mongol,8821.4
+2008,Ningxia Hui,Ningxia Hui,6335.8
+2008,Quinghai,Quinghai,5569.9
+2008,Shaanxi,Shaanxi,6624.2
+2008,Shandong,Shandong,9896.7
+2008,Shanghai,Shanghai,23583.1
+2008,Shanxi,Shanxi,7259.2
+2008,Sichuan,Sichuan,5397.1
+2008,Tianjin,Tianjin,15233.0
+2008,Xinjiang Uygur,Xinjiang Uygur,6663.4
+2008,Xizang (Tibet),Xizang (Tibet),4709.6
+2008,Yunnan,Yunnan,4572.5
+2008,Zhejiang,Zhejiang,14070.5
+2009,Anhui,Anhui,6129.1
+2009,Beijing,Beijing,24352.5
+2009,Chongqing,Chongqing,8012.2
+2009,Fujian,Fujian,11697.2
+2009,Gansu,Gansu,4405.3
+2009,Guangdong,Guangdong,13484.2
+2009,Guangxi Zhuang,Guangxi Zhuang,5066.5
+2009,Guizhou,Guizhou,3755.4
+2009,Hainan,Hainan,6495.2
+2009,Hebei,Hebei,7504.1
+2009,Heilongjiang,Heilongjiang,6494.7
+2009,Henan,Henan,6830.1
+2009,Hubei,Hubei,7970.4
+2009,Hunan,Hunan,6874.7
+2009,Jiangsu,Jiangsu,15253.9
+2009,Jiangxi,Jiangxi,5926.4
+2009,Jilin,Jilin,6836.9
+2009,Liaoning,Liaoning,10174.2
+2009,Nei Mongol,Nei Mongol,9986.6
+2009,Ningxia Hui,Ningxia Hui,6982.3
+2009,Quinghai,Quinghai,5813.2
+2009,Shaanxi,Shaanxi,7377.2
+2009,Shandong,Shandong,10744.6
+2009,Shanghai,Shanghai,24869.3
+2009,Shanxi,Shanxi,7167.0
+2009,Sichuan,Sichuan,5974.1
+2009,Tianjin,Tianjin,16121.5
+2009,Xinjiang Uygur,Xinjiang Uygur,6748.3
+2009,Xizang (Tibet),Xizang (Tibet),5198.1
+2009,Yunnan,Yunnan,4971.3
+2009,Zhejiang,Zhejiang,14953.3
+2010,Anhui,Anhui,7187.7
+2010,Beijing,Beijing,24974.3
+2010,Chongqing,Chongqing,9016.9
+2010,Fujian,Fujian,13110.3
+2010,Gansu,Gansu,4949.8
+2010,Guangdong,Guangdong,14249.6
+2010,Guangxi Zhuang,Guangxi Zhuang,6005.1
+2010,Guizhou,Guizhou,4186.6
+2010,Hainan,Hainan,7582.8
+2010,Hebei,Hebei,8062.9
+2010,Heilongjiang,Heilongjiang,6992.5
+2010,Henan,Henan,7625.0
+2010,Hubei,Hubei,9147.4
+2010,Hunan,Hunan,7649.0
+2010,Jiangsu,Jiangsu,17031.0
+2010,Jiangxi,Jiangxi,6767.9
+2010,Jilin,Jilin,7525.8
+2010,Liaoning,Liaoning,10245.2
+2010,Nei Mongol,Nei Mongol,10723.3
+2010,Ningxia Hui,Ningxia Hui,8008.3
+2010,Quinghai,Quinghai,6551.7
+2010,Shaanxi,Shaanxi,8484.7
+2010,Shandong,Shandong,11410.5
+2010,Shanghai,Shanghai,25276.9
+2010,Shanxi,Shanxi,8005.9
+2010,Sichuan,Sichuan,6899.0
+2010,Tianjin,Tianjin,17102.9
+2010,Xinjiang Uygur,Xinjiang Uygur,7890.1
+2010,Xizang (Tibet),Xizang (Tibet),5522.7
+2010,Yunnan,Yunnan,5434.1
+2010,Zhejiang,Zhejiang,16277.3
+2011,Anhui,Anhui,8150.7
+2011,Beijing,Beijing,25679.4
+2011,Chongqing,Chongqing,10314.8
+2011,Fujian,Fujian,14157.1
+2011,Gansu,Gansu,5630.8
+2011,Guangdong,Guangdong,14783.9
+2011,Guangxi Zhuang,Guangxi Zhuang,6623.8
+2011,Guizhou,Guizhou,4746.2
+2011,Hainan,Hainan,8353.3
+2011,Hebei,Hebei,8839.0
+2011,Heilongjiang,Heilongjiang,7842.4
+2011,Henan,Henan,8157.1
+2011,Hubei,Hubei,10339.7
+2011,Hunan,Hunan,8579.2
+2011,Jiangsu,Jiangsu,18234.6
+2011,Jiangxi,Jiangxi,7710.9
+2011,Jilin,Jilin,8489.8
+2011,Liaoning,Liaoning,11151.1
+2011,Nei Mongol,Nei Mongol,11456.0
+2011,Ningxia Hui,Ningxia Hui,8902.2
+2011,Quinghai,Quinghai,7196.2
+2011,Shaanxi,Shaanxi,9634.3
+2011,Shandong,Shandong,12069.9
+2011,Shanghai,Shanghai,25500.8
+2011,Shanxi,Shanxi,9096.4
+2011,Sichuan,Sichuan,7781.5
+2011,Tianjin,Tianjin,18093.0
+2011,Xinjiang Uygur,Xinjiang Uygur,8743.4
+2011,Xizang (Tibet),Xizang (Tibet),5915.1
+2011,Yunnan,Yunnan,6160.0
+2011,Zhejiang,Zhejiang,17101.3
+2012,Anhui,Anhui,8952.7
+2012,Beijing,Beijing,27076.0
+2012,Chongqing,Chongqing,11402.3
+2012,Fujian,Fujian,15353.8
+2012,Gansu,Gansu,6166.7
+2012,Guangdong,Guangdong,15119.2
+2012,Guangxi Zhuang,Guangxi Zhuang,7042.1
+2012,Guizhou,Guizhou,5473.3
+2012,Hainan,Hainan,9047.9
+2012,Hebei,Hebei,9279.6
+2012,Heilongjiang,Heilongjiang,8625.0
+2012,Henan,Henan,8711.0
+2012,Hubei,Hubei,11400.1
+2012,Hunan,Hunan,9386.6
+2012,Jiangsu,Jiangsu,19354.3
+2012,Jiangxi,Jiangxi,8322.4
+2012,Jilin,Jilin,9411.5
+2012,Liaoning,Liaoning,11913.5
+2012,Nei Mongol,Nei Mongol,12414.6
+2012,Ningxia Hui,Ningxia Hui,9433.0
+2012,Quinghai,Quinghai,7794.4
+2012,Shaanxi,Shaanxi,10865.9
+2012,Shandong,Shandong,12908.6
+2012,Shanghai,Shanghai,26097.8
+2012,Shanxi,Shanxi,9578.6
+2012,Sichuan,Sichuan,8615.1
+2012,Tianjin,Tianjin,19181.6
+2012,Xinjiang Uygur,Xinjiang Uygur,9570.8
+2012,Xizang (Tibet),Xizang (Tibet),6582.1
+2012,Yunnan,Yunnan,6994.9
+2012,Zhejiang,Zhejiang,17690.8
+2013,Anhui,Anhui,9803.5
+2013,Beijing,Beijing,28759.4
+2013,Chongqing,Chongqing,12391.1
+2013,Fujian,Fujian,16530.5
+2013,Gansu,Gansu,6766.4
+2013,Guangdong,Guangdong,15898.9
+2013,Guangxi Zhuang,Guangxi Zhuang,7532.6
+2013,Guizhou,Guizhou,6252.0
+2013,Hainan,Hainan,9780.9
+2013,Hebei,Hebei,9508.9
+2013,Heilongjiang,Heilongjiang,9212.2
+2013,Henan,Henan,9283.1
+2013,Hubei,Hubei,12530.6
+2013,Hunan,Hunan,10183.8
+2013,Jiangsu,Jiangsu,20756.9
+2013,Jiangxi,Jiangxi,9087.4
+2013,Jilin,Jilin,10121.2
+2013,Liaoning,Liaoning,12576.9
+2013,Nei Mongol,Nei Mongol,13261.7
+2013,Ningxia Hui,Ningxia Hui,9979.3
+2013,Quinghai,Quinghai,8544.7
+2013,Shaanxi,Shaanxi,11899.1
+2013,Shandong,Shandong,13858.0
+2013,Shanghai,Shanghai,27333.6
+2013,Shanxi,Shanxi,9676.7
+2013,Sichuan,Sichuan,9308.3
+2013,Tianjin,Tianjin,20081.4
+2013,Xinjiang Uygur,Xinjiang Uygur,10476.9
+2013,Xizang (Tibet),Xizang (Tibet),7449.6
+2013,Yunnan,Yunnan,7888.5
+2013,Zhejiang,Zhejiang,18474.9
+2014,Anhui,Anhui,10603.2
+2014,Beijing,Beijing,30181.4
+2014,Chongqing,Chongqing,13618.4
+2014,Fujian,Fujian,17843.4
+2014,Gansu,Gansu,7279.2
+2014,Guangdong,Guangdong,16834.0
+2014,Guangxi Zhuang,Guangxi Zhuang,8073.1
+2014,Guizhou,Guizhou,7027.1
+2014,Hainan,Hainan,10514.2
+2014,Hebei,Hebei,9731.9
+2014,Heilongjiang,Heilongjiang,9518.1
+2014,Henan,Henan,9972.8
+2014,Hubei,Hubei,13764.4
+2014,Hunan,Hunan,11059.6
+2014,Jiangsu,Jiangsu,22226.0
+2014,Jiangxi,Jiangxi,9837.6
+2014,Jilin,Jilin,10599.8
+2014,Liaoning,Liaoning,12997.2
+2014,Nei Mongol,Nei Mongol,14045.5
+2014,Ningxia Hui,Ningxia Hui,10314.6
+2014,Quinghai,Quinghai,9047.0
+2014,Shaanxi,Shaanxi,12806.6
+2014,Shandong,Shandong,14607.4
+2014,Shanghai,Shanghai,29249.0
+2014,Shanxi,Shanxi,9694.5
+2014,Sichuan,Sichuan,10024.2
+2014,Tianjin,Tianjin,20904.7
+2014,Xinjiang Uygur,Xinjiang Uygur,11236.1
+2014,Xizang (Tibet),Xizang (Tibet),8164.5
+2014,Yunnan,Yunnan,8526.0
+2014,Zhejiang,Zhejiang,19224.3
+2015,Anhui,Anhui,11153.2
+2015,Beijing,Beijing,33041.1
+2015,Chongqing,Chongqing,14749.1
+2015,Fujian,Fujian,19033.6
+2015,Gansu,Gansu,7477.0
+2015,Guangdong,Guangdong,18029.3
+2015,Guangxi Zhuang,Guangxi Zhuang,8675.4
+2015,Guizhou,Guizhou,8153.3
+2015,Hainan,Hainan,11115.5
+2015,Hebei,Hebei,10111.0
+2015,Heilongjiang,Heilongjiang,9460.8
+2015,Henan,Henan,10533.4
+2015,Hubei,Hubei,14554.5
+2015,Hunan,Hunan,12094.8
+2015,Jiangsu,Jiangsu,24003.8
+2015,Jiangxi,Jiangxi,10544.8
+2015,Jilin,Jilin,10800.3
+2015,Liaoning,Liaoning,13223.7
+2015,Nei Mongol,Nei Mongol,14866.3
+2015,Ningxia Hui,Ningxia Hui,10736.9
+2015,Quinghai,Quinghai,9886.6
+2015,Shaanxi,Shaanxi,13132.3
+2015,Shandong,Shandong,15806.6
+2015,Shanghai,Shanghai,31431.1
+2015,Shanxi,Shanxi,9497.9
+2015,Sichuan,Sichuan,10445.2
+2015,Tianjin,Tianjin,21013.3
+2015,Xinjiang Uygur,Xinjiang Uygur,11114.2
+2015,Xizang (Tibet),Xizang (Tibet),8950.0
+2015,Yunnan,Yunnan,9146.3
+2015,Zhejiang,Zhejiang,20517.9
+2016,Anhui,Anhui,12164.9
+2016,Beijing,Beijing,35478.3
+2016,Chongqing,Chongqing,16087.6
+2016,Fujian,Fujian,20591.5
+2016,Gansu,Gansu,7831.5
+2016,Guangdong,Guangdong,19200.0
+2016,Guangxi Zhuang,Guangxi Zhuang,9255.9
+2016,Guizhou,Guizhou,8841.6
+2016,Hainan,Hainan,11877.6
+2016,Hebei,Hebei,10723.0
+2016,Heilongjiang,Heilongjiang,9711.0
+2016,Henan,Henan,11249.0
+2016,Hubei,Hubei,15712.3
+2016,Hunan,Hunan,12906.4
+2016,Jiangsu,Jiangsu,25570.4
+2016,Jiangxi,Jiangxi,11426.7
+2016,Jilin,Jilin,11311.2
+2016,Liaoning,Liaoning,13183.5
+2016,Nei Mongol,Nei Mongol,15601.6
+2016,Ningxia Hui,Ningxia Hui,11242.2
+2016,Quinghai,Quinghai,10872.0
+2016,Shaanxi,Shaanxi,13680.8
+2016,Shandong,Shandong,16392.9
+2016,Shanghai,Shanghai,34369.5
+2016,Shanxi,Shanxi,9475.9
+2016,Sichuan,Sichuan,11243.8
+2016,Tianjin,Tianjin,21798.5
+2016,Xinjiang Uygur,Xinjiang Uygur,11181.1
+2016,Xizang (Tibet),Xizang (Tibet),9643.8
+2016,Yunnan,Yunnan,9820.8
+2016,Zhejiang,Zhejiang,21690.1
+2017,Anhui,Anhui,13091.3
+2017,Beijing,Beijing,37561.1
+2017,Chongqing,Chongqing,16953.0
+2017,Fujian,Fujian,22283.1
+2017,Gansu,Gansu,7972.0
+2017,Guangdong,Guangdong,20152.2
+2017,Guangxi Zhuang,Guangxi Zhuang,9688.5
+2017,Guizhou,Guizhou,9731.0
+2017,Hainan,Hainan,12322.3
+2017,Hebei,Hebei,11030.4
+2017,Heilongjiang,Heilongjiang,9798.0
+2017,Henan,Henan,11933.4
+2017,Hubei,Hubei,16764.6
+2017,Hunan,Hunan,13535.3
+2017,Jiangsu,Jiangsu,27020.0
+2017,Jiangxi,Jiangxi,11953.7
+2017,Jilin,Jilin,11542.4
+2017,Liaoning,Liaoning,13486.3
+2017,Nei Mongol,Nei Mongol,16229.6
+2017,Ningxia Hui,Ningxia Hui,12207.9
+2017,Quinghai,Quinghai,11299.4
+2017,Shaanxi,Shaanxi,14673.8
+2017,Shandong,Shandong,16770.3
+2017,Shanghai,Shanghai,36674.4
+2017,Shanxi,Shanxi,11001.8
+2017,Sichuan,Sichuan,12224.3
+2017,Tianjin,Tianjin,23262.5
+2017,Xinjiang Uygur,Xinjiang Uygur,12157.2
+2017,Xizang (Tibet),Xizang (Tibet),10409.7
+2017,Yunnan,Yunnan,10574.7
+2017,Zhejiang,Zhejiang,22655.2
+2018,Anhui,Anhui,14384.4
+2018,Beijing,Beijing,40781.5
+2018,Chongqing,Chongqing,17576.1
+2018,Fujian,Fujian,24286.8
+2018,Gansu,Gansu,8455.7
+2018,Guangdong,Guangdong,20975.5
+2018,Guangxi Zhuang,Guangxi Zhuang,10253.6
+2018,Guizhou,Guizhou,10567.6
+2018,Hainan,Hainan,12955.7
+2018,Hebei,Hebei,11279.7
+2018,Heilongjiang,Heilongjiang,10091.3
+2018,Henan,Henan,12957.6
+2018,Hubei,Hubei,18229.0
+2018,Hunan,Hunan,14035.4
+2018,Jiangsu,Jiangsu,28131.7
+2018,Jiangxi,Jiangxi,12966.4
+2018,Jilin,Jilin,11706.1
+2018,Liaoning,Liaoning,14286.9
+2018,Nei Mongol,Nei Mongol,17060.6
+2018,Ningxia Hui,Ningxia Hui,12821.4
+2018,Quinghai,Quinghai,12126.7
+2018,Shaanxi,Shaanxi,15751.4
+2018,Shandong,Shandong,17121.8
+2018,Shanghai,Shanghai,38797.1
+2018,Shanxi,Shanxi,11726.7
+2018,Sichuan,Sichuan,13302.7
+2018,Tianjin,Tianjin,24653.6
+2018,Xinjiang Uygur,Xinjiang Uygur,13226.4
+2018,Xizang (Tibet),Xizang (Tibet),11372.4
+2018,Yunnan,Yunnan,11583.4
+2018,Zhejiang,Zhejiang,24038.2
+2019,Anhui,Anhui,15487.6
+2019,Beijing,Beijing,43291.3
+2019,Chongqing,Chongqing,18654.0
+2019,Fujian,Fujian,25776.4
+2019,Gansu,Gansu,9058.1
+2019,Guangdong,Guangdong,22204.5
+2019,Guangxi Zhuang,Guangxi Zhuang,10753.6
+2019,Guizhou,Guizhou,11254.6
+2019,Hainan,Hainan,13730.2
+2019,Hebei,Hebei,12008.5
+2019,Heilongjiang,Heilongjiang,10768.2
+2019,Henan,Henan,13625.3
+2019,Hubei,Hubei,19295.3
+2019,Hunan,Hunan,15096.3
+2019,Jiangsu,Jiangsu,29593.1
+2019,Jiangxi,Jiangxi,13743.5
+2019,Jilin,Jilin,12253.7
+2019,Liaoning,Liaoning,15064.3
+2019,Nei Mongol,Nei Mongol,18169.4
+2019,Ningxia Hui,Ningxia Hui,13449.7
+2019,Quinghai,Quinghai,12850.4
+2019,Shaanxi,Shaanxi,16685.4
+2019,Shandong,Shandong,17890.9
+2019,Shanghai,Shanghai,40717.1
+2019,Shanxi,Shanxi,12426.8
+2019,Sichuan,Sichuan,14179.0
+2019,Tianjin,Tianjin,25551.4
+2019,Xinjiang Uygur,Xinjiang Uygur,13758.2
+2019,Xizang (Tibet),Xizang (Tibet),12171.3
+2019,Yunnan,Yunnan,12728.5
+2019,Zhejiang,Zhejiang,25450.7
+2020,Anhui,Anhui,15760.8
+2020,Beijing,Beijing,43813.4
+2020,Chongqing,Chongqing,19528.1
+2020,Fujian,Fujian,26149.1
+2020,Gansu,Gansu,9285.3
+2020,Guangdong,Guangdong,22436.2
+2020,Guangxi Zhuang,Guangxi Zhuang,11042.8
+2020,Guizhou,Guizhou,11820.5
+2020,Hainan,Hainan,13883.9
+2020,Hebei,Hebei,12288.0
+2020,Heilongjiang,Heilongjiang,10997.3
+2020,Henan,Henan,13570.8
+2020,Hubei,Hubei,18651.2
+2020,Hunan,Hunan,15628.8
+2020,Jiangsu,Jiangsu,30725.7
+2020,Jiangxi,Jiangxi,14235.0
+2020,Jilin,Jilin,12978.2
+2020,Liaoning,Liaoning,15126.1
+2020,Nei Mongol,Nei Mongol,18267.9
+2020,Ningxia Hui,Ningxia Hui,13944.1
+2020,Quinghai,Quinghai,12939.9
+2020,Shaanxi,Shaanxi,16561.9
+2020,Shandong,Shandong,18220.5
+2020,Shanghai,Shanghai,41651.9
+2020,Shanxi,Shanxi,12991.6
+2020,Sichuan,Sichuan,14712.9
+2020,Tianjin,Tianjin,25556.7
+2020,Xinjiang Uygur,Xinjiang Uygur,13716.3
+2020,Xizang (Tibet),Xizang (Tibet),13315.3
+2020,Yunnan,Yunnan,13300.7
+2020,Zhejiang,Zhejiang,25865.5
+2021,Anhui,Anhui,16792.2
+2021,Beijing,Beijing,48251.6
+2021,Chongqing,Chongqing,20829.2
+2021,Fujian,Fujian,28213.6
+2021,Gansu,Gansu,10145.9
+2021,Guangdong,Guangdong,23953.8
+2021,Guangxi Zhuang,Guangxi Zhuang,11967.5
+2021,Guizhou,Guizhou,12316.5
+2021,Hainan,Hainan,15197.2
+2021,Hebei,Hebei,13175.6
+2021,Heilongjiang,Heilongjiang,11654.5
+2021,Henan,Henan,13929.9
+2021,Hubei,Hubei,20463.0
+2021,Hunan,Hunan,16454.2
+2021,Jiangsu,Jiangsu,33560.8
+2021,Jiangxi,Jiangxi,15731.9
+2021,Jilin,Jilin,13468.1
+2021,Liaoning,Liaoning,16033.3
+2021,Nei Mongol,Nei Mongol,21418.8
+2021,Ningxia Hui,Ningxia Hui,15328.9
+2021,Quinghai,Quinghai,13817.3
+2021,Shaanxi,Shaanxi,18356.4
+2021,Shandong,Shandong,19866.7
+2021,Shanghai,Shanghai,45027.6
+2021,Shanxi,Shanxi,15800.1
+2021,Sichuan,Sichuan,15682.9
+2021,Tianjin,Tianjin,27914.5
+2021,Xinjiang Uygur,Xinjiang Uygur,15446.0
+2021,Xizang (Tibet),Xizang (Tibet),13958.0
+2021,Yunnan,Yunnan,14165.0
+2021,Zhejiang,Zhejiang,27954.0
+2022,Anhui,Anhui,17359.6
+2022,Beijing,Beijing,48376.7
+2022,Chongqing,Chongqing,20921.5
+2022,Fujian,Fujian,29064.5
+2022,Gansu,Gansu,10831.9
+2022,Guangdong,Guangdong,24466.7
+2022,Guangxi Zhuang,Guangxi Zhuang,12230.1
+2022,Guizhou,Guizhou,12469.1
+2022,Hainan,Hainan,15726.0
+2022,Hebei,Hebei,13601.9
+2022,Heilongjiang,Heilongjiang,12333.2
+2022,Henan,Henan,13917.5
+2022,Hubei,Hubei,21366.6
+2022,Hunan,Hunan,16966.4
+2022,Jiangsu,Jiangsu,34177.8
+2022,Jiangxi,Jiangxi,16288.4
+2022,Jilin,Jilin,13056.2
+2022,Liaoning,Liaoning,16555.2
+2022,Nei Mongol,Nei Mongol,23154.9
+2022,Ningxia Hui,Ningxia Hui,16585.8
+2022,Quinghai,Quinghai,14439.7
+2022,Shaanxi,Shaanxi,19510.2
+2022,Shandong,Shandong,20579.3
+2022,Shanghai,Shanghai,45872.0
+2022,Shanxi,Shanxi,17217.6
+2022,Sichuan,Sichuan,16073.0
+2022,Tianjin,Tianjin,28434.6
+2022,Xinjiang Uygur,Xinjiang Uygur,16753.1
+2022,Xizang (Tibet),Xizang (Tibet),14347.9
+2022,Yunnan,Yunnan,14587.1
+2022,Zhejiang,Zhejiang,28691.8
+2023,Anhui,Anhui,18501.8
+2023,Beijing,Beijing,50868.2
+2023,Chongqing,Chongqing,22528.9
+2023,Fujian,Fujian,30764.4
+2023,Gansu,Gansu,11760.9
+2023,Guangdong,Guangdong,25486.8
+2023,Guangxi Zhuang,Guangxi Zhuang,12846.7
+2023,Guizhou,Guizhou,13071.0
+2023,Hainan,Hainan,17088.8
+2023,Hebei,Hebei,14503.0
+2023,Heilongjiang,Heilongjiang,12631.3
+2023,Henan,Henan,14505.2
+2023,Hubei,Hubei,22844.6
+2023,Hunan,Hunan,18115.0
+2023,Jiangsu,Jiangsu,36059.3
+2023,Jiangxi,Jiangxi,16995.3
+2023,Jilin,Jilin,13997.8
+2023,Liaoning,Liaoning,17625.7
+2023,Nei Mongol,Nei Mongol,24521.7
+2023,Ningxia Hui,Ningxia Hui,17293.9
+2023,Quinghai,Quinghai,15216.9
+2023,Shaanxi,Shaanxi,20188.5
+2023,Shandong,Shandong,21853.1
+2023,Shanghai,Shanghai,48536.4
+2023,Shanxi,Shanxi,17649.6
+2023,Sichuan,Sichuan,17217.1
+2023,Tianjin,Tianjin,29631.5
+2023,Xinjiang Uygur,Xinjiang Uygur,17718.7
+2023,Xizang (Tibet),Xizang (Tibet),16295.5
+2023,Yunnan,Yunnan,15374.8
+2023,Zhejiang,Zhejiang,30338.8
+2024,Anhui,Anhui,19585.0
+2024,Beijing,Beijing,53873.8
+2024,Chongqing,Chongqing,23786.4
+2024,Fujian,Fujian,32456.5
+2024,Gansu,Gansu,12542.4
+2024,Guangdong,Guangdong,26213.6
+2024,Guangxi Zhuang,Guangxi Zhuang,13552.9
+2024,Guizhou,Guizhou,13891.0
+2024,Hainan,Hainan,18012.7
+2024,Hebei,Hebei,15227.1
+2024,Heilongjiang,Heilongjiang,12880.8
+2024,Henan,Henan,15379.4
+2024,Hubei,Hubei,24206.9
+2024,Hunan,Hunan,19221.8
+2024,Jiangsu,Jiangsu,37962.0
+2024,Jiangxi,Jiangxi,18001.6
+2024,Jilin,Jilin,14618.3
+2024,Liaoning,Liaoning,18543.6
+2024,Nei Mongol,Nei Mongol,26113.7
+2024,Ningxia Hui,Ningxia Hui,17929.3
+2024,Quinghai,Quinghai,15833.6
+2024,Shaanxi,Shaanxi,21226.0
+2024,Shandong,Shandong,23115.4
+2024,Shanghai,Shanghai,51326.2
+2024,Shanxi,Shanxi,17420.4
+2024,Sichuan,Sichuan,18269.9
+2024,Tianjin,Tianjin,31126.7
+2024,Xinjiang Uygur,Xinjiang Uygur,18498.2
+2024,Xizang (Tibet),Xizang (Tibet),17848.4
+2024,Yunnan,Yunnan,15983.4
+2024,Zhejiang,Zhejiang,31951.1

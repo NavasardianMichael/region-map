@@ -18,6 +18,7 @@
     "generate-reddit-coolguide-driving-side": "tsx scripts/playwright-reddit-coolguide-driving-side.ts",
     "generate-oecd-france-fertility": "tsx scripts/playwright-oecd-france-fertility.ts",
     "generate-germany-gdp-feature-tour": "tsx scripts/playwright-germany-gdp-feature-tour.ts",
+    "generate-china-gdp-animated-export": "tsx scripts/playwright-china-gdp-animated-export.ts",
     "postinstall": "node -e \"require('child_process').execSync('node install.js',{cwd:require('path').dirname(require.resolve('ffmpeg-static/package.json')),stdio:'inherit'})\""
   },
   "dependencies": {

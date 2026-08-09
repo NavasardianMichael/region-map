@@ -6,14 +6,17 @@ Ready-to-paste Medium articles about [regionify.pro](https://regionify.pro). Eac
 docs/marketing/medium/
 ├── README.md                                              ← publish checklist (you are here)
 ├── embed-guide/
-│   └── embed-guide.md                                     ← how-to: generating embeddable choropleth maps (iframe/SVG/GIF), France fertility example
+│   └── embed-guide.md                                     ← how-to: generating a live iframe embed of a choropleth map, France fertility example
 │       + oecd-fertility-*.png/gif, france-oecd-fertility.*
-└── feature-tour-germany-gdp/
-    └── feature-tour-germany-gdp.md                        ← full feature tour (data types, styling, animated-map export), Germany GDP-per-capita example
-        + germany-*.png/gif
+├── feature-tour-germany-gdp/
+│   └── feature-tour-germany-gdp.md                        ← full feature tour (data types, styling, animated-map export), Germany GDP-per-capita example
+│       + germany-*.png/gif
+└── animated-map-export/
+    └── animated-map-export.md                             ← how-to: animated map export (GIF/MP4), China GDP-per-capita example
+        + china-gdp-*.png/gif/mp4
 ```
 
-Space the two articles at least a couple of weeks apart — both lean on an OECD time-series dataset and a GIF/embed export demo, and publishing them back-to-back would cannibalize each other's novelty.
+Space these articles at least a couple of weeks apart — all three lean on an OECD time-series dataset and an animated-export demo, and publishing them back-to-back would cannibalize each other's novelty.
 
 ---
 
