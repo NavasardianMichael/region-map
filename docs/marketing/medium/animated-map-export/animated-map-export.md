@@ -108,7 +108,7 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 **Source data:** `docs/marketing/assets/data/oecd-gdp-china.csv` — OECD Regional Database, GDP per capita (`GDP`, USD PPP-converted), TL2 regions, China, 1999–2024. Filtered and remapped from `docs/marketing/assets/data/oecd-gdp-per-capita.csv` to match `client/src/assets/images/maps/china.svg`'s exact region titles.
 
-**A real bug surfaced and fixed while building this dataset:** china.svg's Tibet path had a trailing space in its `title` attribute (`"Xizang (Tibet) "`). The import pipeline trims every parsed region id, but the map-coloring code reads the SVG's `title` attribute raw — so no dataset could ever match Tibet; it always rendered "No Data." Fixed directly in `client/src/assets/images/maps/china.svg` (trailing space removed) as part of this work. **This fix hasn't been deployed yet as of when these assets were generated — the screenshots/exports above still show Tibet gray, matching current production behavior.** Regenerate this article's assets after the fix ships to get a fully-colored map.
+**A real bug surfaced and fixed while building this dataset:** china.svg's Tibet path had a trailing space in its `title` attribute (`"Xizang (Tibet) "`). The import pipeline trimmed every parsed region id, but the map-coloring code read the SVG's `title` attribute raw — so no dataset could ever match Tibet; it always rendered "No Data." Fixed two ways, independently: the trailing space was removed directly in `client/src/assets/images/maps/china.svg`, and separately `mapDataToSvgRegions` (`client/src/helpers/textSimilarity.ts`) was wired up to match region ids by normalized (whitespace/case/diacritic-insensitive) equality before falling back to similarity matching — so imports are now robust to this kind of formatting mismatch generally, not just for Tibet. Both fixes are deployed; the assets above were regenerated after deploy and show full data coverage.
 
 **Raw downloadable deliverables** (not used in the article itself, but kept for cross-posts or cross-checking):
 
@@ -133,7 +133,6 @@ Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSW
 
 ## Compliance checklist (before Publish)
 
-- [ ] Deploy the china.svg Tibet fix, then regenerate all 4 images so the map shows full data coverage before publishing
 - [ ] All 4 images inserted at their marked positions, each with alt text
 - [ ] GIF renders inline (not as a static first-frame thumbnail) after Medium upload — verify in preview
 - [ ] Every quoted GDP figure re-verified against `oecd-gdp-china.csv` if this article is edited
