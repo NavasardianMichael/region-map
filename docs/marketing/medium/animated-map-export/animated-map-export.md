@@ -76,9 +76,9 @@ Set a legend title, pick a palette, and normalize the ranges to the dataset's re
 
 ### Step 3 — Export as an animated GIF
 
-**Export → GIF (Animation).** Pick a quality and a per-frame duration, crop, download — the full 1999–2024 sequence compresses into one file that autoplays anywhere a raster image works: Slack, README files, email, Medium itself.
+**Export → GIF (Animation).** Pick a quality and a per-frame duration, crop, download — the full 1999–2024 sequence compresses into one file that autoplays anywhere a raster image works: Slack, README files, email, Medium itself. One legend option worth knowing about here: it defaults to floating on top of the map, but Legend Styles → Position lets you pin it to the **Bottom** instead — its own strip below the map rather than an overlay — which reads more clearly once the map itself is animating. The GIF below uses that pinned layout:
 
-![Animated GIF cycling through China's GDP per capita by province, 1999-2024](china-gdp-animation-preview.gif)
+![Animated GIF cycling through China's GDP per capita by province, 1999-2024, with the legend pinned below the map](china-gdp-animation-preview.gif)
 
 ### Step 4 — Export as an MP4 video
 
@@ -99,12 +99,12 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 ## Media assets — consolidated brief
 
-| #   | Type       | Placement | File (relative to this article)   | Notes                                    |
-| --- | ---------- | --------- | --------------------------------- | ---------------------------------------- |
-| 1   | Screenshot | Step 1    | `china-gdp-import-panel.png`      | Data-import panel, OECD data pasted      |
-| 2   | Screenshot | Step 2    | `china-gdp-styled-map.png`        | Styled 2024 map, panels visible          |
-| 3   | GIF        | Step 3    | `china-gdp-animation-preview.gif` | Compressed for inline embedding          |
-| 4   | Screenshot | Step 4    | `china-gdp-video-preview.png`     | Native video player, mid-animation frame |
+| #   | Type       | Placement | File (relative to this article)   | Notes                                                                               |
+| --- | ---------- | --------- | --------------------------------- | ----------------------------------------------------------------------------------- |
+| 1   | Screenshot | Step 1    | `china-gdp-import-panel.png`      | Data-import panel, OECD data pasted                                                 |
+| 2   | Screenshot | Step 2    | `china-gdp-styled-map.png`        | Styled 2024 map, panels visible                                                     |
+| 3   | GIF        | Step 3    | `china-gdp-animation-preview.gif` | Compressed for inline embedding; legend pinned to Bottom (not the default Floating) |
+| 4   | Screenshot | Step 4    | `china-gdp-video-preview.png`     | Native video player, mid-animation frame                                            |
 
 **Source data:** `docs/marketing/assets/data/oecd-gdp-china.csv` — OECD Regional Database, GDP per capita (`GDP`, USD PPP-converted), TL2 regions, China, 1999–2024. Filtered and remapped from `docs/marketing/assets/data/oecd-gdp-per-capita.csv` to match `client/src/assets/images/maps/china.svg`'s exact region titles.
 

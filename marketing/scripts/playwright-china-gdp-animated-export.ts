@@ -25,9 +25,12 @@
  *   3. Expand the legend to 5 named ranges (Low → High), normalize them to the data's
  *      real min/max, title the legend, jump the timeline to 2024, screenshot the styled
  *      product view
- *   4. Export animated GIF (all years, transparent background), compress a small inline
- *      preview copy via ffmpeg
- *   5. Export MP4 video, screenshot Chrome's native video player mid-clip as a preview
+ *   4. Export MP4 video (default floating legend), screenshot Chrome's native video
+ *      player mid-clip as a preview
+ *   5. Switch the legend to the "Bottom" position (pinned below the map instead of
+ *      floating on top of it), export animated GIF (all years, transparent background),
+ *      compress a small inline preview copy via ffmpeg — demonstrates that option
+ *      specifically for the GIF, per the article's Step 3
  *
  * Run:
  *   pnpm --filter @regionify/marketing exec tsx scripts/playwright-china-gdp-animated-export.ts
@@ -518,6 +521,27 @@ async function setLegendTitle(page: Page, title: string): Promise<void> {
   log(`✓ legend title set to "${title}"`);
 }
 
+/**
+ * Legend position has three options (Floating / Bottom / Hidden) via an AntD Segmented
+ * control; "Bottom" pins the legend as its own strip below the map instead of an
+ * overlay floating on top of it — a real export-affecting option (see
+ * `legendPosition` in the app's animationExport helpers), not just a Studio-only toggle.
+ */
+async function setLegendPositionBottom(page: Page): Promise<void> {
+  const positionPanelItem = page
+    .locator('.ant-collapse-item')
+    .filter({ has: page.locator('[data-i18n-key="visualizer.legendStyles.collapsePosition"]') });
+  const header = positionPanelItem.locator('.ant-collapse-header');
+  const bottomOption = positionPanelItem.locator('.ant-segmented-item', { hasText: 'Bottom' });
+  if (!(await bottomOption.isVisible().catch(() => false))) {
+    await click(header);
+    await bottomOption.waitFor({ timeout: 5_000 });
+  }
+  await click(bottomOption);
+  await page.waitForTimeout(300);
+  log('✓ legend position set to Bottom');
+}
+
 async function setTransparentBackground(page: Page): Promise<void> {
   const transparentSwitch = page.getByRole('switch', { name: 'Transparent' });
   if (!(await transparentSwitch.isVisible().catch(() => false))) {
@@ -526,14 +550,6 @@ async function setTransparentBackground(page: Page): Promise<void> {
   }
   await switchOn(transparentSwitch);
   log('✓ background set to transparent');
-}
-
-async function closeRightPanel(page: Page): Promise<void> {
-  const collapseBtn = page.locator('.ant-splitter-bar-collapse-bar-end').last();
-  if (await collapseBtn.isVisible({ timeout: 3_000 }).catch(() => false)) {
-    await collapseBtn.click();
-    await page.waitForTimeout(500);
-  }
 }
 
 /** See the identical helper in playwright-oecd-france-fertility.ts for why this is
@@ -785,23 +801,33 @@ async function main(): Promise<void> {
     });
     log('✓ styled map screenshot saved');
 
-    // Clean exports: transparent background, panels collapsed. Stays this way for all
-    // three exports below — none of them mutate project state, only trigger downloads.
+    // Clean export prep: transparent background. The Studio side panel stays open
+    // throughout (attempts to collapse it turned out both unreliable — see git history —
+    // and pointless: the exported GIF/MP4 files are generated from the map's SVG+data,
+    // never from a page screenshot, so the panel's on-screen visibility doesn't affect
+    // them either way; ensureSaneMapExportFrame's explicit sizing is what keeps the
+    // export frame well-proportioned regardless of panel state).
     await setTransparentBackground(page);
-    await closeRightPanel(page);
+    await ensureSaneMapExportFrame(page);
+
+    // MP4 first, with the default floating legend (matches the styled-map screenshot
+    // above). GIF goes last with the legend pinned to the bottom instead — demonstrating
+    // that option specifically for the GIF, per the article's Step 3 — so nothing needs
+    // to switch the legend back afterward.
+    await exportMp4(page);
+    await screenshotVideoPreview(
+      context,
+      join(OUTPUT_DIR, 'china-gdp-video.mp4'),
+      join(UI_SCREENSHOTS_DIR, 'china-gdp-video-preview.png'),
+    );
+
+    await setLegendPositionBottom(page);
     await ensureSaneMapExportFrame(page);
 
     await exportGif(page);
     await makeCompressedGifPreview(
       join(OUTPUT_DIR, 'china-gdp-animation.gif'),
       join(UI_SCREENSHOTS_DIR, 'china-gdp-animation-preview.gif'),
-    );
-
-    await exportMp4(page);
-    await screenshotVideoPreview(
-      context,
-      join(OUTPUT_DIR, 'china-gdp-video.mp4'),
-      join(UI_SCREENSHOTS_DIR, 'china-gdp-video-preview.png'),
     );
 
     console.log(`\n✅  All done — assets saved to ${OUTPUT_DIR}`);
