@@ -19,18 +19,17 @@
  * directly in the SVG (client/src/assets/images/maps/china.svg) as part of this work.
  *
  * Steps:
- *   1. /projects/new → pick "China"
- *   2. Switch to "Tab delimited text (manual)" import, clear the sample data, paste the
- *      OECD GDP-per-capita time series, screenshot the pasted data
- *   3. Expand the legend to 5 named ranges (Low → High), normalize them to the data's
- *      real min/max, title the legend, jump the timeline to 2024, screenshot the styled
- *      product view
- *   4. Export MP4 video (default floating legend), screenshot Chrome's native video
- *      player mid-clip as a preview
- *   5. Switch the legend to the "Bottom" position (pinned below the map instead of
- *      floating on top of it), export animated GIF (all years, transparent background),
- *      compress a small inline preview copy via ffmpeg — demonstrates that option
- *      specifically for the GIF, per the article's Step 3
+ *   1. /projects/new → pick "China", switch to "Tab delimited text (manual)" import,
+ *      paste the OECD GDP-per-capita time series (no import-step screenshot — the
+ *      article doesn't walk through data import, just styling and export)
+ *   2. Expand the legend to 8 named ranges (Very Low → Very High), normalize them to the
+ *      data's real min/max, title the legend, jump the timeline to 2024, screenshot the
+ *      styled product view (default floating legend, top-left)
+ *   3. Transparent background, resize to the export frame, then nudge the floating
+ *      legend to the right of its default top-left corner (closer to the map, short of
+ *      overlapping it) — same position used for both exports below
+ *   4. Export MP4 video, screenshot Chrome's native video player mid-clip as a preview
+ *   5. Export animated GIF (all years), compress a small inline preview copy via ffmpeg
  *
  * Run:
  *   pnpm --filter @regionify/marketing exec tsx scripts/playwright-china-gdp-animated-export.ts
@@ -94,14 +93,37 @@ const COUNTRY_LABEL = 'China';
 const LEGEND_TITLE = 'GDP per Capita (USD, PPP)';
 const VIEWPORT = { width: 1600, height: 1000 } as const;
 
-/** Default legend has 3 bins (Low/Medium/High) — add 2 more so real variation across
- * China's 31 provinces doesn't get flattened into three broad buckets, then rename all 5
- * to match the dataset (economic-output tiers) instead of the generic defaults. */
-const RANGE_NAMES = ['Low', 'Below Average', 'Average', 'Above Average', 'High'];
-const RANGE_COLORS = ['E0F2F1', '80CBC4', '26A69A', '00796B', '004D40'];
+/** Default legend has 3 bins (Low/Medium/High) — add 5 more so real variation across
+ * China's 31 provinces doesn't get flattened into three broad buckets, then rename all 8
+ * to match the dataset (economic-output tiers) instead of the generic defaults. Colors
+ * are 8 evenly-spaced shades from the Material Design Teal palette (50/100/200/300/400/
+ * 600/800/900), the same family the original 5-tier version used. */
+const RANGE_NAMES = [
+  'Very Low',
+  'Low',
+  'Fairly Low',
+  'Below Average',
+  'Above Average',
+  'Fairly High',
+  'High',
+  'Very High',
+];
+const RANGE_COLORS = [
+  'E0F2F1',
+  'B2DFDB',
+  '80CBC4',
+  '4DB6AC',
+  '26A69A',
+  '00897B',
+  '00695C',
+  '004D40',
+];
 
 const ANIMATED_EXPORT_QUALITY = 50;
 const SECONDS_PER_PERIOD = 0.3;
+/** How far right to nudge the floating legend from its default top-left corner — closer
+ * to the map without overlapping it. Tuned empirically against this map/frame size. */
+const FLOATING_LEGEND_DRAG_PX = 180;
 
 function log(msg: string): void {
   console.log(`[china-gdp-export] ${msg}`);
@@ -373,14 +395,6 @@ async function importGdpData(page: Page, tabDelimitedData: string): Promise<void
   await page.keyboard.press('Control+V');
   await page.waitForTimeout(400);
 
-  // Screenshot the pasted-but-unsaved data for the article's import-step visual.
-  mkdirSync(UI_SCREENSHOTS_DIR, { recursive: true });
-  await page.screenshot({
-    path: join(UI_SCREENSHOTS_DIR, 'china-gdp-import-panel.png'),
-    fullPage: false,
-  });
-  log('✓ import panel screenshot saved');
-
   const saveBtn = modal.getByRole('button', { name: 'Save' });
   await click(saveBtn);
   await modal.waitFor({ state: 'hidden', timeout: 15_000 }).catch(() => {});
@@ -432,7 +446,7 @@ async function changeLegendRowColor(page: Page, row: Locator, hex: string): Prom
   await page.waitForTimeout(150);
 }
 
-/** Grows the default 3 bins to 5 and renames/recolors all of them. Must run BEFORE
+/** Grows the default 3 bins to 8 and renames/recolors all of them. Must run BEFORE
  * normalizeRanges — normalize only redistributes min/max across whatever bins already
  * exist. Self-verifying (see the identical note in playwright-oecd-france-fertility.ts
  * for why): reads row count and each input's actual value back and retries before
@@ -522,24 +536,28 @@ async function setLegendTitle(page: Page, title: string): Promise<void> {
 }
 
 /**
- * Legend position has three options (Floating / Bottom / Hidden) via an AntD Segmented
- * control; "Bottom" pins the legend as its own strip below the map instead of an
- * overlay floating on top of it — a real export-affecting option (see
- * `legendPosition` in the app's animationExport helpers), not just a Studio-only toggle.
+ * The floating legend (default position) is draggable directly on the map preview —
+ * `data-map-export-floating-legend` is its stable hook (see MapFloatingLegend.tsx).
+ * Grabs near its top-center rather than its true center to stay clear of the resize
+ * handle in the bottom-right corner (a separate small button with its own pointer-down
+ * handler). Nudges it `deltaX` px to the right without changing its vertical position —
+ * closer to the map than the default top-left corner, but the caller is responsible for
+ * picking a delta that stops short of the map shape itself.
  */
-async function setLegendPositionBottom(page: Page): Promise<void> {
-  const positionPanelItem = page
-    .locator('.ant-collapse-item')
-    .filter({ has: page.locator('[data-i18n-key="visualizer.legendStyles.collapsePosition"]') });
-  const header = positionPanelItem.locator('.ant-collapse-header');
-  const bottomOption = positionPanelItem.locator('.ant-segmented-item', { hasText: 'Bottom' });
-  if (!(await bottomOption.isVisible().catch(() => false))) {
-    await click(header);
-    await bottomOption.waitFor({ timeout: 5_000 });
-  }
-  await click(bottomOption);
+async function dragFloatingLegendRight(page: Page, deltaX: number): Promise<void> {
+  const legend = page.locator('[data-map-export-floating-legend]');
+  await legend.waitFor({ state: 'visible', timeout: 10_000 });
+  const box = await legend.boundingBox();
+  if (!box) throw new Error('dragFloatingLegendRight: could not read legend bounding box');
+
+  const startX = box.x + box.width / 2;
+  const startY = box.y + 15;
+  await page.mouse.move(startX, startY);
+  await page.mouse.down();
+  await page.mouse.move(startX + deltaX, startY, { steps: 15 });
+  await page.mouse.up();
   await page.waitForTimeout(300);
-  log('✓ legend position set to Bottom');
+  log(`✓ dragged floating legend ${deltaX}px to the right`);
 }
 
 async function setTransparentBackground(page: Page): Promise<void> {
@@ -793,7 +811,12 @@ async function main(): Promise<void> {
     await setLegendTitle(page, LEGEND_TITLE);
     await jumpTimelineToLastFrame(page);
 
-    // "Styled map" UI screenshot — panels visible, full app chrome.
+    // "Styled map" UI screenshot — panels visible, full app chrome, default (undragged)
+    // floating legend position. ensureSaneMapExportFrame must NOT run before this: it
+    // forces explicit sizing meant for the export-ready view, and doing that early
+    // cascades into the Studio's normal panel layout breaking (splitter panels
+    // collapsing, the map rendering zoomed/cropped) — it belongs only in the "clean
+    // export prep" phase below, immediately before the exports that actually need it.
     await page.waitForTimeout(1_000);
     await page.screenshot({
       path: join(UI_SCREENSHOTS_DIR, 'china-gdp-styled-map.png'),
@@ -801,28 +824,22 @@ async function main(): Promise<void> {
     });
     log('✓ styled map screenshot saved');
 
-    // Clean export prep: transparent background. The Studio side panel stays open
-    // throughout (attempts to collapse it turned out both unreliable — see git history —
-    // and pointless: the exported GIF/MP4 files are generated from the map's SVG+data,
-    // never from a page screenshot, so the panel's on-screen visibility doesn't affect
-    // them either way; ensureSaneMapExportFrame's explicit sizing is what keeps the
-    // export frame well-proportioned regardless of panel state).
+    // Clean export prep: transparent background, export frame resized. The Studio side
+    // panel stays open throughout (attempts to collapse it turned out both unreliable —
+    // see git history — and pointless: the exported GIF/MP4 files are generated from the
+    // map's SVG+data, never from a page screenshot, so the panel's on-screen visibility
+    // doesn't affect them either way). Nudge the floating legend right on this
+    // now-finalized frame, after resizing — same legend position for both exports below.
     await setTransparentBackground(page);
     await ensureSaneMapExportFrame(page);
+    await dragFloatingLegendRight(page, FLOATING_LEGEND_DRAG_PX);
 
-    // MP4 first, with the default floating legend (matches the styled-map screenshot
-    // above). GIF goes last with the legend pinned to the bottom instead — demonstrating
-    // that option specifically for the GIF, per the article's Step 3 — so nothing needs
-    // to switch the legend back afterward.
     await exportMp4(page);
     await screenshotVideoPreview(
       context,
       join(OUTPUT_DIR, 'china-gdp-video.mp4'),
       join(UI_SCREENSHOTS_DIR, 'china-gdp-video-preview.png'),
     );
-
-    await setLegendPositionBottom(page);
-    await ensureSaneMapExportFrame(page);
 
     await exportGif(page);
     await makeCompressedGifPreview(

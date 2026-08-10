@@ -48,7 +48,7 @@ One time-series dataset, one styled map, two export formats — a short walkthro
 
 ## Article body (paste as-is into the Medium editor after picking title/subtitle)
 
-> **Formatting note.** Medium's editor accepts pasted Markdown. Images below are referenced by relative path — upload each to Medium manually at its marked position (drag-and-drop into the editor), since Medium doesn't hot-link local files. Medium doesn't support direct MP4 upload either — see the note under Step 4.
+> **Formatting note.** Medium's editor accepts pasted Markdown. Images below are referenced by relative path — upload each to Medium manually at its marked position (drag-and-drop into the editor), since Medium doesn't hot-link local files. Medium doesn't support direct MP4 upload either — see the note under Step 3.
 
 ---
 
@@ -60,27 +60,21 @@ HERO IMAGE
 
 A map with one color per region is a snapshot. A map that changes color as time passes is a story. In 1999, Guizhou's GDP per capita was $1,263 — by 2024 it was $13,891, an 11x increase. Shanghai went from $14,099 to $51,326 over the same stretch. A single static map can't show that arc; an animated one does it in a few seconds.
 
-[Regionify](https://regionify.pro/?utm_source=medium&utm_medium=article&utm_campaign=animated-map-export) turns any dataset with a time column into that kind of map, then exports it as whichever file format your audience actually opens. Here's the walkthrough, using real [OECD regional GDP-per-capita data](https://data-explorer.oecd.org) for China's 31 provinces (1999–2024) as the running example.
+[Regionify](https://regionify.pro/?utm_source=medium&utm_medium=article&utm_campaign=animated-map-export) turns any dataset with a time column into that kind of map, then exports it as whichever file format your audience actually opens. Here's the walkthrough, using real [OECD regional GDP-per-capita data](https://data-explorer.oecd.org) for China's 31 provinces (1999–2024) as the running example — imported the same way as any other Regionify project, with a `year` column alongside the region ids and values.
 
-### Step 1 — Import a dataset with a time column
+### Step 1 — Style it once, it applies to every frame
 
-Pick a map — China, in this example — and import data with a `year` column alongside your region ids and values. The moment Regionify sees more than one time period per region, it switches to **time-series mode**: a timeline scrubber appears above the map, and both export formats below unlock.
-
-![Pasting the OECD GDP-per-capita time series into Regionify's manual data-entry panel](china-gdp-import-panel.png)
-
-### Step 2 — Style it once, it applies to every frame
-
-Set a legend title, pick a palette, and normalize the ranges to the dataset's real min/max. Do this once and it carries through every year and every export format below:
+Set a legend title, pick a palette, and normalize the ranges to the dataset's real min/max. Do this once and it carries through every year and every export format below. The legend itself is draggable too — dropped it a little closer to the map here than its default top-left corner:
 
 ![The styled China map, showing GDP per capita for 2024](china-gdp-styled-map.png)
 
-### Step 3 — Export as an animated GIF
+### Step 2 — Export as an animated GIF
 
-**Export → GIF (Animation).** Pick a quality and a per-frame duration, crop, download — the full 1999–2024 sequence compresses into one file that autoplays anywhere a raster image works: Slack, README files, email, Medium itself. One legend option worth knowing about here: it defaults to floating on top of the map, but Legend Styles → Position lets you pin it to the **Bottom** instead — its own strip below the map rather than an overlay — which reads more clearly once the map itself is animating. The GIF below uses that pinned layout:
+**Export → GIF (Animation).** Pick a quality and a per-frame duration, crop, download — the full 1999–2024 sequence compresses into one file that autoplays anywhere a raster image works: Slack, README files, email, Medium itself.
 
-![Animated GIF cycling through China's GDP per capita by province, 1999-2024, with the legend pinned below the map](china-gdp-animation-preview.gif)
+![Animated GIF cycling through China's GDP per capita by province, 1999-2024](china-gdp-animation-preview.gif)
 
-### Step 4 — Export as an MP4 video
+### Step 3 — Export as an MP4 video
 
 Same panel, switch the export type to **Video (MP4)**. For a multi-decade animation like this one, the video comes out noticeably smaller than the GIF at comparable quality — better for a slide deck, or for posting natively to LinkedIn/X, where video autoplay outperforms an image upload. (Medium doesn't accept a raw MP4 upload — post the video natively on LinkedIn/X or YouTube, then link to it, the same way the embed-guide article links out to its live demo instead of embedding one directly.)
 
@@ -99,12 +93,11 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 ## Media assets — consolidated brief
 
-| #   | Type       | Placement | File (relative to this article)   | Notes                                                                               |
-| --- | ---------- | --------- | --------------------------------- | ----------------------------------------------------------------------------------- |
-| 1   | Screenshot | Step 1    | `china-gdp-import-panel.png`      | Data-import panel, OECD data pasted                                                 |
-| 2   | Screenshot | Step 2    | `china-gdp-styled-map.png`        | Styled 2024 map, panels visible                                                     |
-| 3   | GIF        | Step 3    | `china-gdp-animation-preview.gif` | Compressed for inline embedding; legend pinned to Bottom (not the default Floating) |
-| 4   | Screenshot | Step 4    | `china-gdp-video-preview.png`     | Native video player, mid-animation frame                                            |
+| #   | Type       | Placement | File (relative to this article)   | Notes                                                      |
+| --- | ---------- | --------- | --------------------------------- | ---------------------------------------------------------- |
+| 1   | Screenshot | Step 1    | `china-gdp-styled-map.png`        | Styled 2024 map, floating legend dragged closer to the map |
+| 2   | GIF        | Step 2    | `china-gdp-animation-preview.gif` | Compressed for inline embedding                            |
+| 3   | Screenshot | Step 3    | `china-gdp-video-preview.png`     | Native video player, mid-animation frame                   |
 
 **Source data:** `docs/marketing/assets/data/oecd-gdp-china.csv` — OECD Regional Database, GDP per capita (`GDP`, USD PPP-converted), TL2 regions, China, 1999–2024. Filtered and remapped from `docs/marketing/assets/data/oecd-gdp-per-capita.csv` to match `client/src/assets/images/maps/china.svg`'s exact region titles.
 
@@ -133,7 +126,7 @@ Requires `marketing/.env` with `CLIENT_URL`, `REGIONIFY_EMAIL`, `REGIONIFY_PASSW
 
 ## Compliance checklist (before Publish)
 
-- [ ] All 4 images inserted at their marked positions, each with alt text
+- [ ] All 3 images inserted at their marked positions, each with alt text
 - [ ] GIF renders inline (not as a static first-frame thumbnail) after Medium upload — verify in preview
 - [ ] Every quoted GDP figure re-verified against `oecd-gdp-china.csv` if this article is edited
 - [ ] No AI-tone giveaway phrases ("delve", "in the realm of", "furthermore", "it is important to note")
