@@ -15,6 +15,7 @@
     "generate-demo-video-italy-ai-parser": "tsx scripts/playwright-demo-video-italy-ai-parser.ts",
     "generate-demo-video-india": "tsx scripts/playwright-demo-video-india.ts",
     "generate-demo-video-india-export": "tsx scripts/playwright-demo-video-india-export.ts",
+    "generate-india-gdp-gif-export": "tsx scripts/playwright-india-gdp-gif-export.ts",
     "generate-reddit-coolguide-driving-side": "tsx scripts/playwright-reddit-coolguide-driving-side.ts",
     "generate-oecd-france-fertility": "tsx scripts/playwright-oecd-france-fertility.ts",
     "generate-germany-gdp-feature-tour": "tsx scripts/playwright-germany-gdp-feature-tour.ts",

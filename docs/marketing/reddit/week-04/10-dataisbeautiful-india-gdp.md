@@ -65,8 +65,9 @@ sensationalism, not accurate terminology, so this doesn't read as keyword stuffi
 or a reader. Resist the urge to add more than this; a body with 4-5 SEO phrases crammed in is
 exactly what gets a post removed as low-effort/promotional on this sub.
 
-<!-- ASSET: docs/marketing/assets/video/sample-data-to-mp4/india-gdp-per-capita-2001-20024.gif
-     (rename to fix the typo before posting: should be ...-2001-2023.gif, not ...-20024.gif)
+<!-- ASSET: docs/marketing/assets/video/sample-data-to-mp4/india-gdp-per-capita-2001-2023.gif
+     (regenerated via marketing/scripts/playwright-india-gdp-gif-export.ts — see below;
+     filename typo from the original hand-export fixed: ...-2001-2023.gif, not ...-20024.gif)
      Content: animated choropleth of India's 33 states/UTs, one frame per year, 2001-2023.
      Data: OECD Regional Economy database — GDP by TL2 region (OECD.CFE.EDS:DSD_REG_ECO@DF_GDP),
      USD PPP-converted, constant prices, reference year 2020.
@@ -78,8 +79,12 @@ exactly what gets a post removed as low-effort/promotional on this sub.
      Story visible in the animation: Chandigarh/Goa/Delhi lead in 2001; by 2023 Sikkim has
      overtaken everyone (a genuinely surprising result worth calling out if asked), Bihar and
      Uttar Pradesh stay at the bottom the entire animation.
-     If the GIF stays this large, re-export as MP4 before posting — Reddit prefers MP4 for
-     animated content and it compresses far better than GIF for 23 frames. -->
+     File size: the original hand-export was 87.6 MB, well past Reddit's reliable ~20 MB
+     direct-upload ceiling. Regenerated at export quality 25 (was unrecorded before) via
+     `pnpm --filter @regionify/marketing generate-india-gdp-gif-export` — kept as GIF rather
+     than switching to MP4, per the same visual format already used in the first posting
+     attempt. Re-check the resulting file size after running; the script logs a warning if it's
+     still over budget, in which case cut GIF_EXPORT_QUALITY further and re-run. -->
 
 ---
 
@@ -170,18 +175,37 @@ https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=dataisb
 
 ## Compliance checklist (r/dataisbeautiful rules)
 
+Rule numbers below are cited from the currently known sidebar/wiki text (cross-checked across
+several secondary sources since reddit.com wasn't directly fetchable during this pass). Mods do
+occasionally renumber or reword rules — re-check the live list at
+reddit.com/r/dataisbeautiful/about/rules immediately before posting rather than trusting the
+numbers as permanent.
+
 - [ ] `[OC]` tag in title (Rule 3)
 - [ ] `[GIF]` tag in title (convention for animated content)
-- [ ] Title is plain and descriptive (Rule 7)
+- [ ] Title is plain and descriptive, no sensationalized/editorialized wording (Rule 7)
 - [ ] First comment states **data source** AND **tool used** (Rule 3)
-- [ ] Fixed/normalized color scale across all frames (statistical honesty)
+- [ ] Diagram has at least one computer-generated element (all diagrams must — satisfied: the
+      entire map/legend/animation is rendered by Regionify, nothing hand-drawn)
+- [ ] Fixed/normalized color scale across all frames (statistical honesty / no misleading data
+      representation)
 - [ ] Same geographic coverage in every frame (no appearing/disappearing regions mid-animation)
-- [ ] Not a repost of a similar India GDP animation within 1 month (Rule 6 — check quickly before posting)
-- [ ] No US politics (non-issue)
-- [ ] No personal data (non-issue — regional aggregate GDP only)
+- [ ] Not a repost of a similar India GDP animation within 1 month (Rule 6 — check quickly before
+      posting; distinct from the account-cadence note above, which is about spacing this
+      account's OC posts, not about reposting this specific visualization)
+- [ ] Not primarily a US-politics post — economic/GDP data isn't in-scope for the politics
+      restriction, but if that read changes, US-politics posts are only permitted on Thursdays (ET)
+- [ ] Not personal/PII data — this is regional aggregate GDP, not individual-level data; posts
+      involving personal data are otherwise restricted to Mondays (ET)
 - [ ] Animation length is comfortable (~25-35 seconds total; longer than that and Reddit users bail)
-- [ ] MP4 preferred over GIF if the file size is large (better compression, same experience) — the
-      current GIF is 87.6 MB, well above the ~20 MB where this stops being optional
-- [ ] Filename typo fixed before upload (`20024` → `2023`)
+- [ ] GIF re-exported at a lower quality and under ~20 MB before upload — mandatory, not just
+      preferred; the original 87.6 MB hand-export exceeded Reddit's reliable direct-upload ceiling
+      and risked upload failure or AutoMod removal for oversized media. Regenerated via
+      `marketing/scripts/playwright-india-gdp-gif-export.ts` (quality 25) rather than switched to
+      MP4, to keep the same GIF format already used in the first posting attempt — confirm the
+      logged output size is actually under budget before uploading; re-run at a lower
+      `GIF_EXPORT_QUALITY` if not
+- [ ] Filename typo fixed before upload (`20024` → `2023` — the regeneration script writes the
+      corrected filename directly and removes the old oversized file)
 - [ ] Watermark ("regionify.pro") left visible on the export
 - [ ] Ready to reply for 3+ hours after posting

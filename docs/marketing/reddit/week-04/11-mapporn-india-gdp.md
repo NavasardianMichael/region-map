@@ -56,10 +56,11 @@ brand language entirely here — this crowd reacts to the map, not the pitch:
 Regional map of India, GDP per capita by state, 2001 through 2023.
 ```
 
-<!-- ASSET: same India choropleth GIF/MP4 as post 10
-     (docs/marketing/assets/video/sample-data-to-mp4/india-gdp-per-capita-2001-20024.gif —
-     rename to fix the typo, and re-export as MP4 if the file stays this large; 87.6MB GIFs
-     load slowly and MapPorn is an aesthetics sub, first impression matters even more here).
+<!-- ASSET: same India choropleth GIF as post 10
+     (docs/marketing/assets/video/sample-data-to-mp4/india-gdp-per-capita-2001-2023.gif —
+     regenerated at export quality 25 via marketing/scripts/playwright-india-gdp-gif-export.ts;
+     filename typo fixed, and file size cut from the original 87.6 MB hand-export to comfortably
+     under Reddit's ~20 MB ceiling — see post 10's asset note for the full rationale).
      Aesthetic bar for this sub is higher than r/dataisbeautiful: consider a version with
      no UI chrome, no legend title bar clutter, and a clean off-white or transparent
      background if Regionify's export supports it, so the map itself is the whole frame.
