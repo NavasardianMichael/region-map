@@ -105,7 +105,7 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 
 **Raw downloadable deliverables** (not used in the article itself, but kept for cross-posts or cross-checking):
 
-- `docs/marketing/medium/animated-map-export/china-gdp-animation.gif` — full-quality GIF (~27 MB)
+- `docs/marketing/medium/animated-map-export/china-gdp-animation.gif` — full-resolution GIF (~19 MB; export quality deliberately reduced from the default so this stays under Medium's 25 MB attachment limit)
 - `docs/marketing/medium/animated-map-export/china-gdp-video.mp4` — the exported MP4 (~2 MB)
 
 **Regenerating these assets:**

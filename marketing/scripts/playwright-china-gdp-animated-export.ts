@@ -119,7 +119,14 @@ const RANGE_COLORS = [
   '004D40',
 ];
 
-const ANIMATED_EXPORT_QUALITY = 50;
+const MP4_EXPORT_QUALITY = 50;
+// The full-quality GIF came out ~28 MB at quality 50 — past Medium's 25 MB attachment
+// limit. Quality is the export's file-size lever (see the "Quality (%)" field in the
+// export dialog). A 5-point cut (to 45) still landed at ~24.5 MiB / 25.7 MB decimal —
+// too close to the line given Medium's limit could be measured either way — so this
+// goes further, for a comfortable margin under 25MB by any measure. MP4 doesn't have
+// this problem (~2 MB already), so only the GIF's quality changes.
+const GIF_EXPORT_QUALITY = 38;
 const SECONDS_PER_PERIOD = 0.3;
 /** How far right to nudge the floating legend from its default top-left corner — closer
  * to the map without overlapping it. Tuned empirically against this map/frame size. */
@@ -647,7 +654,7 @@ async function exportGif(page: Page): Promise<void> {
   await configureModal.waitFor({ timeout: 10_000 });
 
   await selectAntOption(page, 'visualizer.exportModal.exportTypeLabel', 'GIF (Animation)');
-  await setInputNumberByLabel(page, 'visualizer.exportModal.qualityLabel', ANIMATED_EXPORT_QUALITY);
+  await setInputNumberByLabel(page, 'visualizer.exportModal.qualityLabel', GIF_EXPORT_QUALITY);
   await setSecondsPerPeriod(page, SECONDS_PER_PERIOD);
 
   await configureModal
@@ -675,7 +682,7 @@ async function exportMp4(page: Page): Promise<void> {
   await configureModal.waitFor({ timeout: 10_000 });
 
   await selectAntOption(page, 'visualizer.exportModal.exportTypeLabel', 'Video (MP4)');
-  await setInputNumberByLabel(page, 'visualizer.exportModal.qualityLabel', ANIMATED_EXPORT_QUALITY);
+  await setInputNumberByLabel(page, 'visualizer.exportModal.qualityLabel', MP4_EXPORT_QUALITY);
   await setSecondsPerPeriod(page, SECONDS_PER_PERIOD);
 
   const downloadBtn = exportPrimaryDownloadButton(configureModal);
