@@ -2,15 +2,17 @@
 
 ## Meta
 
-| Field         | Value                                                         |
-| ------------- | ------------------------------------------------------------- |
-| Platform      | Medium (submit to a publication — see `../README.md`)         |
-| Day           | Wednesday                                                     |
-| Time slot     | 8-10 AM US Eastern (4-6 PM UTC+4)                             |
-| Length target | 500-700 words / ~3 minute read                                |
-| Tags          | Data Visualization, JavaScript, SEO, Tutorial, No Code        |
-| UTM campaign  | `animated-map-export`                                         |
-| Canonical URL | The Medium URL itself (set as canonical on dev.to / Hashnode) |
+| Field           | Value                                                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Platform        | Medium (submit to a publication — see `../README.md`)                                                                                                             |
+| Day             | Wednesday                                                                                                                                                         |
+| Time slot       | 8-10 AM US Eastern (4-6 PM UTC+4)                                                                                                                                 |
+| Length target   | 500-700 words / ~3 minute read                                                                                                                                    |
+| Tags            | Data Visualization, JavaScript, SEO, Tutorial, No Code                                                                                                            |
+| UTM campaign    | `animated-map-export`                                                                                                                                             |
+| Canonical URL   | The Medium URL itself (set as canonical on dev.to / Hashnode)                                                                                                     |
+| SEO title       | How to Turn a Spreadsheet Into an Animated Map — and Export It as GIF or MP4 (same as the display title above — kept identical to avoid a title/snippet mismatch) |
+| SEO description | Turn a spreadsheet into an animated map and export it as GIF or MP4 — a walkthrough using 26 years of real China GDP-per-capita data. (133 chars, ≤140 limit)     |
 
 This is a narrow how-to: turning a time-series dataset into an animated map, then exporting the same map two ways — animated GIF and MP4 video — demonstrated with 26 years of real OECD GDP-per-capita data for China's 31 provinces.
 
@@ -106,7 +108,8 @@ Pick any map on [Regionify.pro](https://regionify.pro/?utm_source=medium&utm_med
 **Raw downloadable deliverables** (not used in the article itself, but kept for cross-posts or cross-checking):
 
 - `docs/marketing/medium/animated-map-export/china-gdp-animation.gif` — full-resolution GIF (~19 MB; export quality deliberately reduced from the default so this stays under Medium's 25 MB attachment limit)
-- `docs/marketing/medium/animated-map-export/china-gdp-video.mp4` — the exported MP4 (~2 MB)
+
+The raw `china-gdp-video.mp4` export (~2 MB) isn't kept in the repo — regenerate it locally via the script below if you need the file itself; `china-gdp-video-preview.png` (used in Step 3) is a screenshot of it, not the video.
 
 **Regenerating these assets:**
 
