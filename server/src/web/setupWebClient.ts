@@ -10,6 +10,7 @@ import { embedPageLimiter } from '@/middleware/embedPageLimiter.js';
 import { logger } from '@/lib/logger.js';
 import { projectEmbedService } from '@/services/projectEmbedService.js';
 import { buildCoreJsonLd } from '@/web/coreJsonLd.js';
+import { embedRootInnerHtml } from '@/web/embedCopy.js';
 import { buildFaqJsonLd, faqRootInnerHtml } from '@/web/faqContent.js';
 import { HOME_PAGE_DEFAULT, homeRootInnerHtml } from '@/web/homeCopy.js';
 import { PAGE_META_MAP } from '@/web/pageMeta.js';
@@ -153,7 +154,7 @@ export function setupWebClient(app: Application): void {
           canonicalPath: `/embed/${encodeURIComponent(token)}`,
           regionDisplayNameEn: meta.regionDisplayNameEn,
         },
-        rootInnerHtml: '',
+        rootInnerHtml: embedRootInnerHtml(siteUrl),
         entryJs: assets.js,
         entryCss: embedEntryCss,
         htmlLang: meta.htmlLang,

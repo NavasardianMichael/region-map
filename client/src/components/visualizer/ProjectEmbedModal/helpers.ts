@@ -91,6 +91,7 @@ export function buildEmbedPageUrl({ origin, token, enabled }: BuildEmbedPageUrlI
   return `${origin}${getEmbedRoute(token)}`;
 }
 
+/** Iframe only — nothing is emitted into the host page alongside it. */
 export function buildIframeSnippet(embedPageUrl: string): string {
   if (!embedPageUrl) return '';
   return [
