@@ -675,8 +675,12 @@ export type CommonNs = {
     close: string;
     deleteProjectTitle: string;
     deleteProjectContent: string;
+    deleteProjectEmbedWarningTitle: string;
+    deleteProjectEmbedWarningContent: string;
     deleteProjectsBulkTitle: string;
     deleteProjectsBulkContent: string;
+    deleteProjectsBulkEmbedWarningTitle: string;
+    deleteProjectsBulkEmbedWarningContent: string;
     deleteProjectOk: string;
     projectsBulkDeleted: string;
     projectsBulkDeleteFailed: string;

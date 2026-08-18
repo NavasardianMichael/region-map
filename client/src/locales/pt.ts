@@ -748,9 +748,15 @@ const pt: CommonNs = {
     deleteProjectTitle: 'Eliminar projeto',
     deleteProjectContent:
       'Tem a certeza que deseja eliminar "{{name}}"? Esta ação não pode ser revertida.',
+    deleteProjectEmbedWarningTitle: 'A incorporação pública está ativada',
+    deleteProjectEmbedWarningContent:
+      'Este projeto está publicado como incorporação pública. Ao eliminá-lo, a ligação de incorporação é desativada permanentemente — se o mapa estiver incorporado em algum site, deixará de funcionar aí.',
     deleteProjectsBulkTitle: 'Eliminar projetos',
     deleteProjectsBulkContent:
       'Tem a certeza de que deseja eliminar {{count}} projetos selecionados? Esta ação não pode ser revertida.',
+    deleteProjectsBulkEmbedWarningTitle: 'A incorporação pública está ativada',
+    deleteProjectsBulkEmbedWarningContent:
+      '{{count}} dos projetos selecionados estão publicados como incorporações públicas. Ao eliminá-los, essas ligações de incorporação são desativadas permanentemente — se esses mapas estiverem incorporados em algum site, deixarão de funcionar aí.',
     deleteProjectOk: 'Eliminar',
     projectsBulkDeleted: '{{count}} projetos eliminados',
     projectsBulkDeleteFailed: 'Falha ao eliminar os projetos selecionados',

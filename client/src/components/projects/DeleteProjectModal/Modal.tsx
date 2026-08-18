@@ -1,8 +1,9 @@
-import { type FC } from 'react';
-import { Modal as AntModal } from 'antd';
+import { type FC, useMemo } from 'react';
+import { Flex, Modal as AntModal } from 'antd';
 import type { Project } from '@/api/projects/types';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
 import { Body } from './Body';
+import { EmbedWarning } from './EmbedWarning';
 
 type Props = {
   project: Project | null;
@@ -35,6 +36,14 @@ export const DeleteProjectModal: FC<Props> = ({
     ? 'messages.deleteProjectsBulkContent'
     : 'messages.deleteProjectContent';
 
+  // A live public embed dies with the project, so deleting breaks any site that iframes it.
+  const embedEnabledCount = useMemo(() => {
+    if (projectsBulk != null && projectsBulk.length > 0) {
+      return projectsBulk.filter((p) => p.embed.enabled).length;
+    }
+    return project !== null && project.embed.enabled ? 1 : 0;
+  }, [project, projectsBulk]);
+
   return (
     <AntModal
       className="scrollbar-modal-host"
@@ -50,7 +59,12 @@ export const DeleteProjectModal: FC<Props> = ({
       centered
       maskClosable={false}
     >
-      <Body content={bodyContent} data-i18n-key={bodyI18nKey} />
+      <Flex vertical gap="small" className="py-sm">
+        <Body content={bodyContent} data-i18n-key={bodyI18nKey} />
+        {embedEnabledCount > 0 ? (
+          <EmbedWarning embedEnabledCount={embedEnabledCount} isBulk={isBulk} />
+        ) : null}
+      </Flex>
     </AntModal>
   );
 };

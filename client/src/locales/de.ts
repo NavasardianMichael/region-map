@@ -758,9 +758,15 @@ const de: CommonNs = {
     deleteProjectTitle: 'Projekt löschen',
     deleteProjectContent:
       'Möchten Sie "{{name}}" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+    deleteProjectEmbedWarningTitle: 'Öffentliche Einbettung ist aktiviert',
+    deleteProjectEmbedWarningContent:
+      'Dieses Projekt ist als öffentliche Einbettung veröffentlicht. Beim Löschen wird der Einbettungslink dauerhaft deaktiviert — ist die Karte auf einer Website eingebunden, funktioniert sie dort nicht mehr.',
     deleteProjectsBulkTitle: 'Projekte löschen',
     deleteProjectsBulkContent:
       'Möchten Sie wirklich {{count}} ausgewählte Projekte löschen? Diese Aktion kann nicht rückgängig gemacht werden.',
+    deleteProjectsBulkEmbedWarningTitle: 'Öffentliche Einbettung ist aktiviert',
+    deleteProjectsBulkEmbedWarningContent:
+      '{{count}} der ausgewählten Projekte sind als öffentliche Einbettung veröffentlicht. Beim Löschen werden diese Einbettungslinks dauerhaft deaktiviert — sind die Karten auf einer Website eingebunden, funktionieren sie dort nicht mehr.',
     deleteProjectOk: 'Löschen',
     projectsBulkDeleted: '{{count}} Projekte gelöscht',
     projectsBulkDeleteFailed: 'Ausgewählte Projekte konnten nicht gelöscht werden',

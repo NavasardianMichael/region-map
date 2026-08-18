@@ -752,9 +752,15 @@ const es: CommonNs = {
     deleteProjectTitle: 'Eliminar proyecto',
     deleteProjectContent:
       '¿Estás seguro de que quieres eliminar "{{name}}"? Esta acción no se puede deshacer.',
+    deleteProjectEmbedWarningTitle: 'La inserción pública está activada',
+    deleteProjectEmbedWarningContent:
+      'Este proyecto está publicado como inserción pública. Al eliminarlo, el enlace de inserción se desactiva de forma permanente: si el mapa está insertado en algún sitio web, dejará de funcionar allí.',
     deleteProjectsBulkTitle: 'Eliminar proyectos',
     deleteProjectsBulkContent:
       '¿Seguro que quieres eliminar {{count}} proyectos seleccionados? Esta acción no se puede deshacer.',
+    deleteProjectsBulkEmbedWarningTitle: 'La inserción pública está activada',
+    deleteProjectsBulkEmbedWarningContent:
+      '{{count}} de los proyectos seleccionados están publicados como inserciones públicas. Al eliminarlos, esos enlaces de inserción se desactivan de forma permanente: si esos mapas están insertados en algún sitio web, dejarán de funcionar allí.',
     deleteProjectOk: 'Eliminar',
     projectsBulkDeleted: 'Se eliminaron {{count}} proyectos',
     projectsBulkDeleteFailed: 'No se pudieron eliminar los proyectos seleccionados',

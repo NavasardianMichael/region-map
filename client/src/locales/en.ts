@@ -756,9 +756,15 @@ const en: CommonNs = {
     deleteProjectTitle: 'Delete Project',
     deleteProjectContent:
       'Are you sure you want to delete "{{name}}"? This action cannot be undone.',
+    deleteProjectEmbedWarningTitle: 'Public embed is enabled',
+    deleteProjectEmbedWarningContent:
+      'This project is published as a public embed. Deleting it permanently disables the embed link — if the map is embedded on any website, it will stop working there.',
     deleteProjectsBulkTitle: 'Delete projects',
     deleteProjectsBulkContent:
       'Are you sure you want to delete {{count}} selected projects? This action cannot be undone.',
+    deleteProjectsBulkEmbedWarningTitle: 'Public embed is enabled',
+    deleteProjectsBulkEmbedWarningContent:
+      '{{count}} of the selected projects are published as public embeds. Deleting them permanently disables those embed links — if those maps are embedded on any website, they will stop working there.',
     deleteProjectOk: 'Delete',
     projectsBulkDeleted: '{{count}} projects deleted',
     projectsBulkDeleteFailed: 'Failed to delete selected projects',

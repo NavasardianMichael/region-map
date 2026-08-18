@@ -705,8 +705,14 @@ const zh: CommonNs = {
     close: '关闭',
     deleteProjectTitle: '删除项目',
     deleteProjectContent: '确定要删除「{{name}}」吗？此操作无法撤销。',
+    deleteProjectEmbedWarningTitle: '已启用公开嵌入',
+    deleteProjectEmbedWarningContent:
+      '该项目已作为公开嵌入发布。删除后嵌入链接将被永久停用——如果该地图已嵌入到任何网站，将无法继续显示。',
     deleteProjectsBulkTitle: '删除项目',
     deleteProjectsBulkContent: '确定要删除所选的 {{count}} 个项目吗？此操作无法撤销。',
+    deleteProjectsBulkEmbedWarningTitle: '已启用公开嵌入',
+    deleteProjectsBulkEmbedWarningContent:
+      '所选项目中有 {{count}} 个已作为公开嵌入发布。删除后这些嵌入链接将被永久停用——如果这些地图已嵌入到任何网站，将无法继续显示。',
     deleteProjectOk: '删除',
     projectsBulkDeleted: '已删除 {{count}} 个项目',
     projectsBulkDeleteFailed: '删除所选项目失败',

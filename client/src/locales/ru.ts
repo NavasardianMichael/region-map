@@ -742,9 +742,15 @@ const ru: CommonNs = {
     deleteProjectTitle: 'Удалить проект',
     deleteProjectContent:
       'Вы уверены, что хотите удалить «{{name}}»? Это действие нельзя отменить.',
+    deleteProjectEmbedWarningTitle: 'Публичная встройка включена',
+    deleteProjectEmbedWarningContent:
+      'Этот проект опубликован как публичная встройка. При удалении ссылка на встройку будет отключена навсегда — если карта встроена на каком-либо сайте, она перестанет там работать.',
     deleteProjectsBulkTitle: 'Удалить проекты',
     deleteProjectsBulkContent:
       'Удалить {{count}} выбранных проектов? Это действие нельзя отменить.',
+    deleteProjectsBulkEmbedWarningTitle: 'Публичная встройка включена',
+    deleteProjectsBulkEmbedWarningContent:
+      'Проектов с публичной встройкой среди выбранных: {{count}}. При удалении эти ссылки на встройку будут отключены навсегда — если карты встроены на каких-либо сайтах, они перестанут там работать.',
     deleteProjectOk: 'Удалить',
     projectsBulkDeleted: 'Удалено проектов: {{count}}',
     projectsBulkDeleteFailed: 'Не удалось удалить выбранные проекты',

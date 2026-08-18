@@ -757,9 +757,15 @@ const fr: CommonNs = {
     deleteProjectTitle: 'Supprimer le projet',
     deleteProjectContent:
       'Êtes-vous sûr de vouloir supprimer « {{name}} » ? Cette action est irréversible.',
+    deleteProjectEmbedWarningTitle: 'L’intégration publique est activée',
+    deleteProjectEmbedWarningContent:
+      'Ce projet est publié en tant qu’intégration publique. Sa suppression désactive définitivement le lien d’intégration : si la carte est intégrée sur un site web, elle cessera d’y fonctionner.',
     deleteProjectsBulkTitle: 'Supprimer des projets',
     deleteProjectsBulkContent:
       'Voulez-vous vraiment supprimer {{count}} projets sélectionnés ? Cette action est irréversible.',
+    deleteProjectsBulkEmbedWarningTitle: 'L’intégration publique est activée',
+    deleteProjectsBulkEmbedWarningContent:
+      '{{count}} des projets sélectionnés sont publiés en tant qu’intégrations publiques. Leur suppression désactive définitivement ces liens d’intégration : si ces cartes sont intégrées sur un site web, elles cesseront d’y fonctionner.',
     deleteProjectOk: 'Supprimer',
     projectsBulkDeleted: '{{count}} projets supprimés',
     projectsBulkDeleteFailed: 'Échec de la suppression des projets sélectionnés',
