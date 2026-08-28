@@ -2,12 +2,14 @@ import { type FC } from 'react';
 import { Flex } from 'antd';
 import { ROUTES } from '@/constants/routes';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
+import { GooglePreferredSourceButton } from '@/components/shared/GooglePreferredSourceButton';
 import { AppNavLink } from '@/components/ui/AppNavLink';
 
 const LINK_CLASS = 'underline! font-semibold transition-colors';
 
 export const AppFooter: FC = () => {
-  const { t } = useTypedTranslation();
+  const { t, i18n } = useTypedTranslation();
+  const language = (i18n.resolvedLanguage ?? i18n.language).split('-')[0];
 
   return (
     <footer className="border-t border-gray-200 bg-white p-6">
@@ -28,6 +30,7 @@ export const AppFooter: FC = () => {
           {t('footer.faq')}
         </AppNavLink>
       </Flex>
+      <GooglePreferredSourceButton language={language} />
     </footer>
   );
 };

@@ -28,6 +28,7 @@ export function isFooterHiddenPath(pathname: string): boolean {
 }
 
 export const EXTERNAL_URLS = {
+  GOOGLE_PREFERRED_SOURCE_SCRIPT: 'https://news.google.com/swg/js/v1/publisher.js',
   PADDLE: 'https://www.paddle.com',
 } as const;
 
