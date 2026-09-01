@@ -1,8 +1,9 @@
 import { type FC, useCallback, useMemo } from 'react';
 import { CheckOutlined, LoadingOutlined } from '@ant-design/icons';
-import { type Badge, BADGES } from '@regionify/shared';
+import { type Badge, BADGES, formatBadgePriceUsd } from '@regionify/shared';
 import { Button, Card, Flex, Spin, Typography } from 'antd';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
+import { trimZeroCents } from '@/helpers/trimZeroCents';
 import type { BillingBadge, PayableBadge } from './types';
 
 const BADGE_TIER_RANK: Record<Badge, number> = {
@@ -45,11 +46,12 @@ const BadgeCard: FC<BadgeCardProps> = ({
 
   const priceLabel = useMemo(() => {
     if (tier.price === 0) return t('badges.priceFree');
-    if (localizedPrice) return t('badges.priceOneTimeVatIncluded', { price: localizedPrice });
+    if (localizedPrice)
+      return t('badges.priceOneTimeVatIncluded', { price: trimZeroCents(localizedPrice) });
     if (shouldShowFallbackPrice)
-      return t('badges.priceOneTimeVatIncluded', { price: `$${tier.price}` });
+      return t('badges.priceOneTimeVatIncluded', { price: formatBadgePriceUsd(tier.id) });
     return null;
-  }, [tier.price, localizedPrice, shouldShowFallbackPrice, t]);
+  }, [tier.price, tier.id, localizedPrice, shouldShowFallbackPrice, t]);
 
   const buttonType = isCurrentBadge ? 'default' : 'primary';
 
