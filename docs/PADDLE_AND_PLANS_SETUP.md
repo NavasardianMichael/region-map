@@ -24,8 +24,8 @@ Existing users get `badge = observer` (free) by default.
 2. Go to **Catalog → Products → New product**.
    - Create one product (e.g. **Regionify Badge**).
 3. Under the product, add **two Prices** — both one-time:
-   - **Explorer**: one-time, **$49 USD**.
-   - **Chronographer**: one-time, **$149 USD**.
+   - **Explorer**: one-time, **$19 USD**.
+   - **Chronographer**: one-time, **$39 USD**.
 4. Copy the **Price ID** for each (format: `pri_01abc...`). These go into the env vars below.
 
 > **Sandbox vs production:** Price IDs in the sandbox are different from production. Use sandbox credentials in dev and production credentials in prod.
@@ -192,8 +192,8 @@ Everything below is a one-time external setup that is not automated by code. Do 
    - Name: `Regionify Badge` (or any name — not customer-facing for one-time purchases).
    - Save.
 3. On the product page, click **New price** twice:
-   - Price 1: type = **One-time**, amount = **$49.00 USD**, internal description = `Explorer`.
-   - Price 2: type = **One-time**, amount = **$149.00 USD**, internal description = `Chronographer`.
+   - Price 1: type = **One-time**, amount = **$19 USD**, internal description = `Explorer`.
+   - Price 2: type = **One-time**, amount = **$39 USD**, internal description = `Chronographer`.
 4. Copy both **Price IDs** (shown as `pri_01...` next to each price). You need these for env vars.
 
 #### Step 3 — Get a sandbox API key and client-side token
@@ -323,7 +323,7 @@ Standard deploy. The new env vars take effect on next server start — no code c
 #### Step 8 — Run a live smoke test
 
 - Paddle allows test transactions on production before full activation. Use a real card with a small amount, then issue a refund from the Paddle dashboard.
-- Alternatively, run one real $49 Explorer purchase on a personal account and verify the full flow: checkout → overlay → webhook → badge updated → success screen.
+- Alternatively, run one real $19 Explorer purchase on a personal account and verify the full flow: checkout → overlay → webhook → badge updated → success screen.
 - Check **Developer Tools → Notifications → recent deliveries** in the production dashboard to confirm the webhook was delivered with a **200** response.
 
 #### Step 9 — Go live

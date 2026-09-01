@@ -10,7 +10,7 @@ import { EXPORT_TYPES } from './exportTypes.js';
  * Chronographer: adds public embed (iframe + public page) and a higher AI daily quota.
  */
 export type BadgeDetails = {
-  price: number; // Monthly price in USD (0 for free)
+  price: number; // One-time price in USD (0 for free)
   limits: {
     maxExportQuality: number;
     /** Allowed export formats (still + animated, by tier). */
@@ -64,7 +64,7 @@ export const BADGE_DETAILS: Record<Badge, BadgeDetails> = {
     },
   },
   [BADGES.explorer]: {
-    price: 49,
+    price: 19,
     limits: {
       maxExportQuality: 100,
       allowedExportFormats: [
@@ -90,7 +90,7 @@ export const BADGE_DETAILS: Record<Badge, BadgeDetails> = {
     },
   },
   [BADGES.chronographer]: {
-    price: 149,
+    price: 39,
     limits: {
       maxExportQuality: 100,
       allowedExportFormats: [
@@ -116,3 +116,13 @@ export const BADGE_DETAILS: Record<Badge, BadgeDetails> = {
     },
   },
 };
+
+/**
+ * USD list price for display, e.g. `$19`. Used as the fallback everywhere Paddle's
+ * IP-localized price (see the pricing-preview endpoint) is unavailable or not applicable.
+ * Cents are shown only when the price actually has them.
+ */
+export function formatBadgePriceUsd(badge: Badge): string {
+  const { price } = BADGE_DETAILS[badge];
+  return `$${Number.isInteger(price) ? price : price.toFixed(2)}`;
+}

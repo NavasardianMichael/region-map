@@ -1,4 +1,5 @@
 import { type FC } from 'react';
+import { BADGES, formatBadgePriceUsd } from '@regionify/shared';
 import { Typography } from 'antd';
 import { ROUTES } from '@/constants/routes';
 import { LegalPageLayout } from '@/components/shared/LegalPageLayout';
@@ -6,7 +7,7 @@ import { LegalSection } from '@/components/shared/LegalSection';
 import { AppNavLink } from '@/components/ui/AppNavLink';
 
 const TermsPage: FC = () => (
-  <LegalPageLayout title="Terms of Service" lastUpdated="May 18, 2025">
+  <LegalPageLayout title="Terms of Service" lastUpdated="September 1, 2026">
     <LegalSection heading="1. Acceptance of Terms">
       <Typography.Paragraph className="mb-0! text-gray-600">
         By accessing or using Regionify (&ldquo;the Service&rdquo;), you agree to be bound by these
@@ -63,11 +64,12 @@ const TermsPage: FC = () => (
 
     <LegalSection heading="6. Payments">
       <Typography.Paragraph className="mb-0! text-gray-600">
-        Certain features require a one-time purchase of a paid tier (Explorer at $49 or
-        Chronographer at $149). Payments are processed securely by Paddle, our authorized payment
-        processor. Once purchased, access to the paid tier is lifetime — there are no recurring
-        charges. Paddle&apos;s terms of service govern the payment transaction itself. For our
-        refund terms, see our{' '}
+        Certain features require a one-time purchase of a paid tier (Explorer at{' '}
+        {formatBadgePriceUsd(BADGES.explorer)} or Chronographer at{' '}
+        {formatBadgePriceUsd(BADGES.chronographer)}). Payments are processed securely by Paddle, our
+        authorized payment processor. Once purchased, access to the paid tier is lifetime — there
+        are no recurring charges. Paddle&apos;s terms of service govern the payment transaction
+        itself. For our refund terms, see our{' '}
         <AppNavLink to={ROUTES.REFUND_POLICY} className="font-semibold! underline!">
           Refund Policy
         </AppNavLink>

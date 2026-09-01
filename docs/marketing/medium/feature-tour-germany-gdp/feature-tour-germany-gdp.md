@@ -129,7 +129,7 @@ Two ways to hand off the result. Export a still as PNG, JPEG, or PDF (every tier
 
 ### What it costs
 
-**Observer** is free — 5 projects, PNG/JPEG/PDF export, all 200+ region sets, no card required. **Explorer** is $49 once — adds SVG export, the time-series import that makes the animation above possible, GIF/MP4 export, and the AI parser. **Chronographer** is $149 once — adds the public embed. All one-time purchases, no subscription — unlike [Datawrapper](https://www.datawrapper.de/) or [Flourish](https://flourish.studio/), where the watermark-free tier is a recurring monthly cost.
+**Observer** is free — 5 projects, PNG/JPEG/PDF export, all 200+ region sets, no card required. **Explorer** is $19 once — adds SVG export, the time-series import that makes the animation above possible, GIF/MP4 export, and the AI parser. **Chronographer** is $39 once — adds the public embed. All one-time purchases, no subscription — unlike [Datawrapper](https://www.datawrapper.de/) or [Flourish](https://flourish.studio/), where the watermark-free tier is a recurring monthly cost.
 
 ### Try it on your own data
 

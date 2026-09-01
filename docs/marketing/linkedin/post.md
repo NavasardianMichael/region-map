@@ -91,8 +91,8 @@ What's inside:
 
 Pricing is one-time, not a subscription — and the free plan is genuinely free, no credit card:
 • Observer (free) — 5 projects, PNG/JPEG/PDF export, all 200+ maps included, advanced styling + up to 4K
-• Explorer ($49 once) — unlimited projects, SVG export, time-series data + animated GIF/MP4, AI Agent (parse & generate, up to 5/day)
-• Chronographer ($149 once) — everything in Explorer, plus public embeds and a bigger AI Agent allowance (up to 10/day)
+• Explorer ($19 once) — unlimited projects, SVG export, time-series data + animated GIF/MP4, AI Agent (parse & generate, up to 5/day)
+• Chronographer ($39 once) — everything in Explorer, plus public embeds and a bigger AI Agent allowance (up to 10/day)
 
 Built for analysts, journalists, policy researchers, agency PMs, and anyone who ships regional data visualization more than twice a year.
 
@@ -166,7 +166,7 @@ If you try it and get stuck anywhere, tell me exactly where. I'm iterating on on
 
 **Q: "How is this different from Datawrapper / Flourish?"**
 
-> Great tools — I use Datawrapper myself for time-series charts. The specific job Regionify solves is turning a _messy_ regional spreadsheet into a styled map without manual name-matching. Datawrapper needs your region names to match its list exactly; Regionify's AI parser resolves diacritics, abbreviations, and language variants automatically. Also, watermark-free exports start at a one-time $49 vs Datawrapper's $599/mo team plan.
+> Great tools — I use Datawrapper myself for time-series charts. The specific job Regionify solves is turning a _messy_ regional spreadsheet into a styled map without manual name-matching. Datawrapper needs your region names to match its list exactly; Regionify's AI parser resolves diacritics, abbreviations, and language variants automatically. Also, watermark-free exports start at a one-time $19 vs Datawrapper's $599/mo team plan.
 
 **Q: "Does it support [country X]?"**
 
@@ -186,7 +186,7 @@ If you try it and get stuck anywhere, tell me exactly where. I'm iterating on on
 
 **Q: (soft criticism) "The pricing feels steep for solo users."**
 
-> Fair point on sticker shock — but it's a one-time $49, not a monthly charge, so it tends to pay for itself after the first paid deliverable. If there's still a gap for occasional or solo use, tell me what's missing on the free tier and I'll factor it into a lighter tier.
+> Fair point on sticker shock — but it's a one-time $19, not a monthly charge, so it tends to pay for itself after the first paid deliverable. If there's still a gap for occasional or solo use, tell me what's missing on the free tier and I'll factor it into a lighter tier.
 
 **Q: (agency DM) "We do X regional visualisations a month for clients — is there an agency plan?"**
 

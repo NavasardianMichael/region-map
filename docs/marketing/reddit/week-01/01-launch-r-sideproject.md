@@ -57,8 +57,8 @@ For the last 3 months I've been building [**Regionify**](https://regionify.pro) 
 **Pricing (one-time, not a subscription):**
 
 - **Observer** — free, 5 projects, PNG/JPEG/PDF export, advanced styling, up to 4K
-- **Explorer** — $49 once, unlimited projects, SVG export, time-series data + animated GIF/MP4, AI parser (5/day)
-- **Chronographer** — $149 once, everything in Explorer plus public iframe embeds and a higher AI quota (10/day)
+- **Explorer** — $19 once, unlimited projects, SVG export, time-series data + animated GIF/MP4, AI parser (5/day)
+- **Chronographer** — $39 once, everything in Explorer plus public iframe embeds and a higher AI quota (10/day)
 
 **What I'm looking for from r/SideProject:**
 
@@ -87,7 +87,7 @@ Full disclosure: I'm the solo founder. This is my first SaaS launch after 6 year
 
 **Q: "Why not just use Datawrapper / Flourish / Mapbox Studio?"**
 
-> Fair question — I use Datawrapper too. Regionify is aimed at a slightly different job: you have a spreadsheet with region names that don't quite match anything, and you want a styled map in one minute. The AI parser + fuzzy matching handles the "why is 'Cataluña' not matching 'Catalonia'?" problem that eats 20 minutes in most tools. Also, no watermarks removed at $49 vs $599/mo for Datawrapper's team plan.
+> Fair question — I use Datawrapper too. Regionify is aimed at a slightly different job: you have a spreadsheet with region names that don't quite match anything, and you want a styled map in one minute. The AI parser + fuzzy matching handles the "why is 'Cataluña' not matching 'Catalonia'?" problem that eats 20 minutes in most tools. Also, no watermarks removed at $19 vs $599/mo for Datawrapper's team plan.
 
 **Q: "Does it support [country X]?"**
 

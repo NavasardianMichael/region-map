@@ -2,7 +2,7 @@
 
 ## Context
 
-Prices on the billing/pricing page are currently hardcoded numbers (`49`, `149`) from `BADGE_DETAILS`. Paddle's free Pricing Preview API returns the exact localized price (with correct currency symbol) that will appear at checkout, based on the visitor's IP. This avoids surprise currency mismatches and improves conversion for non-US visitors. The API key must stay server-side, so the client calls our own proxy endpoint.
+Prices on the billing/pricing page are currently hardcoded numbers (`19`, `39`) from `BADGE_DETAILS`. Paddle's free Pricing Preview API returns the exact localized price (with correct currency symbol) that will appear at checkout, based on the visitor's IP. This avoids surprise currency mismatches and improves conversion for non-US visitors. The API key must stay server-side, so the client calls our own proxy endpoint.
 
 ---
 
@@ -40,7 +40,7 @@ Paddle response shape to extract:
 
 ```
 data.details.line_items[].price.id         → match to badge
-data.details.line_items[].formatted_totals.total → "€45.00"
+data.details.line_items[].formatted_totals.total → "€17.50"
 ```
 
 - Skip price IDs that aren't configured in env (return `null` for that badge)
@@ -101,7 +101,7 @@ export function usePricingPreview(): { prices: LocalizedPrices | null; isLoading
 
 Render logic for the price display:
 
-- If `localizedPrice` is provided → show it (e.g. "€45.00 one-time")
+- If `localizedPrice` is provided → show it (e.g. "€17.50 one-time")
 - Otherwise → fall back to `t('badges.priceOneTime', { price })` with hardcoded number
 - No skeleton/loading state needed — hardcoded price shows until localized price resolves
 
@@ -152,8 +152,8 @@ Uses existing: `PADDLE_API_KEY`, `PADDLE_PRICE_ID_EXPLORER`, `PADDLE_PRICE_ID_CH
 
 ## Verification
 
-1. Open billing page → prices initially show hardcoded values ($49 / $149)
-2. After fetch resolves (~200ms) → prices update to localized format (e.g. "€45.00 one-time" for IE visitor)
+1. Open billing page → prices initially show hardcoded values ($19 / $39)
+2. After fetch resolves (~200ms) → prices update to localized format (e.g. "€17.50 one-time" for IE visitor)
 3. Disconnect network → prices stay at hardcoded fallback, no error shown
-4. Check Network tab → `GET /api/payments/pricing-preview` returns `{ success: true, data: { explorer: "€45.00", chronographer: "€135.00" } }`
+4. Check Network tab → `GET /api/payments/pricing-preview` returns `{ success: true, data: { explorer: "€17.50", chronographer: "€36.00" } }`
 5. Verify the returned price matches what Paddle shows at checkout

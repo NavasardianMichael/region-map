@@ -1,4 +1,5 @@
 import { type FC } from 'react';
+import { BADGES, formatBadgePriceUsd } from '@regionify/shared';
 import { Typography } from 'antd';
 import { ROUTES } from '@/constants/routes';
 import { LegalPageLayout } from '@/components/shared/LegalPageLayout';
@@ -6,12 +7,13 @@ import { LegalSection } from '@/components/shared/LegalSection';
 import { AppNavLink } from '@/components/ui/AppNavLink';
 
 const RefundPolicyPage: FC = () => (
-  <LegalPageLayout title="Refund Policy" lastUpdated="May 18, 2025">
+  <LegalPageLayout title="Refund Policy" lastUpdated="September 1, 2026">
     <LegalSection heading="1. One-Time Purchases">
       <Typography.Paragraph className="mb-0! text-gray-600">
-        Regionify offers two paid tiers — Explorer ($49) and Chronographer ($149) — each as a
-        one-time, lifetime purchase. There are no subscriptions or recurring charges. Your access to
-        the purchased tier does not expire.
+        Regionify offers two paid tiers — Explorer ({formatBadgePriceUsd(BADGES.explorer)}) and
+        Chronographer ({formatBadgePriceUsd(BADGES.chronographer)}) — each as a one-time, lifetime
+        purchase. There are no subscriptions or recurring charges. Your access to the purchased tier
+        does not expire.
       </Typography.Paragraph>
     </LegalSection>
 

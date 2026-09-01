@@ -117,7 +117,7 @@ Happy to answer questions on any part — Prisma schema, the front-end binding U
 ```
 For anyone who wants to try it: https://regionify.pro/?utm_source=reddit&utm_medium=organic&utm_campaign=webdev-05
 
-Full disclosure — I'm the solo founder. Observer tier is free, no credit card. The AI parser is currently a paid-tier feature (Explorer, $49 one-time — up to 5 AI requests/day; Chronographer raises that to 10/day) but the deterministic fuzzy matcher runs for everyone on the free tier and covers ~80% of real inputs.
+Full disclosure — I'm the solo founder. Observer tier is free, no credit card. The AI parser is currently a paid-tier feature (Explorer, $19 one-time — up to 5 AI requests/day; Chronographer raises that to 10/day) but the deterministic fuzzy matcher runs for everyone on the free tier and covers ~80% of real inputs.
 
 I open-sourced the deterministic matching layer as a standalone TS package a few weeks ago — if you're building anything similar and want to skip re-inventing the wheel, DM me and I'll share the repo.
 ```

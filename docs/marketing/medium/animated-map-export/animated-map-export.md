@@ -85,7 +85,7 @@ Same panel, switch the export type to **Video (MP4)**. For a multi-decade animat
 ### Which tier you need
 
 - **Observer (free)** — static PNG/JPEG/PDF export only. No time-series import, so no animated export either.
-- **Explorer ($49 once)** — adds time-series data import plus the GIF and MP4 animation export shown above.
+- **Explorer ($19 once)** — adds time-series data import plus the GIF and MP4 animation export shown above.
 
 ### Try it
 

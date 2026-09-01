@@ -128,7 +128,7 @@ Happy to expand on any of the numbers, the copy iterations, or the exact posting
 
 **Q: (harsh) "3 weeks and only $X MRR? That's tiny."**
 
-> Yeah, it is. I'm treating month 1 as pure top-of-funnel and top of learning curve, not revenue. If Q2 doesn't get to a specific MRR target I'm going to reassess whether the freemium bar is set right — currently leaning toward moving the public-embed feature down from Chronographer ($149) to Explorer ($49) as a growth-loop driver. But that's a separate decision.
+> Yeah, it is. I'm treating month 1 as pure top-of-funnel and top of learning curve, not revenue. If Q2 doesn't get to a specific MRR target I'm going to reassess whether the freemium bar is set right — currently leaning toward moving the public-embed feature down from Chronographer ($39) to Explorer ($19) as a growth-loop driver. But that's a separate decision.
 
 ---
 
