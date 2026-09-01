@@ -244,6 +244,10 @@ const fr: CommonNs = {
     renameProjectOk: 'Renommer',
     mapHeaderRenameTooltip: 'Renommer le projet',
     mapHeaderDeleteTooltip: 'Supprimer le projet',
+    mapHeaderLockTooltip: 'Verrouiller le projet',
+    mapHeaderUnlockTooltip: 'Déverrouiller le projet',
+    mapHeaderLockedSaveTooltip:
+      'Ce projet est verrouillé. Déverrouillez-le pour enregistrer les modifications.',
     mapAriaMapOf: 'Carte de {{region}}',
     mapAriaNoCountrySelected: 'Aucun pays sélectionné',
     tabData: 'Données',
@@ -695,6 +699,13 @@ const fr: CommonNs = {
     bulkSelectCapTooltip:
       'Au plus {{max}} projets peuvent être sélectionnés pour une suppression groupée.',
     selectProjectAria: 'Sélectionner le projet {{name}}',
+    lock: 'Verrouiller',
+    unlock: 'Déverrouiller',
+    lockedTag: 'Verrouillé',
+    lockedRenameTooltip: 'Ce projet est verrouillé. Déverrouillez-le pour le renommer.',
+    lockedDeleteTooltip: 'Ce projet est verrouillé. Déverrouillez-le pour le supprimer.',
+    bulkSelectLockedTooltip:
+      'Les projets verrouillés ne peuvent pas être sélectionnés pour suppression.',
   },
   common: {
     loading: 'Chargement...',
@@ -767,7 +778,27 @@ const fr: CommonNs = {
     deleteProjectsBulkEmbedWarningContent:
       '{{count}} des projets sélectionnés sont publiés en tant qu’intégrations publiques. Leur suppression désactive définitivement ces liens d’intégration : si ces cartes sont intégrées sur un site web, elles cesseront d’y fonctionner.',
     deleteProjectOk: 'Supprimer',
+    lockProjectTitle: 'Verrouiller le projet',
+    lockProjectContent:
+      'Verrouiller « {{name}} » ? Le verrouillage protège un projet que vous considérez comme terminé.',
+    lockProjectInfoTitle: 'Tant qu’il est verrouillé, ce projet ne peut pas être modifié',
+    lockProjectInfoContent:
+      'L’enregistrement, le renommage, la modification des paramètres d’intégration et la suppression sont bloqués. Vous pouvez toujours ouvrir le projet, l’ajuster à l’écran et exporter des images : rien n’est enregistré tant que vous ne l’avez pas déverrouillé. Toute intégration publique continue de fonctionner normalement.',
+    lockProjectOk: 'Verrouiller le projet',
+    unlockProjectTitle: 'Déverrouiller le projet',
+    unlockProjectContent:
+      'Déverrouiller « {{name}} » ? Les modifications et la suppression redeviendront possibles.',
+    unlockProjectWarningTitle: 'La protection sera retirée',
+    unlockProjectWarningContent:
+      'Ce projet ne sera plus protégé contre les modifications ou suppressions accidentelles.',
+    unlockProjectOk: 'Déverrouiller le projet',
+    projectLocked: 'Projet verrouillé',
+    projectUnlocked: 'Projet déverrouillé',
+    projectLockFailed: 'Impossible de modifier l’état de verrouillage. Veuillez réessayer.',
+    projectLockedError: 'Ce projet est verrouillé. Déverrouillez-le pour le modifier.',
     projectsBulkDeleted: '{{count}} projets supprimés',
+    projectsBulkDeletePartial:
+      '{{count}} projets supprimés. Les projets verrouillés ont été ignorés.',
     projectsBulkDeleteFailed: 'Échec de la suppression des projets sélectionnés',
     loginFailed: 'Échec de la connexion',
     signUpFailed: 'Échec de la création du compte',

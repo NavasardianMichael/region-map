@@ -39,6 +39,7 @@ function buildProjectFromEmbedPayload(data: PublicEmbedApiResponse): Project {
         allowedOrigins: null,
       },
     },
+    locked: false,
     createdAt: '',
     updatedAt: '',
   };

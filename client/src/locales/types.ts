@@ -185,6 +185,9 @@ export type CommonNs = {
     renameProjectOk: string;
     mapHeaderRenameTooltip: string;
     mapHeaderDeleteTooltip: string;
+    mapHeaderLockTooltip: string;
+    mapHeaderUnlockTooltip: string;
+    mapHeaderLockedSaveTooltip: string;
     /** Accessible label for the map surface when a region is selected */
     mapAriaMapOf: string;
     /** Accessible label when no region is selected */
@@ -602,6 +605,12 @@ export type CommonNs = {
     bulkSelectTruncated: string;
     bulkSelectCapTooltip: string;
     selectProjectAria: string;
+    lock: string;
+    unlock: string;
+    lockedTag: string;
+    lockedRenameTooltip: string;
+    lockedDeleteTooltip: string;
+    bulkSelectLockedTooltip: string;
   };
   common: {
     loading: string;
@@ -682,7 +691,22 @@ export type CommonNs = {
     deleteProjectsBulkEmbedWarningTitle: string;
     deleteProjectsBulkEmbedWarningContent: string;
     deleteProjectOk: string;
+    lockProjectTitle: string;
+    lockProjectContent: string;
+    lockProjectInfoTitle: string;
+    lockProjectInfoContent: string;
+    lockProjectOk: string;
+    unlockProjectTitle: string;
+    unlockProjectContent: string;
+    unlockProjectWarningTitle: string;
+    unlockProjectWarningContent: string;
+    unlockProjectOk: string;
+    projectLocked: string;
+    projectUnlocked: string;
+    projectLockFailed: string;
+    projectLockedError: string;
     projectsBulkDeleted: string;
+    projectsBulkDeletePartial: string;
     projectsBulkDeleteFailed: string;
     loginFailed: string;
     signUpFailed: string;

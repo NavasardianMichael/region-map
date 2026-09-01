@@ -102,29 +102,28 @@ export const useProjects = (): UseProjectsReturn => {
     setProjectsStatus(IDLE_STATUSES.success);
   }, [isLoggedIn, setProjects, setProjectsStatus]);
 
+  const loadProjects = useCallback(async () => {
+    setProjectsStatus(IDLE_STATUSES.pending);
+    try {
+      const data = await getProjects();
+      setProjects(data);
+      setProjectsStatus(IDLE_STATUSES.success);
+    } catch (error) {
+      if (getErrorCode(error) === 'UNAUTHORIZED') {
+        logout();
+        message.error(t('messages.sessionExpired'));
+        navigate(ROUTES.LOGIN);
+      } else {
+        message.error(t('messages.projectsLoadFailed'));
+      }
+      setProjectsStatus(IDLE_STATUSES.error);
+    }
+  }, [setProjects, setProjectsStatus, message, t, logout, navigate]);
+
   useEffect(() => {
     if (!isLoggedIn) return;
-
-    const fetchProjects = async () => {
-      setProjectsStatus(IDLE_STATUSES.pending);
-      try {
-        const data = await getProjects();
-        setProjects(data);
-        setProjectsStatus(IDLE_STATUSES.success);
-      } catch (error) {
-        if (getErrorCode(error) === 'UNAUTHORIZED') {
-          logout();
-          message.error(t('messages.sessionExpired'));
-          navigate(ROUTES.LOGIN);
-        } else {
-          message.error(t('messages.projectsLoadFailed'));
-        }
-        setProjectsStatus(IDLE_STATUSES.error);
-      }
-    };
-
-    void fetchProjects();
-  }, [isLoggedIn, setProjects, setProjectsStatus, message, t, logout, navigate]);
+    void loadProjects();
+  }, [isLoggedIn, loadProjects]);
 
   const filteredProjects = useMemo(() => {
     if (!debouncedSearch.trim()) return projects;
@@ -297,11 +296,20 @@ export const useProjects = (): UseProjectsReturn => {
     const ids = deletingProjectsBulk.map((p) => p.id);
     setIsBulkDeleting(true);
     try {
-      await deleteProjectsBulkApi(ids);
-      removeProjects(ids);
-      message.success(t('messages.projectsBulkDeleted', { count: ids.length }), 5);
+      const { deletedCount } = await deleteProjectsBulkApi(ids);
       setDeletingProjectsBulk(null);
       clearSelection();
+
+      // The server skips projects locked since this list was loaded, so trust its count
+      // and resync rather than optimistically dropping rows that still exist.
+      if (deletedCount < ids.length) {
+        message.warning(t('messages.projectsBulkDeletePartial', { count: deletedCount }), 5);
+        await loadProjects();
+        return;
+      }
+
+      removeProjects(ids);
+      message.success(t('messages.projectsBulkDeleted', { count: deletedCount }), 5);
     } catch (error) {
       if (getErrorCode(error) === 'UNAUTHORIZED') {
         logout();
@@ -313,7 +321,16 @@ export const useProjects = (): UseProjectsReturn => {
     } finally {
       setIsBulkDeleting(false);
     }
-  }, [deletingProjectsBulk, removeProjects, message, t, clearSelection, logout, navigate]);
+  }, [
+    deletingProjectsBulk,
+    removeProjects,
+    message,
+    t,
+    clearSelection,
+    logout,
+    navigate,
+    loadProjects,
+  ]);
 
   const handleBulkDeleteCancel = useCallback(() => {
     setDeletingProjectsBulk(null);

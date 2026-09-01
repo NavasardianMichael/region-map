@@ -11,6 +11,7 @@ export * from './schemas/auth.js';
 export * from './schemas/contact.js';
 export * from './schemas/sheets.js';
 export * from './schemas/projectEmbed.js';
+export * from './schemas/projectLock.js';
 export * from './schemas/projectsBulkDelete.js';
 
 // Constants

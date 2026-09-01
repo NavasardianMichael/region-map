@@ -5,4 +5,5 @@ export const PROJECT_ENDPOINTS = {
   bulkDelete: `${BASE_URL}/projects/bulk-delete`,
   detail: (id: string) => `${BASE_URL}/projects/${id}`,
   embed: (id: string) => `${BASE_URL}/projects/${id}/embed`,
+  lock: (id: string) => `${BASE_URL}/projects/${id}/lock`,
 } as const;

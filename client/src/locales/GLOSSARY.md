@@ -16,6 +16,22 @@ Decisions for translators and future strings. Locale files: `en`, `de`, `es`, `f
 
 **iframe** stays as **iframe** (widely recognized technical term).
 
+## Project lock
+
+A locked project cannot be saved, renamed, re-embedded, or deleted. Keep one verb per locale across the button, tooltips, modal, and toasts.
+
+| Locale | Verb (lock / unlock)           | State adjective |
+| ------ | ------------------------------ | --------------- |
+| EN     | lock / unlock                  | Locked          |
+| DE     | sperren / entsperren           | Gesperrt        |
+| ES     | bloquear / desbloquear         | Bloqueado       |
+| FR     | verrouiller / déverrouiller    | Verrouillé      |
+| PT     | bloquear / desbloquear         | Bloqueado       |
+| RU     | заблокировать / разблокировать | Заблокирован    |
+| ZH     | 锁定 / 解锁                    | 已锁定          |
+
+Do **not** reuse the embed-settings vocabulary here — locking is about write protection, not publishing.
+
 ## Google Sheets
 
 - **Product name:** Keep “Google Sheets” in UI that refers to the product (connect, import, column hints) where the English UI does the same.

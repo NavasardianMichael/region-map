@@ -28,6 +28,7 @@ import type { Project } from '@/api/projects/types';
 import { selectUser } from '@/store/profile/selectors';
 import { useProfileStore } from '@/store/profile/store';
 import { useLoadProject } from '@/hooks/useLoadProject';
+import { useProjectLock } from '@/hooks/useProjectLock';
 import { type ProjectsSortOption, useProjects } from '@/hooks/useProjects';
 import { IDLE_STATUSES } from '@/constants/loadingStatus';
 import { getProjectRoute, ROUTES } from '@/constants/routes';
@@ -43,6 +44,11 @@ const RenameProjectModal = lazy(() =>
 const DeleteProjectModal = lazy(() =>
   import('@/components/projects/DeleteProjectModal/Modal').then((m) => ({
     default: m.DeleteProjectModal,
+  })),
+);
+const ProjectLockModal = lazy(() =>
+  import('@/components/projects/ProjectLockModal/Modal').then((m) => ({
+    default: m.ProjectLockModal,
   })),
 );
 
@@ -84,6 +90,13 @@ const ProjectsPage: FC = () => {
     handleRenameCancel,
     selectedCount,
   } = useProjects();
+  const {
+    pendingProject: lockPendingProject,
+    isSubmitting: isLockSubmitting,
+    requestToggle: handleToggleLock,
+    handleConfirm: handleLockConfirm,
+    handleCancel: handleLockCancel,
+  } = useProjectLock();
 
   useEffect(() => {
     void import('@/pages/VisualizerPage');
@@ -275,7 +288,8 @@ const ProjectsPage: FC = () => {
               >
                 {displayedProjects.map((project) => {
                   const selected = isProjectSelected(project.id);
-                  const checkboxDisabled = !selected && isSelectionCapReached;
+                  const capReached = !selected && isSelectionCapReached;
+                  const checkboxDisabled = project.locked || capReached;
                   const card = (
                     <ProjectCard
                       key={project.id}
@@ -283,6 +297,7 @@ const ProjectsPage: FC = () => {
                       onOpen={handleOpen}
                       onDelete={handleDelete}
                       onRename={handleRenameStart}
+                      onToggleLock={handleToggleLock}
                       isOpening={openingProjectId === project.id}
                       showSelection
                       isSelected={selected}
@@ -293,13 +308,11 @@ const ProjectsPage: FC = () => {
                     />
                   );
                   if (!checkboxDisabled) return card;
+                  const checkboxTooltip = project.locked
+                    ? t('projects.bulkSelectLockedTooltip')
+                    : t('projects.bulkSelectCapTooltip', { max: PROJECTS_BULK_DELETE_MAX_IDS });
                   return (
-                    <Tooltip
-                      key={project.id}
-                      title={t('projects.bulkSelectCapTooltip', {
-                        max: PROJECTS_BULK_DELETE_MAX_IDS,
-                      })}
-                    >
+                    <Tooltip key={project.id} title={checkboxTooltip}>
                       {card}
                     </Tooltip>
                   );
@@ -319,6 +332,17 @@ const ProjectsPage: FC = () => {
           confirmLoading={isDeleting || isBulkDeleting}
         />
       </Suspense>
+
+      {lockPendingProject && (
+        <Suspense>
+          <ProjectLockModal
+            project={lockPendingProject}
+            onConfirm={handleLockConfirm}
+            onCancel={handleLockCancel}
+            confirmLoading={isLockSubmitting}
+          />
+        </Suspense>
+      )}
 
       {renamingProject && (
         <Suspense>

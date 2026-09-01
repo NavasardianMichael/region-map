@@ -3,6 +3,7 @@ import {
   type FC,
   lazy,
   Suspense,
+  useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -13,8 +14,10 @@ import {
   DeleteOutlined,
   DownloadOutlined,
   EditOutlined,
+  LockOutlined,
   SaveOutlined,
   ShareAltOutlined,
+  UnlockOutlined,
 } from '@ant-design/icons';
 import * as Sentry from '@sentry/react';
 import {
@@ -44,6 +47,7 @@ import { useProjectsStore } from '@/store/projects/store';
 import { useGuestDraftAutosave } from '@/hooks/useGuestDraftAutosave';
 import { useIsMdUp } from '@/hooks/useIsMdUp';
 import { useLoadProject } from '@/hooks/useLoadProject';
+import { useProjectLock } from '@/hooks/useProjectLock';
 import { captureStateSnapshot } from '@/hooks/useProjectState';
 import { useUnsavedChangesGuard } from '@/hooks/useUnsavedChangesGuard';
 import { useVisualizerPage } from '@/hooks/useVisualizerPage';
@@ -86,6 +90,11 @@ const RenameProjectModal = lazy(() =>
 const DeleteProjectModal = lazy(() =>
   import('@/components/projects/DeleteProjectModal/Modal').then((m) => ({
     default: m.DeleteProjectModal,
+  })),
+);
+const ProjectLockModal = lazy(() =>
+  import('@/components/projects/ProjectLockModal/Modal').then((m) => ({
+    default: m.ProjectLockModal,
   })),
 );
 const SaveProjectNameModal = lazy(() =>
@@ -135,6 +144,7 @@ const VisualizerPage: FC = () => {
     isSaving,
     isNameModalOpen,
     currentProject,
+    isCurrentProjectLocked,
     projectName,
     isRenameModalOpen,
     isRenameSubmitting,
@@ -161,13 +171,30 @@ const VisualizerPage: FC = () => {
     handleDeleteCancel,
   } = useVisualizerPage();
 
+  const {
+    pendingProject: lockPendingProject,
+    isSubmitting: isLockSubmitting,
+    requestToggle: requestLockToggle,
+    handleConfirm: handleLockConfirm,
+    handleCancel: handleLockCancel,
+  } = useProjectLock();
+
+  const handleToggleLockCurrentProject = useCallback(() => {
+    if (!currentProject) return;
+    requestLockToggle(currentProject);
+  }, [currentProject, requestLockToggle]);
+
   const unsavedGuard = useUnsavedChangesGuard({
     hasUnsavedChanges: isLoggedIn && visualizerProjectId !== null && hasUnsavedChanges,
     onSave: saveCurrentProject,
   });
 
   const embedButtonDisabled =
-    !canUseEmbed || !selectedCountryId || !currentProject || isAwaitingProjectFromUrl;
+    !canUseEmbed ||
+    !selectedCountryId ||
+    !currentProject ||
+    isCurrentProjectLocked ||
+    isAwaitingProjectFromUrl;
 
   const embedTooltipTitle = useMemo(() => {
     if (!embedButtonDisabled) return undefined;
@@ -203,12 +230,14 @@ const VisualizerPage: FC = () => {
       );
     }
     if (!currentProject) return t('visualizer.embed.tooltipNeedSavedProject');
+    if (isCurrentProjectLocked) return t('messages.projectLockedError');
     if (!selectedCountryId) return t('visualizer.embed.tooltipSelectCountry');
     return undefined;
   }, [
     embedButtonDisabled,
     canUseEmbed,
     currentProject,
+    isCurrentProjectLocked,
     selectedCountryId,
     t,
     token.colorTextLightSolid,
@@ -367,43 +396,84 @@ const VisualizerPage: FC = () => {
           {isLoggedIn && currentProject && !isAwaitingProjectFromUrl ? (
             <Flex gap={0} className="shrink-0">
               <Tooltip
-                title={t('visualizer.mapHeaderRenameTooltip')}
+                title={
+                  isCurrentProjectLocked
+                    ? t('projects.lockedRenameTooltip')
+                    : t('visualizer.mapHeaderRenameTooltip')
+                }
                 data-i18n-key="visualizer.mapHeaderRenameTooltip"
+              >
+                <span className="inline-flex">
+                  <Button
+                    type="text"
+                    icon={<EditOutlined />}
+                    onClick={handleOpenRenameModal}
+                    disabled={isCurrentProjectLocked}
+                    aria-label={t('visualizer.mapHeaderRenameTooltip')}
+                    data-i18n-key="visualizer.mapHeaderRenameTooltip"
+                  />
+                </span>
+              </Tooltip>
+              <Tooltip
+                title={
+                  isCurrentProjectLocked
+                    ? t('visualizer.mapHeaderUnlockTooltip')
+                    : t('visualizer.mapHeaderLockTooltip')
+                }
+                data-i18n-key="visualizer.mapHeaderLockTooltip"
               >
                 <Button
                   type="text"
-                  icon={<EditOutlined />}
-                  onClick={handleOpenRenameModal}
-                  aria-label={t('visualizer.mapHeaderRenameTooltip')}
-                  data-i18n-key="visualizer.mapHeaderRenameTooltip"
+                  icon={isCurrentProjectLocked ? <UnlockOutlined /> : <LockOutlined />}
+                  onClick={handleToggleLockCurrentProject}
+                  aria-label={
+                    isCurrentProjectLocked
+                      ? t('visualizer.mapHeaderUnlockTooltip')
+                      : t('visualizer.mapHeaderLockTooltip')
+                  }
+                  data-i18n-key="visualizer.mapHeaderLockTooltip"
                 />
               </Tooltip>
               <Tooltip
-                title={t('visualizer.mapHeaderDeleteTooltip')}
+                title={
+                  isCurrentProjectLocked
+                    ? t('projects.lockedDeleteTooltip')
+                    : t('visualizer.mapHeaderDeleteTooltip')
+                }
                 data-i18n-key="visualizer.mapHeaderDeleteTooltip"
               >
-                <Button
-                  type="text"
-                  // danger
-                  icon={<DeleteOutlined />}
-                  onClick={handleDeleteCurrentProject}
-                  aria-label={t('visualizer.mapHeaderDeleteTooltip')}
-                  data-i18n-key="visualizer.mapHeaderDeleteTooltip"
-                />
+                <span className="inline-flex">
+                  <Button
+                    type="text"
+                    // danger
+                    icon={<DeleteOutlined />}
+                    onClick={handleDeleteCurrentProject}
+                    disabled={isCurrentProjectLocked}
+                    aria-label={t('visualizer.mapHeaderDeleteTooltip')}
+                    data-i18n-key="visualizer.mapHeaderDeleteTooltip"
+                  />
+                </span>
               </Tooltip>
             </Flex>
           ) : null}
         </Flex>
         <Flex gap="small" wrap="wrap">
-          <Button
-            icon={<SaveOutlined />}
-            onClick={handleSave}
-            disabled={isSaveDisabled || isAwaitingProjectFromUrl}
-            loading={isSaving}
-            data-i18n-key="visualizer.save"
+          <Tooltip
+            title={isCurrentProjectLocked ? t('visualizer.mapHeaderLockedSaveTooltip') : undefined}
+            data-i18n-key="visualizer.mapHeaderLockedSaveTooltip"
           >
-            {saveButtonText}
-          </Button>
+            <span className="inline-flex">
+              <Button
+                icon={<SaveOutlined />}
+                onClick={handleSave}
+                disabled={isSaveDisabled || isAwaitingProjectFromUrl}
+                loading={isSaving}
+                data-i18n-key="visualizer.save"
+              >
+                {saveButtonText}
+              </Button>
+            </span>
+          </Tooltip>
           <Button
             type="primary"
             icon={<DownloadOutlined />}
@@ -572,6 +642,17 @@ const VisualizerPage: FC = () => {
         />
       </Suspense>
 
+      {lockPendingProject ? (
+        <Suspense>
+          <ProjectLockModal
+            project={lockPendingProject}
+            onConfirm={handleLockConfirm}
+            onCancel={handleLockCancel}
+            confirmLoading={isLockSubmitting}
+          />
+        </Suspense>
+      ) : null}
+
       {isNameModalOpen && (
         <Suspense>
           <SaveProjectNameModal
@@ -593,7 +674,7 @@ const VisualizerPage: FC = () => {
         <Suspense>
           <UnsavedChangesModal
             open={unsavedGuard.isModalOpen}
-            canSave={visualizerProjectId !== null}
+            canSave={visualizerProjectId !== null && !isCurrentProjectLocked}
             isSaving={unsavedGuard.isSaving}
             onDiscard={unsavedGuard.handleDiscard}
             onSaveAndLeave={unsavedGuard.handleSaveAndLeave}

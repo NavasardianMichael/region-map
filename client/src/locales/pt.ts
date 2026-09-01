@@ -242,6 +242,10 @@ const pt: CommonNs = {
     renameProjectOk: 'Renomear',
     mapHeaderRenameTooltip: 'Renomear projeto',
     mapHeaderDeleteTooltip: 'Eliminar projeto',
+    mapHeaderLockTooltip: 'Bloquear projeto',
+    mapHeaderUnlockTooltip: 'Desbloquear projeto',
+    mapHeaderLockedSaveTooltip:
+      'Este projeto está bloqueado. Desbloqueie-o para guardar as alterações.',
     mapAriaMapOf: 'Mapa de {{region}}',
     mapAriaNoCountrySelected: 'Nenhum país selecionado',
     tabData: 'Dados',
@@ -687,6 +691,12 @@ const pt: CommonNs = {
     bulkSelectCapTooltip:
       'No máximo {{max}} projetos podem ser selecionados para eliminação em lote.',
     selectProjectAria: 'Selecionar projeto {{name}}',
+    lock: 'Bloquear',
+    unlock: 'Desbloquear',
+    lockedTag: 'Bloqueado',
+    lockedRenameTooltip: 'Este projeto está bloqueado. Desbloqueie-o para o renomear.',
+    lockedDeleteTooltip: 'Este projeto está bloqueado. Desbloqueie-o para o eliminar.',
+    bulkSelectLockedTooltip: 'Os projetos bloqueados não podem ser selecionados para eliminação.',
   },
   common: {
     loading: 'A carregar...',
@@ -758,7 +768,27 @@ const pt: CommonNs = {
     deleteProjectsBulkEmbedWarningContent:
       '{{count}} dos projetos selecionados estão publicados como incorporações públicas. Ao eliminá-los, essas ligações de incorporação são desativadas permanentemente — se esses mapas estiverem incorporados em algum site, deixarão de funcionar aí.',
     deleteProjectOk: 'Eliminar',
+    lockProjectTitle: 'Bloquear projeto',
+    lockProjectContent:
+      'Bloquear "{{name}}"? O bloqueio protege um projeto que considera terminado.',
+    lockProjectInfoTitle: 'Enquanto estiver bloqueado, este projeto não pode ser alterado',
+    lockProjectInfoContent:
+      'Guardar, renomear, alterar as definições de incorporação e eliminar ficam bloqueados. Pode continuar a abrir o projeto, ajustá-lo no ecrã e exportar imagens — nada é guardado até o desbloquear. Qualquer incorporação pública continua a funcionar normalmente.',
+    lockProjectOk: 'Bloquear projeto',
+    unlockProjectTitle: 'Desbloquear projeto',
+    unlockProjectContent:
+      'Desbloquear "{{name}}"? As alterações e a eliminação voltarão a ser possíveis.',
+    unlockProjectWarningTitle: 'A proteção será removida',
+    unlockProjectWarningContent:
+      'Este projeto deixará de estar protegido contra alterações ou eliminações acidentais.',
+    unlockProjectOk: 'Desbloquear projeto',
+    projectLocked: 'Projeto bloqueado',
+    projectUnlocked: 'Projeto desbloqueado',
+    projectLockFailed: 'Não foi possível alterar o estado de bloqueio. Tente novamente.',
+    projectLockedError: 'Este projeto está bloqueado. Desbloqueie-o para fazer alterações.',
     projectsBulkDeleted: '{{count}} projetos eliminados',
+    projectsBulkDeletePartial:
+      '{{count}} projetos eliminados. Os projetos bloqueados foram ignorados.',
     projectsBulkDeleteFailed: 'Falha ao eliminar os projetos selecionados',
     loginFailed: 'Falha ao iniciar sessão',
     signUpFailed: 'Falha ao criar a conta',

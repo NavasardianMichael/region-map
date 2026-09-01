@@ -21,6 +21,7 @@ export type ProjectUpdate = Partial<Omit<ProjectCreate, 'userId'>> & {
   embedSeoKeywords?: object | null;
   embedAllowedOrigins?: object | null;
   embedShowHeader?: boolean;
+  locked?: boolean;
 };
 
 const JSON_FIELDS = [
@@ -99,10 +100,12 @@ export const projectRepository = {
     }
   },
 
+  // Locked projects are excluded here rather than pre-checked, so bulk delete keeps
+  // its single DB round-trip while staying safe against a stale client selection.
   async deleteManyForUser(userId: string, ids: string[]): Promise<number> {
     if (ids.length === 0) return 0;
     const result = await prisma.project.deleteMany({
-      where: { userId, id: { in: ids } },
+      where: { userId, id: { in: ids }, locked: false },
     });
     return result.count;
   },

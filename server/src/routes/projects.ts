@@ -3,6 +3,7 @@ import {
   HttpStatus,
   isValidProjectCountryId,
   projectEmbedUpdateSchema,
+  projectLockUpdateSchema,
   projectsBulkDeleteSchema,
 } from '@regionify/shared';
 import { type Router as ExpressRouter, Router } from 'express';
@@ -107,6 +108,23 @@ router.put('/:id/embed', validate(projectEmbedUpdateSchema), async (req, res, ne
     res.json({
       success: true,
       data,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PUT /projects/:id/lock - Lock or unlock a project (must precede PUT /:id)
+router.put('/:id/lock', validate(projectLockUpdateSchema), async (req, res, next) => {
+  try {
+    const userId = req.session.userId!;
+    const rawId = req.params.id;
+    const projectId = Array.isArray(rawId) ? rawId[0] : rawId;
+    const project = await projectService.setProjectLocked(userId, projectId, req.body.locked);
+
+    res.json({
+      success: true,
+      data: project,
     });
   } catch (error) {
     next(error);

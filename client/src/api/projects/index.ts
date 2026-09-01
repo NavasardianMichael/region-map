@@ -4,6 +4,7 @@ import type {
   ProjectCreatePayload,
   ProjectEmbedUpdatePayload,
   ProjectEmbedUpdateResponse,
+  ProjectLockUpdatePayload,
   ProjectUpdatePayload,
 } from './types';
 
@@ -13,7 +14,7 @@ type ApiResponse<T> = {
 };
 
 type ApiErrorResponse = {
-  error?: { message?: string };
+  error?: { message?: string; code?: string };
 };
 
 const getErrorMessage = (data: unknown, fallback: string): string => {
@@ -24,6 +25,15 @@ const getErrorMessage = (data: unknown, fallback: string): string => {
     }
   }
   return fallback;
+};
+
+/** Builds an Error carrying the server's error code, so callers can branch with `getErrorCode`. */
+const toCodedError = (data: unknown, fallback: string): Error & { code?: string } => {
+  const error = new Error(getErrorMessage(data, fallback)) as Error & { code?: string };
+  if (typeof data === 'object' && data !== null) {
+    error.code = (data as ApiErrorResponse).error?.code;
+  }
+  return error;
 };
 
 export const getProjects = async (): Promise<Project[]> => {
@@ -101,7 +111,27 @@ export const updateProject = async (
   const data = (await response.json()) as ApiResponse<Project>;
 
   if (!response.ok) {
-    throw new Error(getErrorMessage(data, 'Failed to update project'));
+    throw toCodedError(data, 'Failed to update project');
+  }
+
+  return data.data;
+};
+
+export const updateProjectLock = async (
+  id: string,
+  payload: ProjectLockUpdatePayload,
+): Promise<Project> => {
+  const response = await fetch(PROJECT_ENDPOINTS.lock(id), {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: JSON.stringify(payload),
+  });
+
+  const data = (await response.json()) as ApiResponse<Project>;
+
+  if (!response.ok) {
+    throw new Error(getErrorMessage(data, 'Failed to update project lock state'));
   }
 
   return data.data;

@@ -246,6 +246,10 @@ const de: CommonNs = {
     renameProjectOk: 'Umbenennen',
     mapHeaderRenameTooltip: 'Projekt umbenennen',
     mapHeaderDeleteTooltip: 'Projekt löschen',
+    mapHeaderLockTooltip: 'Projekt sperren',
+    mapHeaderUnlockTooltip: 'Projekt entsperren',
+    mapHeaderLockedSaveTooltip:
+      'Dieses Projekt ist gesperrt. Entsperre es, um Änderungen zu speichern.',
     mapAriaMapOf: 'Karte von {{region}}',
     mapAriaNoCountrySelected: 'Kein Land ausgewählt',
     tabData: 'Daten',
@@ -695,6 +699,12 @@ const de: CommonNs = {
     bulkSelectCapTooltip:
       'Für die Massenlöschung können höchstens {{max}} Projekte ausgewählt werden.',
     selectProjectAria: 'Projekt {{name}} auswählen',
+    lock: 'Sperren',
+    unlock: 'Entsperren',
+    lockedTag: 'Gesperrt',
+    lockedRenameTooltip: 'Dieses Projekt ist gesperrt. Entsperre es zum Umbenennen.',
+    lockedDeleteTooltip: 'Dieses Projekt ist gesperrt. Entsperre es zum Löschen.',
+    bulkSelectLockedTooltip: 'Gesperrte Projekte können nicht zum Löschen ausgewählt werden.',
   },
   common: {
     loading: 'Laden...',
@@ -768,7 +778,27 @@ const de: CommonNs = {
     deleteProjectsBulkEmbedWarningContent:
       '{{count}} der ausgewählten Projekte sind als öffentliche Einbettung veröffentlicht. Beim Löschen werden diese Einbettungslinks dauerhaft deaktiviert — sind die Karten auf einer Website eingebunden, funktionieren sie dort nicht mehr.',
     deleteProjectOk: 'Löschen',
+    lockProjectTitle: 'Projekt sperren',
+    lockProjectContent:
+      '„{{name}}“ sperren? Das Sperren schützt ein Projekt, das du als fertig betrachtest.',
+    lockProjectInfoTitle: 'Solange gesperrt, kann dieses Projekt nicht geändert werden',
+    lockProjectInfoContent:
+      'Speichern, Umbenennen, Änderungen an den Einbettungseinstellungen und Löschen sind blockiert. Du kannst das Projekt weiterhin öffnen, am Bildschirm anpassen und Bilder exportieren — nichts wird gespeichert, bis du es entsperrst. Eine öffentliche Einbettung funktioniert unverändert weiter.',
+    lockProjectOk: 'Projekt sperren',
+    unlockProjectTitle: 'Projekt entsperren',
+    unlockProjectContent:
+      '„{{name}}“ entsperren? Änderungen und Löschen sind danach wieder möglich.',
+    unlockProjectWarningTitle: 'Der Schutz wird aufgehoben',
+    unlockProjectWarningContent:
+      'Dieses Projekt ist dann nicht mehr vor versehentlichen Änderungen oder dem Löschen geschützt.',
+    unlockProjectOk: 'Projekt entsperren',
+    projectLocked: 'Projekt gesperrt',
+    projectUnlocked: 'Projekt entsperrt',
+    projectLockFailed: 'Sperrstatus konnte nicht geändert werden. Bitte versuche es erneut.',
+    projectLockedError: 'Dieses Projekt ist gesperrt. Entsperre es, um Änderungen vorzunehmen.',
     projectsBulkDeleted: '{{count}} Projekte gelöscht',
+    projectsBulkDeletePartial:
+      '{{count}} Projekte gelöscht. Gesperrte Projekte wurden übersprungen.',
     projectsBulkDeleteFailed: 'Ausgewählte Projekte konnten nicht gelöscht werden',
     loginFailed: 'Anmeldung fehlgeschlagen',
     signUpFailed: 'Konto konnte nicht erstellt werden',

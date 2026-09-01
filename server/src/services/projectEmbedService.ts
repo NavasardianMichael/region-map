@@ -12,7 +12,7 @@ import { AppError } from '@/middleware/errorHandler.js';
 import { localeToHtmlAndOg } from '@/lib/localeSeo.js';
 import { projectRepository } from '@/repositories/projectRepository.js';
 import { prisma } from '@/db/index.js';
-import type { ProjectEmbedPublic } from '@/services/projectService.js';
+import { assertProjectNotLocked, type ProjectEmbedPublic } from '@/services/projectService.js';
 
 const EMBED_DESCRIPTION_MAX = 160;
 
@@ -139,6 +139,8 @@ export const projectEmbedService = {
     if (!existing || existing.userId !== userId) {
       throw new AppError(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, 'Project not found');
     }
+
+    assertProjectNotLocked(existing);
 
     let embedToken: string | null = existing.embedToken;
 

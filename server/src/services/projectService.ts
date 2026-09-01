@@ -32,9 +32,20 @@ export type ProjectPublic = {
   legendStyles: unknown;
   legendData: unknown;
   embed: ProjectEmbedPublic;
+  locked: boolean;
   createdAt: string;
   updatedAt: string;
 };
+
+/** Locking is a user-set guard against accidental edits; it blocks every project mutation. */
+export function assertProjectNotLocked(project: Project): void {
+  if (!project.locked) return;
+  throw new AppError(
+    HttpStatus.CONFLICT,
+    ErrorCode.PROJECT_LOCKED,
+    'Project is locked. Unlock it before making changes.',
+  );
+}
 
 function embedKeywordsFromDb(value: unknown): string[] | null {
   if (value == null) return null;
@@ -72,6 +83,7 @@ function toPublicProject(project: Project): ProjectPublic {
     legendStyles: project.legendStyles,
     legendData: project.legendData,
     embed: toEmbedPublic(project),
+    locked: project.locked,
     createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
   };
@@ -124,6 +136,8 @@ export const projectService = {
       throw new AppError(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, 'Project not found');
     }
 
+    assertProjectNotLocked(existing);
+
     const updated = await projectRepository.update(projectId, data);
 
     if (!updated) {
@@ -144,6 +158,8 @@ export const projectService = {
       throw new AppError(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, 'Project not found');
     }
 
+    assertProjectNotLocked(existing);
+
     const deleted = await projectRepository.delete(projectId);
 
     if (!deleted) {
@@ -157,5 +173,30 @@ export const projectService = {
 
   async bulkDeleteProjects(userId: string, ids: string[]): Promise<number> {
     return projectRepository.deleteManyForUser(userId, ids);
+  },
+
+  // Deliberately skips the locked guard — otherwise a locked project could never be unlocked.
+  async setProjectLocked(
+    userId: string,
+    projectId: string,
+    locked: boolean,
+  ): Promise<ProjectPublic> {
+    const existing = await projectRepository.findById(projectId);
+
+    if (!existing || existing.userId !== userId) {
+      throw new AppError(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND, 'Project not found');
+    }
+
+    const updated = await projectRepository.update(projectId, { locked });
+
+    if (!updated) {
+      throw new AppError(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        ErrorCode.INTERNAL_ERROR,
+        'Failed to update project lock state',
+      );
+    }
+
+    return toPublicProject(updated);
   },
 };

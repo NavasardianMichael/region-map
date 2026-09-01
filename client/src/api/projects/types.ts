@@ -95,6 +95,8 @@ export type Project = {
   legendStyles: ProjectLegendStyles | null;
   legendData: ProjectLegendData | null;
   embed: ProjectEmbed;
+  /** When true, the project cannot be saved, renamed, re-embedded or deleted. */
+  locked: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -112,6 +114,10 @@ export type ProjectEmbedUpdatePayload = {
 
 export type ProjectEmbedUpdateResponse = {
   embed: ProjectEmbed;
+};
+
+export type ProjectLockUpdatePayload = {
+  locked: boolean;
 };
 
 export type ProjectCreatePayload = {

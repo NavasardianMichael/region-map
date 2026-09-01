@@ -68,6 +68,7 @@ model Project {
   embedSeoKeywords      Json?    @map("embed_seo_keywords")
   embedAllowedOrigins   Json?    @map("embed_allowed_origins")
   embedShowHeader       Boolean  @default(true) @map("embed_show_header")
+  locked                Boolean  @default(false)
   createdAt             DateTime @default(now()) @map("created_at")
   updatedAt             DateTime @updatedAt @map("updated_at")
 

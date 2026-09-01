@@ -5,8 +5,10 @@ import {
   FolderOpenOutlined,
   GlobalOutlined,
   InsertRowAboveOutlined,
+  LockOutlined,
+  UnlockOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Checkbox, Flex, Spin, Typography } from 'antd';
+import { Avatar, Button, Checkbox, Flex, Spin, Tooltip, Typography } from 'antd';
 import type { Project } from '@/api/projects/types';
 import { useMapThumbnail } from '@/hooks/useMapThumbnail';
 import type { ImportDataType } from '@/types/mapData';
@@ -21,6 +23,7 @@ type ProjectCardProps = {
   onOpen: (project: Project) => void;
   onDelete: (project: Project) => void;
   onRename: (project: Project) => void;
+  onToggleLock: (project: Project) => void;
   isOpening?: boolean;
   showSelection?: boolean;
   isSelected?: boolean;
@@ -115,51 +118,64 @@ ProjectCardMetaDescription.displayName = 'ProjectCardMetaDescription';
 type ProjectCardMetaSectionProps = {
   projectName: string;
   description: ReactNode;
+  isLocked: boolean;
+  lockedLabel: string;
 };
 
-const ProjectCardMetaSection = memo<ProjectCardMetaSectionProps>(({ projectName, description }) => (
-  <CardMeta
-    className="min-h-0"
-    avatar={<Avatar icon={<FolderOpenOutlined aria-hidden />} className="shrink-0" />}
-    title={
-      <Typography.Text strong className="block truncate text-base">
-        {projectName}
-      </Typography.Text>
-    }
-    description={description}
-  />
-));
+const ProjectCardMetaSection = memo<ProjectCardMetaSectionProps>(
+  ({ projectName, description, isLocked, lockedLabel }) => (
+    <CardMeta
+      className="min-h-0"
+      avatar={<Avatar icon={<FolderOpenOutlined aria-hidden />} className="shrink-0" />}
+      title={
+        <Flex align="center" gap="small" className="min-w-0">
+          {isLocked ? (
+            <LockOutlined
+              className="text-primary shrink-0"
+              aria-label={lockedLabel}
+              data-i18n-key="projects.lockedTag"
+            />
+          ) : null}
+          <Typography.Text strong className="block truncate text-base">
+            {projectName}
+          </Typography.Text>
+        </Flex>
+      }
+      description={description}
+    />
+  ),
+);
 ProjectCardMetaSection.displayName = 'ProjectCardMetaSection';
 
-type ProjectCardRenameButtonProps = {
+type ProjectCardActionButtonProps = {
   onClick: (e: React.MouseEvent) => void;
+  icon: ReactNode;
   label: string;
   disabled: boolean;
+  danger?: boolean;
+  /** Explains why the action is unavailable; also forces the disabled-button wrapper. */
+  disabledReason?: string;
 };
 
-const ProjectCardRenameButton = memo<ProjectCardRenameButtonProps>(
-  ({ onClick, label, disabled }) => (
-    <Button type="text" icon={<EditOutlined />} onClick={onClick} disabled={disabled}>
-      {label}
-    </Button>
-  ),
-);
-ProjectCardRenameButton.displayName = 'ProjectCardRenameButton';
+const ProjectCardActionButton = memo<ProjectCardActionButtonProps>(
+  ({ onClick, icon, label, disabled, danger = false, disabledReason }) => {
+    const button = (
+      <Button type="text" danger={danger} icon={icon} onClick={onClick} disabled={disabled}>
+        {label}
+      </Button>
+    );
 
-type ProjectCardDeleteButtonProps = {
-  onClick: (e: React.MouseEvent) => void;
-  label: string;
-  disabled: boolean;
-};
+    // A disabled antd Button swallows pointer events, so the tooltip needs a live wrapper.
+    if (!disabled || !disabledReason) return button;
 
-const ProjectCardDeleteButton = memo<ProjectCardDeleteButtonProps>(
-  ({ onClick, label, disabled }) => (
-    <Button type="text" danger icon={<DeleteOutlined />} onClick={onClick} disabled={disabled}>
-      {label}
-    </Button>
-  ),
+    return (
+      <Tooltip title={disabledReason}>
+        <span className="inline-flex">{button}</span>
+      </Tooltip>
+    );
+  },
 );
-ProjectCardDeleteButton.displayName = 'ProjectCardDeleteButton';
+ProjectCardActionButton.displayName = 'ProjectCardActionButton';
 
 function datasetFormatLabel(t: TypedT, importDataType: ImportDataType | null | undefined): string {
   if (importDataType == null) {
@@ -174,6 +190,7 @@ const ProjectCard = memo<ProjectCardProps>(
     onOpen,
     onDelete,
     onRename,
+    onToggleLock,
     isOpening = false,
     showSelection = false,
     isSelected = false,
@@ -201,6 +218,14 @@ const ProjectCard = memo<ProjectCardProps>(
         onRename(project);
       },
       [onRename, project],
+    );
+
+    const handleLockClick = useCallback(
+      (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onToggleLock(project);
+      },
+      [onToggleLock, project],
     );
 
     const handleSelectionCheckboxChange = useCallback(() => {
@@ -263,22 +288,35 @@ const ProjectCard = memo<ProjectCardProps>(
 
     const actions = useMemo(
       () => [
-        <ProjectCardRenameButton
+        <ProjectCardActionButton
           key="rename"
           onClick={handleRenameClick}
+          icon={<EditOutlined />}
           label={t('common.rename')}
-          disabled={isOpening}
+          disabled={isOpening || project.locked}
+          disabledReason={project.locked ? t('projects.lockedRenameTooltip') : undefined}
           data-i18n-key="common.rename"
         />,
-        <ProjectCardDeleteButton
+        <ProjectCardActionButton
+          key="lock"
+          onClick={handleLockClick}
+          icon={project.locked ? <UnlockOutlined /> : <LockOutlined />}
+          label={project.locked ? t('projects.unlock') : t('projects.lock')}
+          disabled={isOpening}
+          data-i18n-key={project.locked ? 'projects.unlock' : 'projects.lock'}
+        />,
+        <ProjectCardActionButton
           key="delete"
           onClick={handleDeleteClick}
+          icon={<DeleteOutlined />}
           label={t('common.delete')}
-          disabled={isOpening}
+          danger
+          disabled={isOpening || project.locked}
+          disabledReason={project.locked ? t('projects.lockedDeleteTooltip') : undefined}
           data-i18n-key="common.delete"
         />,
       ],
-      [handleRenameClick, handleDeleteClick, isOpening, t],
+      [handleRenameClick, handleLockClick, handleDeleteClick, isOpening, project.locked, t],
     );
 
     return (
@@ -323,6 +361,8 @@ const ProjectCard = memo<ProjectCardProps>(
         >
           <ProjectCardMetaSection
             projectName={project.name}
+            isLocked={project.locked}
+            lockedLabel={t('projects.lockedTag')}
             description={
               <ProjectCardMetaDescription
                 countryLabel={countryLabel}

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BADGE_DETAILS, BADGES } from '@regionify/shared';
+import { BADGE_DETAILS, BADGES, ErrorCode } from '@regionify/shared';
 import { createProject, deleteProject as deleteProjectApi, updateProject } from '@/api/projects';
 import { selectSelectedCountryId } from '@/store/mapData/selectors';
 import { useVisualizerStore } from '@/store/mapData/store';
@@ -24,6 +24,7 @@ import {
 import { getProjectRoute, ROUTES } from '@/constants/routes';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
 import { captureFullTemporaryProjectState } from '@/helpers/captureFullTemporaryProjectState';
+import { getErrorCode } from '@/helpers/error';
 import { getLocalizedRegionLabel } from '@/helpers/regionDisplay';
 import {
   buildPartialTemporaryState,
@@ -61,6 +62,8 @@ export function useVisualizerPage() {
 
   const isFreePlan = useMemo(() => !user || user.badge === BADGES.observer, [user]);
 
+  const isCurrentProjectLocked = currentProject?.locked === true;
+
   const canUseEmbed = useMemo(() => {
     const badge = user?.badge;
     if (!badge) return false;
@@ -80,7 +83,7 @@ export function useVisualizerPage() {
    * Returns `true` on success, `false` on failure or when the project hasn't been created yet.
    */
   const saveCurrentProject = useCallback(async (): Promise<boolean> => {
-    if (!currentProjectId) return false;
+    if (!currentProjectId || isCurrentProjectLocked) return false;
     try {
       const payload = getProjectPayload();
       const updated = await updateProject(currentProjectId, payload);
@@ -89,14 +92,26 @@ export function useVisualizerPage() {
       clearTemporaryProjectState();
       message.success(t('messages.projectSaved'), 5);
       return true;
-    } catch {
-      message.error(t('messages.projectSaveFailed'));
+    } catch (error) {
+      // Another tab may have locked the project since this one loaded it.
+      const isLockedError = getErrorCode(error) === ErrorCode.PROJECT_LOCKED;
+      message.error(
+        isLockedError ? t('messages.projectLockedError') : t('messages.projectSaveFailed'),
+      );
       return false;
     }
-  }, [currentProjectId, updateProjectInList, setSavedStateSnapshot, message, t]);
+  }, [
+    currentProjectId,
+    isCurrentProjectLocked,
+    updateProjectInList,
+    setSavedStateSnapshot,
+    message,
+    t,
+  ]);
 
   const handleOpenEmbedModal = useCallback(async () => {
-    if (!canUseEmbed) return;
+    // Opening persists pending edits first, which a locked project must not do.
+    if (!canUseEmbed || isCurrentProjectLocked) return;
     if (!isLoggedIn) {
       const fullCurrent = captureFullTemporaryProjectState();
       saveTemporaryProjectState(buildPartialTemporaryState(fullCurrent));
@@ -119,7 +134,15 @@ export function useVisualizerPage() {
     }
 
     setIsEmbedModalOpen(true);
-  }, [canUseEmbed, isLoggedIn, currentProjectId, hasUnsavedChanges, saveCurrentProject, navigate]);
+  }, [
+    canUseEmbed,
+    isCurrentProjectLocked,
+    isLoggedIn,
+    currentProjectId,
+    hasUnsavedChanges,
+    saveCurrentProject,
+    navigate,
+  ]);
 
   const handleCloseEmbedModal = useCallback(() => {
     setIsEmbedModalOpen(false);
@@ -191,9 +214,9 @@ export function useVisualizerPage() {
   }, []);
 
   const handleOpenRenameModal = useCallback(() => {
-    if (!currentProject) return;
+    if (!currentProject || isCurrentProjectLocked) return;
     setIsRenameModalOpen(true);
-  }, [currentProject]);
+  }, [currentProject, isCurrentProjectLocked]);
 
   const handleRenameModalCancel = useCallback(() => {
     setIsRenameModalOpen(false);
@@ -218,9 +241,9 @@ export function useVisualizerPage() {
   );
 
   const handleDeleteCurrentProject = useCallback(() => {
-    if (!currentProject) return;
+    if (!currentProject || isCurrentProjectLocked) return;
     setIsDeleteModalOpen(true);
-  }, [currentProject]);
+  }, [currentProject, isCurrentProjectLocked]);
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!currentProject) return;
@@ -242,7 +265,8 @@ export function useVisualizerPage() {
     setIsDeleteModalOpen(false);
   }, []);
 
-  const isSaveDisabled = !selectedCountryId || (!!currentProjectId && !hasUnsavedChanges);
+  const isSaveDisabled =
+    !selectedCountryId || isCurrentProjectLocked || (!!currentProjectId && !hasUnsavedChanges);
 
   const saveButtonText = useMemo(() => {
     if (isFreePlan && !isLoggedIn) return t('visualizer.saveLoginToSave');
@@ -260,6 +284,7 @@ export function useVisualizerPage() {
     selectedCountryId,
     currentProjectId,
     currentProject,
+    isCurrentProjectLocked,
     hasUnsavedChanges,
     isLoggedIn,
     canUseEmbed,
