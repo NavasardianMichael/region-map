@@ -68,7 +68,10 @@
     <meta name="application-name" content="Regionify" />
     <link rel="canonical" href="https://regionify.pro" />
 
-    <!-- Structured data for the main SPA entry -->
+    <!-- Structured data for the static SPA shell nginx serves on non-SSR routes
+         (/contact, /billing, /login, /projects, ...). Offers/pricing are deliberately
+         omitted: the SSR graph in server/src/web/coreJsonLd.ts declares the same
+         @id and owns them, so duplicating them here would go stale on price changes. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -94,33 +97,6 @@
               "Time-series animation with interactive timeline scrubber",
               "Embeddable responsive iframe",
               "Public hosted map pages with SEO title and description"
-            ],
-            "offers": [
-              {
-                "@type": "Offer",
-                "name": "Observer",
-                "price": "0",
-                "priceCurrency": "USD",
-                "description": "Free tier: core maps, PNG/JPEG/PDF export, advanced styling, high-resolution export, up to 5 saved projects."
-              },
-              {
-                "@type": "Offer",
-                "name": "Explorer",
-                "description": "One-time payment. Adds SVG export, time-series data with animated timeline, GIF/MP4 export, an AI data parser (up to 5 requests/day), and unlimited projects.",
-                "priceSpecification": {
-                  "@type": "UnitPriceSpecification",
-                  "priceType": "https://schema.org/OneTimePurchase"
-                }
-              },
-              {
-                "@type": "Offer",
-                "name": "Chronographer",
-                "description": "One-time payment. Everything in Explorer, plus public iframe embeds, public map pages, and a higher AI request quota (up to 10 requests/day).",
-                "priceSpecification": {
-                  "@type": "UnitPriceSpecification",
-                  "priceType": "https://schema.org/OneTimePurchase"
-                }
-              }
             ],
             "publisher": { "@id": "https://regionify.pro#organization" }
           },
