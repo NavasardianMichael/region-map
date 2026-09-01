@@ -429,6 +429,7 @@ export const authService = {
 ### Custom Best Practices (Server)
 
 - Run database migrations in CI/CD **before** starting the new server to avoid requests hitting new code against an old schema.
+- All API error responses (including known `AppError`s, not just unexpected errors) must include a dev-only `error.dev` block when `isDev` is true — request context (method, path, cookie names, session state) alongside the stack, since a deliberately-thrown `AppError`'s stack only points at its own throw site. Never include cookie or session _values_: names and presence only.
 
 ---
 
