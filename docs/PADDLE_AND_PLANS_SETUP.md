@@ -51,6 +51,7 @@ Paddle Billing requires **two** different credentials:
 
 1. **API key** (server-only).
    **Developer Tools → Authentication → API keys → New API key.** Copy it — this is `PADDLE_API_KEY`. Keep it secret; never ship it to the browser.
+   **Permissions:** the key must have `transaction.read` **and** `transaction.write`. `transaction.write` is needed to create the checkout (`POST /transactions`); `transaction.read` is needed for localized pricing (`POST /pricing-preview`). A key missing these authenticates fine but every payments call fails with `403 forbidden` — _"You aren't permitted to perform this request."_ Permissions can be edited on an existing key.
 2. **Client-side token** (browser-safe).
    **Developer Tools → Authentication → Client-side tokens → New token.** Copy it — this is `VITE_PADDLE_CLIENT_TOKEN`. This token is required by Paddle.js on `/payments/checkout` to open the overlay; it is designed to be public.
 
@@ -85,13 +86,13 @@ PADDLE_PRICE_ID_CHRONOGRAPHER=pri_01abc_chronographer
 PADDLE_SANDBOX=true   # omit or set to "false" in production
 ```
 
-| Variable                        | Description                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------ |
-| `PADDLE_API_KEY`                | Paddle API secret key (from Developer Tools → Authentication → API keys)                   |
-| `PADDLE_WEBHOOK_SECRET`         | Signing secret from your webhook endpoint configuration                                    |
-| `PADDLE_PRICE_ID_EXPLORER`      | Price ID for the Explorer badge (`pri_...`)                                                |
-| `PADDLE_PRICE_ID_CHRONOGRAPHER` | Price ID for the Chronographer badge (`pri_...`)                                           |
-| `PADDLE_SANDBOX`                | Set to `"true"` to use `sandbox-api.paddle.com`; omit or any other value uses the live API |
+| Variable                        | Description                                                                                                                                   |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PADDLE_API_KEY`                | Paddle API secret key (from Developer Tools → Authentication → API keys)                                                                      |
+| `PADDLE_WEBHOOK_SECRET`         | Signing secret from your webhook endpoint configuration. Comma-separated list accepted — see [Rotating credentials](#13-rotating-credentials) |
+| `PADDLE_PRICE_ID_EXPLORER`      | Price ID for the Explorer badge (`pri_...`)                                                                                                   |
+| `PADDLE_PRICE_ID_CHRONOGRAPHER` | Price ID for the Chronographer badge (`pri_...`)                                                                                              |
+| `PADDLE_SANDBOX`                | Set to `"true"` to use `sandbox-api.paddle.com`; omit or any other value uses the live API                                                    |
 
 All payment vars are required for payments to work. If `PADDLE_API_KEY` is missing, create-checkout returns a service error.
 
@@ -344,3 +345,41 @@ Once you have verified a successful real transaction, Paddle will remove any rem
 | Webhook secret       | separate secret            | separate secret                |
 | Webhook URL          | ngrok/tunnel               | api.regionify.mnavasardian.com |
 | Real money           | no                         | yes                            |
+
+---
+
+## 13. Rotating credentials
+
+### API key — expires by default
+
+Paddle API keys carry an expiry date: **90 days from creation by default, one year maximum**. An expired key cannot be revalidated, and every payments call fails with `invalid_token` ("Invalid API key") until it is replaced. Diary this before it bites you in production.
+
+Rotation is zero-downtime and needs no code change, because Paddle allows several keys to be active at once:
+
+1. **Developer Tools → Authentication → API keys → New API key**, with the same `transaction.write` permission (see Step 4).
+2. Set `PADDLE_API_KEY` to the new value and redeploy the server.
+3. Confirm a checkout and the billing page both work.
+4. Revoke the old key in the dashboard.
+
+### Webhook secret — needs an overlap window
+
+A notification destination's signing secret **cannot be regenerated in place**. Rotating it means standing up a second destination, so for a moment two secrets are valid. `PADDLE_WEBHOOK_SECRET` therefore accepts a **comma-separated list** — a signature matching any entry is accepted:
+
+```env
+PADDLE_WEBHOOK_SECRET=pdl_ntfset_new...,pdl_ntfset_old...
+```
+
+1. **Developer Tools → Notifications → New destination** pointing at the same `/payments/webhook` URL, subscribed to the same events. Copy its signing secret.
+2. Prepend the new secret to `PADDLE_WEBHOOK_SECRET` (new first, old second) and redeploy.
+3. Delete the old destination in the dashboard.
+4. Drop the old secret from the env var and redeploy.
+
+Between steps 1 and 3 Paddle delivers **each event twice**, once per destination. That is safe: `handleTransactionCompleted` is idempotent — it returns early when the user already holds the badge, so no duplicate badge email or notification is sent.
+
+The server logs a warning whenever an event verifies against anything other than the first secret:
+
+```
+paddle webhook: verified with a fallback secret, rotation still in progress
+```
+
+Rotation is finished once that line stops appearing — that is the signal it is safe to complete step 4.

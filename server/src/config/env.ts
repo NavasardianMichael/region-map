@@ -62,7 +62,16 @@ const envSchema = z.object({
 
   // Paddle Billing (one-time checkouts; webhook for transaction.completed)
   PADDLE_API_KEY: z.string().optional(),
-  PADDLE_WEBHOOK_SECRET: z.string().optional(),
+  // Comma-separated so old and new secrets can both be live during a rotation window
+  PADDLE_WEBHOOK_SECRET: z
+    .string()
+    .optional()
+    .transform((val) =>
+      (val ?? '')
+        .split(',')
+        .map((secret) => secret.trim())
+        .filter(Boolean),
+    ),
   PADDLE_PRICE_ID_EXPLORER: z.string().optional(),
   PADDLE_PRICE_ID_CHRONOGRAPHER: z.string().optional(),
   PADDLE_SANDBOX: z.string().optional(), // "true" = sandbox API, omit or any other value = live

@@ -54,6 +54,37 @@ type TransactionWebhookPayload = {
   };
 };
 
+type PaddleErrorResponse = {
+  error?: { code?: string; detail?: string };
+  meta?: { request_id?: string };
+};
+
+/**
+ * Log a failed Paddle API response with the fields Paddle Support asks for (`code`, `request_id`)
+ * and return the human-readable detail for the client-facing error message.
+ */
+async function logPaddleFailure(
+  res: Response,
+  operation: string,
+  context: Record<string, unknown>,
+): Promise<string> {
+  const body = (await res.json().catch(() => ({}))) as PaddleErrorResponse;
+  const detail = body.error?.detail ?? res.statusText;
+  logger.error(
+    {
+      ...context,
+      operation,
+      status: res.status,
+      paddleErrorCode: body.error?.code,
+      paddleRequestId: body.meta?.request_id,
+      sandbox: env.PADDLE_SANDBOX === 'true',
+      action: 'payment_failed',
+    },
+    `paddle ${operation} failed: ${detail}`,
+  );
+  return detail;
+}
+
 export const paymentService = {
   /**
    * Create a Paddle Billing transaction/checkout for a badge tier upgrade. Returns URL to redirect the user.
@@ -94,8 +125,7 @@ export const paymentService = {
     });
 
     if (!res.ok) {
-      const err = (await res.json().catch(() => ({}))) as { error?: { detail?: string } };
-      const detail = err.error?.detail ?? res.statusText;
+      const detail = await logPaddleFailure(res, 'checkout', { userId, badge, priceId });
       throw new AppError(
         HttpStatus.BAD_GATEWAY,
         ErrorCode.INTERNAL_ERROR,
@@ -150,8 +180,9 @@ export const paymentService = {
     });
 
     if (!res.ok) {
-      const err = (await res.json().catch(() => ({}))) as { error?: { detail?: string } };
-      const detail = err.error?.detail ?? res.statusText;
+      const detail = await logPaddleFailure(res, 'pricing preview', {
+        priceIds: items.map((item) => item.price_id),
+      });
       throw new AppError(
         HttpStatus.BAD_GATEWAY,
         ErrorCode.INTERNAL_ERROR,
@@ -176,11 +207,13 @@ export const paymentService = {
 
   /**
    * Verify Paddle webhook signature (Paddle-Signature header).
-   * Header format: ts=TIMESTAMP;h1=HASH[;h1=HASH2] — all h1 values are checked (key rotation support).
+   * Header format: ts=TIMESTAMP;h1=HASH[;h1=HASH2] — all h1 values are checked.
+   * PADDLE_WEBHOOK_SECRET may hold several comma-separated secrets; a match on any one passes,
+   * so a new notification destination can be added before the old one is deleted.
    */
   verifyWebhookSignature(rawBody: Buffer, signature: string): boolean {
-    const secret = env.PADDLE_WEBHOOK_SECRET;
-    if (!secret) {
+    const secrets = env.PADDLE_WEBHOOK_SECRET;
+    if (secrets.length === 0) {
       logger.error(
         { action: 'payment_failed' },
         'paddle webhook: PADDLE_WEBHOOK_SECRET is not configured',
@@ -195,13 +228,27 @@ export const paymentService = {
 
     // Signed payload is "{ts}:{rawBody}" as bytes — avoid string coercion of rawBody
     const signedPayload = Buffer.concat([Buffer.from(`${ts}:`, 'utf8'), rawBody]);
-    const computed = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
-    const computedBuf = Buffer.from(computed, 'utf8');
 
-    return h1Values.some((h1) => {
-      const h1Buf = Buffer.from(h1, 'utf8');
-      return computedBuf.length === h1Buf.length && crypto.timingSafeEqual(computedBuf, h1Buf);
+    // Every configured secret is tried: during a rotation the old and new notification
+    // destinations are both live, and either one may have signed this event.
+    const matchedIndex = secrets.findIndex((secret) => {
+      const computed = crypto.createHmac('sha256', secret).update(signedPayload).digest('hex');
+      const computedBuf = Buffer.from(computed, 'utf8');
+      return h1Values.some((h1) => {
+        const h1Buf = Buffer.from(h1, 'utf8');
+        return computedBuf.length === h1Buf.length && crypto.timingSafeEqual(computedBuf, h1Buf);
+      });
     });
+
+    if (matchedIndex > 0) {
+      // Rotation is only finished once nothing verifies against a fallback secret any more.
+      logger.warn(
+        { secretIndex: matchedIndex, secretCount: secrets.length },
+        'paddle webhook: verified with a fallback secret, rotation still in progress',
+      );
+    }
+
+    return matchedIndex !== -1;
   },
 
   /**
