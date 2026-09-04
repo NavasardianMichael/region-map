@@ -1,6 +1,7 @@
 import { useVisualizerStore } from '@/store/mapData/store';
 import type { DataSet } from '@/store/mapData/types';
-import { convertToRegionData, type ParsedRow } from '@/helpers/importDataParsers';
+import { convertToRegionData, type ParsedRow, sortTimePeriods } from '@/helpers/importDataParsers';
+import { aggregateDuplicateRows, type DuplicateStrategy } from '@/helpers/importDuplicates';
 
 export type CommitParsedImportOutcome =
   | { ok: true; variant: 'timeline'; rowCount: number; periodCount: number }
@@ -20,27 +21,26 @@ export function commitParsedImport(
   parsed: ParsedRow[],
   svgTitles: string[],
   historicalDataImportAllowed: boolean,
+  duplicateStrategy?: DuplicateStrategy,
 ): CommitParsedImportOutcome {
   if (parsed.length === 0) {
     return { ok: false, reason: 'empty' };
   }
 
-  const hasTimePeriods = parsed.some((row) => row.timePeriod !== undefined);
+  const rows = duplicateStrategy ? aggregateDuplicateRows(parsed, duplicateStrategy) : parsed;
+  const hasTimePeriods = rows.some((row) => row.timePeriod !== undefined);
   const { setTimelineData, setVisualizerState, clearTimelineData } = useVisualizerStore.getState();
 
   if (hasTimePeriods && historicalDataImportAllowed) {
     const grouped: Record<string, ParsedRow[]> = {};
-    const periodOrder: string[] = [];
 
-    for (const row of parsed) {
+    for (const row of rows) {
       const period = String(row.timePeriod ?? 'Unknown');
-      if (!grouped[period]) {
-        grouped[period] = [];
-        periodOrder.push(period);
-      }
+      if (!grouped[period]) grouped[period] = [];
       grouped[period].push(row);
     }
 
+    const periodOrder = sortTimePeriods(Object.keys(grouped));
     const timeline: Record<string, DataSet> = {};
     for (const period of periodOrder) {
       timeline[period] = convertToRegionData(grouped[period], svgTitles);
@@ -50,7 +50,7 @@ export function commitParsedImport(
     return {
       ok: true,
       variant: 'timeline',
-      rowCount: parsed.length,
+      rowCount: rows.length,
       periodCount: periodOrder.length,
     };
   }
@@ -62,8 +62,8 @@ export function commitParsedImport(
     sideEffect = 'warn_no_time_chronographer';
   }
 
-  const regionData = convertToRegionData(parsed, svgTitles);
+  const regionData = convertToRegionData(rows, svgTitles);
   clearTimelineData();
   setVisualizerState({ data: regionData });
-  return { ok: true, variant: 'static', rowCount: parsed.length, sideEffect };
+  return { ok: true, variant: 'static', rowCount: rows.length, sideEffect };
 }

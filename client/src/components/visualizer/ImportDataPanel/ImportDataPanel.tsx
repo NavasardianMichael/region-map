@@ -47,6 +47,7 @@ import { IMPORT_DATA_TYPES } from '@/constants/data';
 import { ROUTES } from '@/constants/routes';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
 import { trackGa4FileDownload } from '@/helpers/analytics';
+import { rowsToTabDelimited } from '@/helpers/datasetToTabDelimited';
 import { writeRowsToXlsxFile } from '@/helpers/excelAsync';
 import {
   convertToRegionData,
@@ -56,7 +57,19 @@ import {
   parseExcel,
   parseJSON,
   sanitizeFilename,
+  sortTimePeriods,
 } from '@/helpers/importDataParsers';
+import {
+  findImportIssues,
+  hasSignificantIssues,
+  type ImportIssues,
+} from '@/helpers/importDiagnostics';
+import {
+  aggregateDuplicateRows,
+  DUPLICATE_STRATEGIES,
+  type DuplicateStrategy,
+  findDuplicateRows,
+} from '@/helpers/importDuplicates';
 import { loadMapSvg } from '@/helpers/mapLoader';
 import { canNormalizeLegendRanges, normalizeLegendRanges } from '@/helpers/normalizeLegendRanges';
 import { getRegionDisplayName } from '@/helpers/regionDisplay';
@@ -64,6 +77,7 @@ import { extractSvgTitles } from '@/helpers/textSimilarity';
 import { showMessageWithSampleDownload } from '@/components/shared/showMessageWithSampleDownload';
 import { useAppFeedback } from '@/components/shared/useAppFeedback';
 import type { GoogleSheetImportMode } from '@/components/visualizer/GoogleSheetsModal/types';
+import { DuplicateRowsConfirmContent } from '@/components/visualizer/ImportDataPanel/DuplicateRowsConfirmContent';
 import {
   generateSampleValue,
   showMessageWithClose,
@@ -71,6 +85,7 @@ import {
 } from '@/components/visualizer/ImportDataPanel/importDataPanelUtils';
 import { ImportFormatExamples } from '@/components/visualizer/ImportDataPanel/ImportFormatExamples';
 import { ImportFormatInfoTooltip } from '@/components/visualizer/ImportDataPanel/ImportFormatInfoTooltip';
+import { ImportIssuesModal } from '@/components/visualizer/ImportDataPanel/ImportIssuesModal';
 import { NormalizeRangesConfirmContent } from '@/components/visualizer/ImportDataPanel/NormalizeRangesConfirmContent';
 import { SwitchModeConfirmContent } from '@/components/visualizer/ImportDataPanel/SwitchModeConfirmContent';
 import { useGoogleSheetSyncEffect } from '@/components/visualizer/ImportDataPanel/useGoogleSheetSyncEffect';
@@ -88,6 +103,20 @@ const TabDelimitedTextModal = lazy(() =>
 const AiParserModal = lazy(() =>
   import('../AiParserModal/Modal').then((m) => ({ default: m.AiParserModal })),
 );
+
+/** What the importer knows about where a set of parsed rows came from. */
+type ImportSourceOptions = {
+  /** Raw text of the imported source, handed to the AI parser on a retry. */
+  sourceText?: string;
+  skippedRowCount?: number;
+};
+
+/** An import held back by the quality check, awaiting the user's choice. */
+type PendingImportIssues = {
+  issues: ImportIssues;
+  sourceText: string;
+  apply: () => void;
+};
 
 /** Sample timeline labels for generated demo data: last N calendar years ending at the current year (ascending). */
 const SAMPLE_TIMELINE_YEAR_COUNT = 5;
@@ -110,6 +139,8 @@ export const ImportDataPanel: FC = () => {
   const [isSheetsModalOpen, setIsSheetsModalOpen] = useState(false);
   const [isTabDelimitedModalOpen, setIsTabDelimitedModalOpen] = useState(false);
   const [isAiParserModalOpen, setIsAiParserModalOpen] = useState(false);
+  const [aiParserInitialText, setAiParserInitialText] = useState<string | undefined>(undefined);
+  const [importIssues, setImportIssues] = useState<PendingImportIssues | null>(null);
   const [aiRemaining, setAiRemaining] = useState(limits.aiParseRequestsPerDay);
   const [svgTitles, setSvgTitles] = useState<string[]>([]);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -637,25 +668,22 @@ export const ImportDataPanel: FC = () => {
     limits.historicalDataImport,
   ]);
 
-  /** Process parsed rows — groups by time period for Atlas users or imports flat data. */
-  const processImportedData = useCallback(
+  /** Commit parsed rows — groups by time period for Atlas users or imports flat data. */
+  const applyImportedData = useCallback(
     (parsed: ParsedRow[], onSuccess?: (data: unknown) => void) => {
       const hasTimePeriods = parsed.some((row) => row.timePeriod !== undefined);
 
       if (hasTimePeriods && limits.historicalDataImport) {
-        // Group by time period (preserve order of first appearance)
         const grouped: Record<string, ParsedRow[]> = {};
-        const periodOrder: string[] = [];
 
         for (const row of parsed) {
           const period = String(row.timePeriod ?? 'Unknown');
-          if (!grouped[period]) {
-            grouped[period] = [];
-            periodOrder.push(period);
-          }
+          if (!grouped[period]) grouped[period] = [];
           grouped[period].push(row);
         }
 
+        // Chronological, not order of appearance — statistical exports are often newest-first.
+        const periodOrder = sortTimePeriods(Object.keys(grouped));
         const timeline: Record<string, DataSet> = {};
         for (const period of periodOrder) {
           timeline[period] = convertToRegionData(grouped[period], svgTitles);
@@ -704,9 +732,104 @@ export const ImportDataPanel: FC = () => {
     ],
   );
 
+  /**
+   * Multi-dimensional exports (e.g. one row per age band) repeat a region within the same
+   * period. Collapsing them silently would let an arbitrary row win, so ask how to combine.
+   */
+  const applyWithDuplicateCheck = useCallback(
+    (parsed: ParsedRow[], onSuccess?: (data: unknown) => void) => {
+      const duplicates = findDuplicateRows(parsed);
+      if (duplicates.groupCount === 0) {
+        applyImportedData(parsed, onSuccess);
+        return;
+      }
+
+      let strategy: DuplicateStrategy = DUPLICATE_STRATEGIES.first;
+      modal.confirm({
+        title: t('visualizer.importData.duplicates.title'),
+        width: 520,
+        content: (
+          <DuplicateRowsConfirmContent
+            groupCount={duplicates.groupCount}
+            extraRowCount={duplicates.extraRowCount}
+            sampleRegions={duplicates.sampleRegions}
+            defaultStrategy={strategy}
+            onSelect={(next) => {
+              strategy = next;
+            }}
+          />
+        ),
+        okText: t('visualizer.importData.duplicates.confirm'),
+        cancelText: t('nav.cancel'),
+        onOk: () => {
+          applyImportedData(aggregateDuplicateRows(parsed, strategy), onSuccess);
+        },
+      });
+    },
+    [applyImportedData, modal, t],
+  );
+
+  /**
+   * Gate every file import on a quality check. When a meaningful share of the data was lost,
+   * offer the AI parser a chance at the same source before the thin result reaches the map —
+   * but only when the user actually has requests left, otherwise the plain toast is all we can
+   * honestly offer.
+   */
+  const processImportedData = useCallback(
+    (parsed: ParsedRow[], onSuccess?: (data: unknown) => void, options?: ImportSourceOptions) => {
+      const canOfferAiParser = limits.aiParser && aiRemaining > 0;
+      if (!canOfferAiParser) {
+        applyWithDuplicateCheck(parsed, onSuccess);
+        return;
+      }
+
+      const issues = findImportIssues({
+        rows: parsed,
+        skippedRowCount: options?.skippedRowCount ?? 0,
+        svgTitles,
+      });
+      if (!hasSignificantIssues(issues)) {
+        applyWithDuplicateCheck(parsed, onSuccess);
+        return;
+      }
+
+      // Reading the file succeeded — only its contents are in question — so settle the Upload
+      // now rather than leaving it stuck mid-flight while the modal is open. The deferred apply
+      // therefore gets no `onSuccess` of its own; it must not fire twice.
+      onSuccess?.(null);
+      setImportIssues({
+        issues,
+        sourceText: options?.sourceText ?? rowsToTabDelimited(parsed),
+        apply: () => applyWithDuplicateCheck(parsed),
+      });
+    },
+    [applyWithDuplicateCheck, aiRemaining, limits.aiParser, svgTitles],
+  );
+
+  const handleIssuesUseAiParser = useCallback(() => {
+    if (!importIssues) return;
+    setAiParserInitialText(importIssues.sourceText);
+    setImportIssues(null);
+    setIsAiParserModalOpen(true);
+  }, [importIssues]);
+
+  const handleIssuesImportAnyway = useCallback(() => {
+    if (!importIssues) return;
+    const { apply } = importIssues;
+    setImportIssues(null);
+    apply();
+  }, [importIssues]);
+
+  const handleIssuesCancel = useCallback(() => setImportIssues(null), []);
+
+  const handleCloseAiParserModal = useCallback(() => {
+    setIsAiParserModalOpen(false);
+    setAiParserInitialText(undefined);
+  }, []);
+
   const afterSheetCsvParsed = useCallback(
     (csv: string) => {
-      const result = parseCSV(csv);
+      const result = parseCSV(csv, { svgTitles });
       if ('error' in result) {
         showMessageWithSampleDownload(
           messageApi,
@@ -717,7 +840,7 @@ export const ImportDataPanel: FC = () => {
         );
         return;
       }
-      if (result.length === 0) {
+      if (result.rows.length === 0) {
         showMessageWithSampleDownload(
           messageApi,
           'error',
@@ -727,9 +850,12 @@ export const ImportDataPanel: FC = () => {
         );
         return;
       }
-      processImportedData(result);
+      processImportedData(result.rows, undefined, {
+        sourceText: csv,
+        skippedRowCount: result.skippedRowCount,
+      });
     },
-    [handleDownloadSampleOnly, messageApi, processImportedData, t],
+    [handleDownloadSampleOnly, messageApi, processImportedData, svgTitles, t],
   );
 
   const afterSheetCsvParsedRef = useRef(afterSheetCsvParsed);
@@ -778,7 +904,7 @@ export const ImportDataPanel: FC = () => {
         reader.onload = async (e) => {
           try {
             const buffer = e.target?.result as ArrayBuffer;
-            const parsed = await parseExcel(buffer);
+            const parsed = await parseExcel(buffer, { svgTitles });
 
             if ('error' in parsed) {
               showMessageWithSampleDownload(
@@ -792,13 +918,16 @@ export const ImportDataPanel: FC = () => {
               return;
             }
 
-            if (parsed.length === 0) {
+            if (parsed.rows.length === 0) {
               showMessageWithClose(messageApi, 'warning', t('messages.noValidDataExcel'));
               onError?.(new Error('No valid data found'));
               return;
             }
 
-            processImportedData(parsed, onSuccess);
+            // No raw text for a binary workbook — hand the AI parser the rows we did read.
+            processImportedData(parsed.rows, onSuccess, {
+              skippedRowCount: parsed.skippedRowCount,
+            });
           } catch (error) {
             showMessageWithSampleDownload(
               messageApi,
@@ -821,9 +950,10 @@ export const ImportDataPanel: FC = () => {
         try {
           const content = e.target?.result as string;
           let parsed: ParsedRow[] = [];
+          let skippedRowCount = 0;
 
           if (importDataType === 'csv') {
-            const result = parseCSV(content);
+            const result = parseCSV(content, { svgTitles });
             if ('error' in result) {
               showMessageWithSampleDownload(
                 messageApi,
@@ -835,9 +965,12 @@ export const ImportDataPanel: FC = () => {
               onError?.(new Error('Missing required columns'));
               return;
             }
-            parsed = result;
+            parsed = result.rows;
+            skippedRowCount = result.skippedRowCount;
           } else if (importDataType === 'json') {
-            parsed = parseJSON(content);
+            const result = parseJSON(content);
+            parsed = result.rows;
+            skippedRowCount = result.skippedRowCount;
           }
 
           if (parsed.length === 0) {
@@ -846,7 +979,7 @@ export const ImportDataPanel: FC = () => {
             return;
           }
 
-          processImportedData(parsed, onSuccess);
+          processImportedData(parsed, onSuccess, { sourceText: content, skippedRowCount });
         } catch (error) {
           showMessageWithSampleDownload(
             messageApi,
@@ -865,7 +998,7 @@ export const ImportDataPanel: FC = () => {
 
       reader.readAsText(file as File);
     },
-    [messageApi, importDataType, processImportedData, handleDownloadSampleOnly, t],
+    [messageApi, importDataType, processImportedData, handleDownloadSampleOnly, svgTitles, t],
   );
 
   const handleCopyGoogleSheetUrl = useCallback(async () => {
@@ -1172,13 +1305,26 @@ export const ImportDataPanel: FC = () => {
         </Suspense>
       )}
 
+      {importIssues && (
+        <ImportIssuesModal
+          open
+          issues={importIssues.issues}
+          remaining={aiRemaining}
+          maxRequestsPerDay={limits.aiParseRequestsPerDay}
+          onUseAiParser={handleIssuesUseAiParser}
+          onImportAnyway={handleIssuesImportAnyway}
+          onCancel={handleIssuesCancel}
+        />
+      )}
+
       {isAiParserModalOpen && (
         <Suspense fallback={<Spin />}>
           <AiParserModal
             open={isAiParserModalOpen}
-            onClose={() => setIsAiParserModalOpen(false)}
+            onClose={handleCloseAiParserModal}
             onSave={offerToNormalizeRanges}
             mapRegionIds={svgTitles}
+            initialText={aiParserInitialText}
             countryName={getRegionDisplayName(selectedCountryId) ?? undefined}
             historicalDataImport={limits.historicalDataImport}
             remaining={aiRemaining}

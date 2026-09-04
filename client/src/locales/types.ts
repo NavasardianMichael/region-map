@@ -226,6 +226,27 @@ export type CommonNs = {
       changeOk: string;
     };
     importData: {
+      issues: {
+        title: string;
+        body: string;
+        skippedRows: string;
+        unmatchedRegions: string;
+        andMore: string;
+        useAiParser: string;
+        importAnyway: string;
+        declineHint: string;
+      };
+      duplicates: {
+        title: string;
+        body: string;
+        examples: string;
+        strategyFirst: string;
+        strategyLast: string;
+        strategySum: string;
+        strategyAverage: string;
+        hint: string;
+        confirm: string;
+      };
       sectionTitle: string;
       downloadTooltipEmpty: string;
       downloadTooltip: string;

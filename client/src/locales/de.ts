@@ -287,6 +287,29 @@ const de: CommonNs = {
       changeOk: 'Land wechseln',
     },
     importData: {
+      issues: {
+        title: 'Einige Daten konnten nicht gelesen werden',
+        body: 'Diese Datei wurde nicht fehlerfrei importiert. Sie können den KI-Agenten damit beauftragen, das Gelesene trotzdem importieren oder abbrechen und die Datei selbst korrigieren.',
+        skippedRows:
+          '{{count}} Zeilen wurden übersprungen, da keine Region oder kein Wert erkennbar war ({{parsed}} importiert).',
+        unmatchedRegions: '{{count}} Regionsnamen passen nicht zu dieser Karte: {{regions}}',
+        andMore: 'und {{count}} weitere.',
+        useAiParser: 'KI-Agent versuchen',
+        importAnyway: 'Trotzdem importieren',
+        declineHint:
+          'Beim Abbrechen bleiben die aktuellen Kartendaten unverändert, sodass Sie die Datei korrigieren und erneut importieren können.',
+      },
+      duplicates: {
+        title: 'Wiederholte Regionen gefunden',
+        body: '{{groups}} Regions-/Zeitraum-Kombinationen kommen in mehreren Zeilen vor ({{rows}} zusätzliche Zeilen). Wählen Sie, wie sie zusammengeführt werden sollen.',
+        examples: 'Zum Beispiel: {{regions}}',
+        strategyFirst: 'Erste Zeile behalten',
+        strategyLast: 'Letzte Zeile behalten',
+        strategySum: 'Werte addieren',
+        strategyAverage: 'Durchschnittswert verwenden',
+        hint: 'Statistische Exporte wiederholen eine Region oft je Aufschlüsselung (Altersgruppe, Geschlecht, Einheit). Die erste Zeile enthält meist die Gesamtwerte.',
+        confirm: 'Importieren',
+      },
       sectionTitle: 'Daten importieren',
       downloadTooltipEmpty:
         'Fügen Sie Daten hinzu oder importieren Sie sie, um den aktuellen Datensatz herunterzuladen',

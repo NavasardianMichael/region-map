@@ -284,6 +284,30 @@ const fr: CommonNs = {
       changeOk: 'Changer de pays',
     },
     importData: {
+      issues: {
+        title: 'Certaines données n’ont pas pu être lues',
+        body: 'Ce fichier n’a pas été importé correctement. Vous pouvez demander à l’agent IA de l’interpréter, importer ce qui a été lu, ou annuler et corriger le fichier vous-même.',
+        skippedRows:
+          '{{count}} lignes ont été ignorées car aucune région ni valeur n’a pu être lue ({{parsed}} importées).',
+        unmatchedRegions:
+          '{{count}} noms de région ne correspondent pas à cette carte : {{regions}}',
+        andMore: 'et {{count}} de plus.',
+        useAiParser: 'Essayer l’agent IA',
+        importAnyway: 'Importer quand même',
+        declineHint:
+          'Annuler laisse les données actuelles de la carte intactes, afin que vous puissiez corriger le fichier et importer à nouveau.',
+      },
+      duplicates: {
+        title: 'Régions répétées détectées',
+        body: '{{groups}} combinaisons région/période apparaissent sur plusieurs lignes ({{rows}} lignes supplémentaires). Choisissez comment les combiner.',
+        examples: 'Par exemple : {{regions}}',
+        strategyFirst: 'Conserver la première ligne',
+        strategyLast: 'Conserver la dernière ligne',
+        strategySum: 'Additionner les valeurs',
+        strategyAverage: 'Utiliser la valeur moyenne',
+        hint: 'Les exports statistiques répètent souvent une région pour chaque ventilation (tranche d’âge, sexe, unité). La première ligne correspond généralement au total.',
+        confirm: 'Importer',
+      },
       sectionTitle: 'Importer des données',
       downloadTooltipEmpty: 'Ajoutez ou importez des données pour télécharger le jeu actuel',
       downloadTooltip: 'Télécharger le jeu de données actuel (exemple)',

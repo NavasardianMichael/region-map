@@ -34,6 +34,8 @@ type Props = {
   /** Called when parsed/generated data is saved to the dataset, before the modal closes. */
   onSave?: () => void;
   mapRegionIds: string[];
+  /** Prefills the parser tab instead of the current dataset — used to retry a failed import. */
+  initialText?: string;
   countryName?: string;
   historicalDataImport: boolean;
   remaining: number;
@@ -52,6 +54,7 @@ export const AiParserModal: FC<Props> = ({
   onClose,
   onSave,
   mapRegionIds,
+  initialText,
   countryName,
   historicalDataImport,
   remaining,
@@ -68,8 +71,8 @@ export const AiParserModal: FC<Props> = ({
 
   // Snapshot the dataset at modal open so the parser tab is prefilled with current data
   // and we can tell whether the user has dirtied it before saving.
-  const [initialParserText] = useState(() =>
-    datasetToTabDelimited(data, timelineData, timePeriods),
+  const [initialParserText] = useState(
+    () => initialText ?? datasetToTabDelimited(data, timelineData, timePeriods),
   );
 
   const [activeMode, setActiveMode] = useState<Mode>('parser');
@@ -123,14 +126,14 @@ export const AiParserModal: FC<Props> = ({
         controller.signal,
       );
 
-      const parsed = parseCSV(buffer.trim());
-      if (typeof parsed === 'object' && 'error' in parsed) {
+      const result = parseCSV(buffer.trim(), { svgTitles: mapRegionIds });
+      if ('error' in result) {
         showMessageWithClose(messageApi, 'error', t('visualizer.tabDelimitedModal.pasteMissingId'));
         setParserPhase('error');
         return;
       }
 
-      const cleaned = filterParsedRows(parsed);
+      const cleaned = filterParsedRows(result.rows);
       if (cleaned.length === 0) {
         showMessageWithClose(
           messageApi,
@@ -177,14 +180,14 @@ export const AiParserModal: FC<Props> = ({
         controller.signal,
       );
 
-      const parsed = parseCSV(buffer.trim());
-      if (typeof parsed === 'object' && 'error' in parsed) {
+      const result = parseCSV(buffer.trim(), { svgTitles: mapRegionIds });
+      if ('error' in result) {
         showMessageWithClose(messageApi, 'error', t('visualizer.tabDelimitedModal.pasteMissingId'));
         setGeneratorPhase('error');
         return;
       }
 
-      const cleaned = filterParsedRows(parsed);
+      const cleaned = filterParsedRows(result.rows);
       if (cleaned.length === 0) {
         showMessageWithClose(
           messageApi,
@@ -216,18 +219,18 @@ export const AiParserModal: FC<Props> = ({
         setParserView('table');
         return;
       }
-      const parsed = parseCSV(trimmed);
-      if (typeof parsed === 'object' && 'error' in parsed) {
+      const result = parseCSV(trimmed, { svgTitles: mapRegionIds });
+      if ('error' in result) {
         showMessageWithClose(messageApi, 'error', t('visualizer.tabDelimitedModal.pasteMissingId'));
         return;
       }
-      setParserRows(parsed);
+      setParserRows(result.rows);
       setParserView('table');
     } else {
       setParserText(rowsToTabDelimited(parserRows));
       setParserView('ai');
     }
-  }, [messageApi, parserRows, parserText, parserView, t]);
+  }, [mapRegionIds, messageApi, parserRows, parserText, parserView, t]);
 
   // ─── Generator switch view ───
   const handleGeneratorSwitchView = useCallback(() => {
@@ -242,8 +245,8 @@ export const AiParserModal: FC<Props> = ({
       if (parserView === 'table') {
         parsed = filterParsedRows(parserRows);
       } else {
-        const result = parseCSV(parserText.trim());
-        if (typeof result === 'object' && 'error' in result) {
+        const result = parseCSV(parserText.trim(), { svgTitles: mapRegionIds });
+        if ('error' in result) {
           showMessageWithClose(
             messageApi,
             'error',
@@ -251,7 +254,7 @@ export const AiParserModal: FC<Props> = ({
           );
           return;
         }
-        parsed = filterParsedRows(result);
+        parsed = filterParsedRows(result.rows);
       }
     } else {
       parsed = filterParsedRows(generatorRows);

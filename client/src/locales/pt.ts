@@ -282,6 +282,29 @@ const pt: CommonNs = {
       changeOk: 'Alterar país',
     },
     importData: {
+      issues: {
+        title: 'Não foi possível ler alguns dados',
+        body: 'Este ficheiro não foi importado corretamente. Pode pedir ao agente de IA para o interpretar, importar o que foi lido, ou cancelar e corrigir o ficheiro.',
+        skippedRows:
+          '{{count}} linhas foram ignoradas porque não foi possível ler nenhuma região ou valor ({{parsed}} importadas).',
+        unmatchedRegions: '{{count}} nomes de região não correspondem a este mapa: {{regions}}',
+        andMore: 'e mais {{count}}.',
+        useAiParser: 'Tentar agente de IA',
+        importAnyway: 'Importar mesmo assim',
+        declineHint:
+          'Cancelar mantém os dados atuais do mapa intactos, para que possa corrigir o ficheiro e importar novamente.',
+      },
+      duplicates: {
+        title: 'Regiões repetidas encontradas',
+        body: '{{groups}} combinações de região/período aparecem em mais de uma linha ({{rows}} linhas adicionais). Escolha como combiná-las.',
+        examples: 'Por exemplo: {{regions}}',
+        strategyFirst: 'Manter a primeira linha',
+        strategyLast: 'Manter a última linha',
+        strategySum: 'Somar os valores',
+        strategyAverage: 'Usar o valor médio',
+        hint: 'As exportações estatísticas costumam repetir uma região por cada desagregação (faixa etária, sexo, unidade). A primeira linha costuma ser a dos totais.',
+        confirm: 'Importar',
+      },
       sectionTitle: 'Importar dados',
       downloadTooltipEmpty: 'Adicione ou importe dados para transferir o conjunto atual',
       downloadTooltip: 'Transferir conjunto de dados atual (exemplo)',

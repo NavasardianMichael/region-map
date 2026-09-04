@@ -282,6 +282,29 @@ const en: CommonNs = {
       changeOk: 'Change country',
     },
     importData: {
+      issues: {
+        title: 'Some data could not be read',
+        body: 'This file did not import cleanly. You can let the AI agent try to read it instead, import what was read anyway, or cancel and fix the file yourself.',
+        skippedRows:
+          '{{count}} rows were skipped because no region or value could be read from them ({{parsed}} imported).',
+        unmatchedRegions: '{{count}} region names do not match this map: {{regions}}',
+        andMore: 'and {{count}} more.',
+        useAiParser: 'Try AI agent',
+        importAnyway: 'Import anyway',
+        declineHint:
+          'Cancelling leaves the current map data untouched so you can correct the file and import again.',
+      },
+      duplicates: {
+        title: 'Repeated regions found',
+        body: '{{groups}} region/period combinations appear on more than one row ({{rows}} extra rows). Choose how to combine them.',
+        examples: 'For example: {{regions}}',
+        strategyFirst: 'Keep the first row',
+        strategyLast: 'Keep the last row',
+        strategySum: 'Add the values together',
+        strategyAverage: 'Use the average value',
+        hint: 'Statistical exports often repeat a region once per breakdown (age group, sex, unit). Keeping the first row usually selects the totals row.',
+        confirm: 'Import',
+      },
       sectionTitle: 'Import Data',
       downloadTooltipEmpty: 'Add or import data to download the current dataset',
       downloadTooltip: 'Download current (sample) dataset',

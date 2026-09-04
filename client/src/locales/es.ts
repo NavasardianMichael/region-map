@@ -283,6 +283,29 @@ const es: CommonNs = {
       changeOk: 'Cambiar país',
     },
     importData: {
+      issues: {
+        title: 'No se pudieron leer algunos datos',
+        body: 'Este archivo no se importó correctamente. Puede pedir al agente de IA que lo interprete, importar lo que se leyó o cancelar y corregir el archivo usted mismo.',
+        skippedRows:
+          'Se omitieron {{count}} filas porque no se pudo leer ninguna región ni valor ({{parsed}} importadas).',
+        unmatchedRegions: '{{count}} nombres de región no coinciden con este mapa: {{regions}}',
+        andMore: 'y {{count}} más.',
+        useAiParser: 'Probar agente de IA',
+        importAnyway: 'Importar de todos modos',
+        declineHint:
+          'Al cancelar, los datos actuales del mapa no se modifican, de modo que puede corregir el archivo e importarlo de nuevo.',
+      },
+      duplicates: {
+        title: 'Se encontraron regiones repetidas',
+        body: '{{groups}} combinaciones de región/período aparecen en más de una fila ({{rows}} filas adicionales). Elija cómo combinarlas.',
+        examples: 'Por ejemplo: {{regions}}',
+        strategyFirst: 'Conservar la primera fila',
+        strategyLast: 'Conservar la última fila',
+        strategySum: 'Sumar los valores',
+        strategyAverage: 'Usar el valor promedio',
+        hint: 'Las exportaciones estadísticas suelen repetir una región por cada desglose (grupo de edad, sexo, unidad). La primera fila suele ser la de totales.',
+        confirm: 'Importar',
+      },
       sectionTitle: 'Importar datos',
       downloadTooltipEmpty: 'Añade o importa datos para descargar el conjunto actual',
       downloadTooltip: 'Descargar conjunto de datos actual (de ejemplo)',

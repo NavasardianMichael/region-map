@@ -18,14 +18,18 @@ import { parseMapSvgElement } from '@/helpers/parseMapSvg';
  * - Trimming whitespace
  */
 export const normalizeText = (text: string): string => {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[''`ʻ]/g, '') // Remove various apostrophes
-    .replace(/[^a-z0-9\s]/g, '') // Remove other special characters
-    .replace(/\s+/g, ' ') // Normalize whitespace
-    .trim();
+  return (
+    text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+      .replace(/[''`ʻ]/g, '') // Remove various apostrophes
+      // Remove other special characters. Unicode-aware: a Latin-only class erased Cyrillic and
+      // CJK names entirely, so localized region names could never match anything.
+      .replace(/[^\p{L}\p{N}\s]/gu, '')
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim()
+  );
 };
 
 /**
@@ -79,11 +83,20 @@ export const calculateSimilarity = (a: string, b: string): number => {
 };
 
 /**
- * Check if one string contains the other (as a substring match)
+ * Shortest overlap that may count as a containment match. Below it, substrings are noise:
+ * the ISO code `US` sits inside `Austria`, which would otherwise score as a strong match.
+ */
+const MIN_CONTAINMENT_LENGTH = 4;
+
+/**
+ * Check if one string contains the other (as a substring match).
+ * Ignores overlaps too short to be meaningful — see `MIN_CONTAINMENT_LENGTH`.
  */
 export const containsMatch = (a: string, b: string): boolean => {
   const normalizedA = normalizeText(a);
   const normalizedB = normalizeText(b);
+
+  if (Math.min(normalizedA.length, normalizedB.length) < MIN_CONTAINMENT_LENGTH) return false;
 
   return normalizedA.includes(normalizedB) || normalizedB.includes(normalizedA);
 };
@@ -162,26 +175,35 @@ type MappedRegionData = {
   id: string;
   label: string;
   value: number;
+  /** False when no svg title could be found for the row, so callers can report it. */
+  matched: boolean;
 };
 
 /**
  * Map parsed data rows to SVG region ids.
  *
- * Two passes: rows are first matched to svg titles by normalized-exact equality
- * (case/diacritic/whitespace-insensitive); only rows still unmatched after that are
- * given a similarity-based fallback match. Each svg title can be claimed by at most one
+ * Three passes, strongest evidence first: rows are matched to svg titles by normalized-exact
+ * equality (case/diacritic/whitespace-insensitive); then, when `aliasKeyOf` is supplied, by a
+ * shared alias key, which lets differently-spelled names for the same place meet on a common
+ * identifier; then by similarity as a fallback. Each svg title can be claimed by at most one
  * row per call, so two rows can never be remapped onto the same region. A matched row's
  * `id` is rewritten to the exact svg title string (never a normalized copy), since
  * rendering looks up data by the raw, unmodified `title` attribute. `label` is left as-is.
  *
  * @param rows - Parsed data rows with id, label and value
  * @param svgTitles - Candidate region ids/titles from the current map's SVG paths
+ * @param aliasKeyOf - Optional canonical key for a name (e.g. an ISO country code), applied to
+ *   both sides; returning `null` means the value has no key and the row falls through
  * @returns Mapped region data
  */
-export const mapDataToSvgRegions = (rows: ParsedRow[], svgTitles: string[]): MappedRegionData[] => {
+export const mapDataToSvgRegions = (
+  rows: ParsedRow[],
+  svgTitles: string[],
+  aliasKeyOf?: (value: string) => string | null,
+): MappedRegionData[] => {
   const available = [...svgTitles];
   const result: MappedRegionData[] = new Array(rows.length);
-  const pendingIndexes: number[] = [];
+  let pendingIndexes: number[] = [];
 
   const claim = (title: string): void => {
     const index = available.indexOf(title);
@@ -193,20 +215,43 @@ export const mapDataToSvgRegions = (rows: ParsedRow[], svgTitles: string[]): Map
     const exactTitle = available.find((title) => normalizeText(title) === normalizedId);
     if (exactTitle) {
       claim(exactTitle);
-      result[index] = { id: exactTitle, label: row.label, value: row.value };
+      result[index] = { id: exactTitle, label: row.label, value: row.value, matched: true };
     } else {
       pendingIndexes.push(index);
     }
   });
+
+  if (aliasKeyOf && pendingIndexes.length > 0) {
+    const titleByAliasKey = new Map<string, string>();
+    for (const title of available) {
+      const key = aliasKeyOf(title);
+      if (key !== null && !titleByAliasKey.has(key)) titleByAliasKey.set(key, title);
+    }
+
+    const stillPending: number[] = [];
+    for (const index of pendingIndexes) {
+      const row = rows[index];
+      const key = aliasKeyOf(row.id);
+      const title = key === null ? undefined : titleByAliasKey.get(key);
+      if (key !== null && title !== undefined) {
+        claim(title);
+        titleByAliasKey.delete(key);
+        result[index] = { id: title, label: row.label, value: row.value, matched: true };
+      } else {
+        stillPending.push(index);
+      }
+    }
+    pendingIndexes = stillPending;
+  }
 
   for (const index of pendingIndexes) {
     const row = rows[index];
     const match = findBestMatch(row.id, available);
     if (match) {
       claim(match.svgId);
-      result[index] = { id: match.svgId, label: row.label, value: row.value };
+      result[index] = { id: match.svgId, label: row.label, value: row.value, matched: true };
     } else {
-      result[index] = { id: row.id, label: row.label, value: row.value };
+      result[index] = { id: row.id, label: row.label, value: row.value, matched: false };
     }
   }
 

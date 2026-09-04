@@ -69,17 +69,17 @@ export const TabDelimitedTextModal: FC<Props> = ({
     // spinner actually shows instead of being batched away with setSaving(false).
     await new Promise((resolve) => setTimeout(resolve, 0));
     try {
-      const result = parseCSV(trimmed);
-      if (typeof result === 'object' && 'error' in result) {
+      const result = parseCSV(trimmed, { svgTitles: mapRegionIds });
+      if ('error' in result) {
         setError(t('visualizer.tabDelimitedModal.pasteMissingId'));
         return;
       }
-      if (result.length === 0) {
+      if (result.rows.length === 0) {
         setError(t('visualizer.tabDelimitedModal.pasteFormatError'));
         return;
       }
 
-      const outcome = commitParsedImport(result, mapRegionIds, historicalDataImport);
+      const outcome = commitParsedImport(result.rows, mapRegionIds, historicalDataImport);
       if (!outcome.ok) {
         setError(t('visualizer.tabDelimitedModal.pasteFormatError'));
         return;

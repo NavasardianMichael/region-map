@@ -1,10 +1,12 @@
 /**
  * Excel read/write via dynamic import so `xlsx` is not in the Visualizer initial chunk.
- * TIME_COLUMN_PATTERN must stay aligned with importDataParsers.ts.
+ * Column detection is shared with the CSV path via `importColumnResolver`.
  */
-import type { MissingColumnsError } from '@/helpers/importDataParsers';
-
-const TIME_COLUMN_PATTERN = /^(year|time|period|date|month|quarter|season|epoch|era)$/i;
+import {
+  type ImportColumnRoles,
+  type MissingColumnsError,
+  resolveImportColumns,
+} from '@/helpers/importColumnResolver';
 
 function importXlsxPackage() {
   return import('xlsx');
@@ -23,50 +25,51 @@ function loadXlsx(): Promise<XlsxModule> {
 
 export type ExcelParsedRow = { id: string; label: string; value: number; timePeriod?: string };
 
+/** Rows read from the sheet plus how many were unreadable, matching the CSV parser's shape. */
+export type ExcelParsedImport = { rows: ExcelParsedRow[]; skippedRowCount: number };
+
+const toCellText = (cell: unknown): string =>
+  cell === null || cell === undefined ? '' : String(cell).trim();
+
+const readRowsByRoles = (rows: string[][], roles: ImportColumnRoles): ExcelParsedImport => {
+  const data: ExcelParsedRow[] = [];
+  let skippedRowCount = 0;
+
+  for (const cells of rows) {
+    const id = cells[roles.idIndex];
+    const value = Number(cells[roles.valueIndex]);
+    if (!id || !Number.isFinite(value)) {
+      skippedRowCount++;
+      continue;
+    }
+
+    const label = cells[roles.labelIndex] || id;
+    const timePeriod = roles.timeIndex === null ? undefined : cells[roles.timeIndex];
+
+    data.push({ id, label, value, timePeriod: timePeriod || undefined });
+  }
+
+  return { rows: data, skippedRowCount };
+};
+
 export async function parseExcelBuffer(
   buffer: ArrayBuffer,
-): Promise<ExcelParsedRow[] | MissingColumnsError> {
+  { svgTitles }: { svgTitles?: string[] } = {},
+): Promise<ExcelParsedImport | MissingColumnsError> {
   const XLSX = await loadXlsx();
   const workbook = XLSX.read(buffer, { type: 'array' });
   const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-  const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet);
+  const sheetRows = XLSX.utils
+    .sheet_to_json<unknown[]>(firstSheet, { header: 1, blankrows: false })
+    .map((row) => row.map(toCellText));
 
-  if (jsonData.length > 0) {
-    const keys = Object.keys(jsonData[0]);
-    const missing: string[] = [];
-    if (!keys.some((k) => k.toLowerCase() === 'id')) missing.push('id');
-    if (!keys.some((k) => /^(label|region|name|area|province|state|country)/i.test(k)))
-      missing.push('label');
-    if (!keys.some((k) => /^(value|count|amount|number|data|total|population)/i.test(k)))
-      missing.push('value');
-    if (missing.length > 0) return { error: 'missing_columns', missing };
-  }
+  if (sheetRows.length === 0) return { rows: [], skippedRowCount: 0 };
 
-  const data: ExcelParsedRow[] = [];
+  const [headers, ...rows] = sheetRows;
+  const resolution = resolveImportColumns({ headers, sampleRows: rows, svgTitles });
+  if ('error' in resolution) return resolution;
 
-  for (const row of jsonData) {
-    const keys = Object.keys(row);
-
-    const idKey = keys.find((key) => key.toLowerCase() === 'id');
-    const labelKey = keys.find((key) =>
-      /^(label|region|name|area|province|state|country)/i.test(String(key)),
-    );
-    const valueKey = keys.find((key) =>
-      /^(value|count|amount|number|data|total|population)/i.test(String(key)),
-    );
-    const timeKey = keys.find((key) => TIME_COLUMN_PATTERN.test(String(key)));
-
-    const id = idKey ? String(row[idKey] ?? '').trim() : undefined;
-    const label = String(row[labelKey ?? keys[idKey ? 1 : 0]] ?? '').trim();
-    const value = parseFloat(String(row[valueKey ?? keys[idKey ? 2 : 1]] ?? ''));
-    const timePeriod = timeKey ? String(row[timeKey] ?? '') : undefined;
-
-    if (id && label && !isNaN(value)) {
-      data.push({ id, label, value, timePeriod: timePeriod || undefined });
-    }
-  }
-
-  return data;
+  return readRowsByRoles(rows, resolution);
 }
 
 export async function writeRowsToXlsxFile(
