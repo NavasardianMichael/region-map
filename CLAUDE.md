@@ -39,6 +39,14 @@ Dev setup:
 - Add comments only when the code's purpose is not immediately clear from its context or naming.
 - Keep files small and focused; split when complexity grows.
 
+### Routes
+
+- `client/src/constants/routes.ts` (the `ROUTES` constant) is the single source of truth for every path the web app serves.
+- **Inside the client:** import `ROUTES` and reference the member (`ROUTES.BILLING`) — never write a path literal (`'/billing'`). A new route goes into `ROUTES` first, then into `client/src/components/router/AppRouter.tsx`.
+- **Outside the client** (marketing site, server, nginx config, docs, marketing copy): read `client/src/constants/routes.ts` and link only to paths listed there. `ROUTES` is not importable across those boundaries, so verify against the file before writing any link.
+- An unlisted path is not a 404 — nginx falls it through to the SPA shell, React Router throws `No route matches URL`, and it surfaces in Sentry as a production error.
+- Renaming or retiring a path leaves already-shared and already-crawled links behind: add a `location = /old { return 301 /new$is_args$args; }` to `deployment/regionify.pro.conf` (the `$is_args$args` preserves `?utm_*` attribution).
+
 ### TypeScript
 
 - No `any` without explicit justification.
@@ -219,6 +227,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 ### Forbidden (Client)
 
 - Hardcoding API URLs outside `src/api/`
+- Hardcoded route path strings (use `ROUTES` from `src/constants/routes.ts`)
 - Mixing UI, API, and state concerns in one file
 - Inline styles (use Tailwind)
 - Direct DOM manipulation (use React refs if needed)

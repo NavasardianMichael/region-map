@@ -18,7 +18,7 @@ export const ErrorFallback: FC<Props> = ({ title, showGoHome = false }) => {
           key="home"
           type="dashed"
           onClick={() => {
-            window.location.href = '/';
+            window.location.href = ROUTES.HOME;
           }}
         >
           {t('errors.goHome')}

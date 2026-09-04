@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 import { Flex, Typography } from 'antd';
 import logoImage from '@/assets/images/logo/logo-high-resolution_small.png';
+import { ROUTES } from '@/constants/routes';
 import { useTypedTranslation } from '@/i18n/useTypedTranslation';
 
 export const EmbedNotFoundView: FC = () => {
@@ -8,7 +9,7 @@ export const EmbedNotFoundView: FC = () => {
 
   return (
     <Flex vertical align="center" justify="center" gap="middle" className="w-full flex-1 p-4">
-      <a href="/" target="_blank" rel="noopener noreferrer" className="no-underline">
+      <a href={ROUTES.HOME} target="_blank" rel="noopener noreferrer" className="no-underline">
         <Flex align="center" gap="small">
           <img
             src={logoImage}

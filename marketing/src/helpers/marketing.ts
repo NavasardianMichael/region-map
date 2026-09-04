@@ -4,6 +4,11 @@ function withUtm(path: string, medium: string, campaign: string): string {
   return `${CLIENT_URL}${path}?utm_source=marketing&utm_medium=${medium}&utm_campaign=${campaign}`;
 }
 
+/**
+ * Every path below must exist in the client's `ROUTES` table
+ * (`client/src/constants/routes.ts`). An unlisted path falls through nginx to
+ * the SPA shell and throws `No route matches URL` at runtime.
+ */
 export const MARKETING_LINKS_TO_APP = {
   nav: {
     logo: withUtm('/', 'nav', 'logo'),
@@ -16,7 +21,7 @@ export const MARKETING_LINKS_TO_APP = {
   footer: {
     logo: withUtm('/', 'footer', 'logo'),
     home: withUtm('/', 'footer', 'home'),
-    pricing: withUtm('/pricing', 'footer', 'pricing'),
+    pricing: withUtm('/billing', 'footer', 'pricing'),
     contact: withUtm('/contact', 'footer', 'contact'),
   },
   ctaSection: {
